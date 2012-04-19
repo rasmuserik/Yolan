@@ -43,10 +43,16 @@ var compile = function(src, dest) {
         var js = jsBackend.toJS(ast);
         var sourceCode = macros.reverse(ast).slice(1).map(syntax["prettyprint"]).join("\n\n") + "\n";
         fs.writeFile(dest + ".yl", sourceCode);
+        fs.writeFile(dest + ".js.raw", sourceCode);
         var uglify = require.call(null, "uglify-js");
         var jsp = uglify["parser"];
         var pro = uglify["uglify"];
-        var ast = jsp.parse(js);
+        try {
+            var ast = jsp.parse(js);
+        } catch (e) {
+            console.log(dest);
+            console.log(e);
+        }
         js = pro.gen_code(ast, {
             beautify: true
         });
