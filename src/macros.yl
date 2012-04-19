@@ -40,9 +40,9 @@
       [fn [node] [new array 'if-else ['[do] concat [exports transformList [node slice 1]]]]]]
     ['reverse
       [fn [node]
-        [if-else [[[node get 0] == 'if-else] and [[node get 'length] == 2]]
+        [if-else [[[node get 0] == 'if-else] and [[node get 'length] == 3]]
           [do
             [if-else [[[node get 1] get 0] == 'do]
-              [return ['[if] slice [[[node get 1] get 0] slice 1]]]
+              [return ['[if] concat [[[node get 1] get 0] slice 1]]]
               [return [new array 'if [node get 1]]]]]]
         node]]]]

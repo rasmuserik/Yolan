@@ -1,6 +1,7 @@
 [def fs [module require 'fs]]
 
 [def syntax [module require './syntax]]
+
 [def macros [module require './macros]]
 
 [def jsBackend [module require './jsBackend]]
@@ -38,7 +39,9 @@
         [def ast [macros transform [syntax parse [syntax tokenize data]]]]
         [def js [jsBackend toJS ast]]
         [def sourceCode
-          [[[[[macros reverse ast] slice 1] map [syntax get 'prettyprint]] join '\n\n] + '\n]]
+          [[[[[macros reverse ast] slice 1] map [syntax get 'prettyprint]]
+              join '\n\n]
+            + '\n]]
         [fs writeFile [dest + '.yl] sourceCode]
         [# reformat js]
         [def uglify [require call null 'uglify-js]]

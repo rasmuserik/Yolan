@@ -50,7 +50,9 @@
       [if-else err [return err]]
       [def ast [macros transform [syntax parse [syntax tokenize data]]]]
       [def src
-        [[[[[macros reverse ast] slice 1] map [syntax get 'prettyprint]] join '\n\n] +]
+        [[[[[macros reverse ast] slice 1] map [syntax get 'prettyprint]]
+            join '\n\n]
+          +]
         '\n]
       [fs writeFile
         [[process get 'argv] get 4]
