@@ -43,7 +43,7 @@
   [new object
     ['transform
       [fn [node] [# console log 'transform-if node] 
-          [new array 'if-else [exports transform [node get 1]] ['[do] concat [node slice 2]]]]]
+          [new array 'if-else [exports transform [node get 1]] ['[do] concat [exports transformList [node slice 2]]]]]]
     ['reverse
       [fn [node]
         [# console log [[node get 0] == 'if-else] [node get 'length]]
