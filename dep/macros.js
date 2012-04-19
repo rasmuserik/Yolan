@@ -50,7 +50,7 @@ macros["quote"] = {
 
 macros["if"] = {
     transform: function(node) {
-        return [ "if-else", exports.transform(node[1]), [ "do" ].concat(node.slice(2)) ];
+        return [ "if-else", exports.transform(node[1]), [ "do" ].concat(exports.transformList(node.slice(2))) ];
     },
     reverse: function(node) {
         if (node[0] === "if-else" && node["length"] === 3) {

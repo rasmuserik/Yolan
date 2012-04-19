@@ -4,12 +4,12 @@
 
 [exports set 'transform
   [fn [node]
-    [if-else [[node jsType] == 'string] [return node]]
+    [if [[node jsType] == 'string] [return node]]
     [set node
       [onEach reduce
         [fn [acc obj] [[obj get 'transform] call null acc]]
         node]]
-    [# console log 'transform [node get 0]] 
+    [# console log 'transform [node get 0]]
     [if-else [macros get [node get 0]]
       [set node [[[macros get [node get 0]] get 'transform] call null node]]
       [set node [node map [exports get 'transform]]]]
@@ -20,7 +20,7 @@
 [exports set 'reverse
   [fn [node]
     [# console log 'reverse]
-    [if-else [[node jsType] == 'string] [return node]]
+    [if [[node jsType] == 'string] [return node]]
     [set node
       [[onEach reverse] reduce
         [fn [acc obj] [[obj get 'reverse] call null acc]]
@@ -35,22 +35,23 @@
 [exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]
 
 [macros set 'quote
-  [new object
-    ['transform [fn [node] node]]
-    ['reverse [fn [node] node]]]]
+  [new object ['transform [fn [node] node]] ['reverse [fn [node] node]]]]
 
 [macros set 'if
   [new object
     ['transform
-      [fn [node] [# console log 'transform-if node] 
-          [new array 'if-else [exports transform [node get 1]] ['[do] concat [exports transformList [node slice 2]]]]]]
+      [fn [node]
+        [# console log 'transform-if node]
+        [new array 'if-else
+          [exports transform [node get 1]]
+          ['[do] concat [exports transformList [node slice 2]]]]]]
     ['reverse
       [fn [node]
         [# console log [[node get 0] == 'if-else] [node get 'length]]
-        [if-else [[[node get 0] == 'if-else] and [[node get 'length] == 3]]
-          [do
-            [# console log [[node get 2] get 0]]
-            [if-else [[[node get 2] get 0] == 'do]
-              [return [[new array 'if [node get 1]] concat [[node get 2] slice 1]]]
-              [return [new array 'if [node get 1] [node get 2]]]]]]
+        [if [[[node get 0] == 'if-else] and [[node get 'length] == 3]]
+          [# console log [[node get 2] get 0]]
+          [if-else [[[node get 2] get 0] == 'do]
+            [return
+              [[new array 'if [node get 1]] concat [[node get 2] slice 1]]]
+            [return [new array 'if [node get 1] [node get 2]]]]]
         node]]]]
