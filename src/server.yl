@@ -8,7 +8,7 @@
 
 [def xml [module require './xml]]
 
-[def scriptList '[yolain webmain]]
+[def scriptList '[yolan webmain]]
 
 [def head
   ['<!DOCTYPE\ html><html> + [xml fromYolain '[head [title Hello world]]]]]

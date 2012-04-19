@@ -8,7 +8,7 @@ var jsBackend = module.require("./jsBackend");
 
 var xml = module.require("./xml");
 
-var scriptList = [ "yolain", "webmain" ];
+var scriptList = [ "yolan", "webmain" ];
 
 var head = "<!DOCTYPE html><html>" + xml.fromYolain([ "head", [ "title", "Hello", "world" ] ]);
 

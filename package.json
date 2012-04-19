@@ -1,0 +1,11 @@
+{
+  "name": "Yolan",
+  "version": "0.0.1",
+  "author": "Rasmus Erik Voel Jensen",
+  "homepage": "http://solsort.com",
+  "description": "Yocto Language",
+  "dependencies": {
+    "uglify-js": "*"
+  },
+  "engines": {"node": "*"}
+}

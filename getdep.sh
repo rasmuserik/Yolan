@@ -7,4 +7,5 @@ wget ftp://ftp.mozilla.org/pub/mozilla.org/js/rhino1_7R3.zip;
 yes | unzip rhino1_7R3.zip
 yes | unzip rhino1_7R3/js.jar -d $CLASSPATH
 rm -rf rhino1_7R3*
-
+install -d build
+cp dep/*.js build

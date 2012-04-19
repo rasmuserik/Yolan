@@ -2,3 +2,4 @@ build
 *.class
 dep/java
 test-tmp
+node_modules/

@@ -1,10 +1,10 @@
 # test compiler
 rm -rf test-tmp && install -d test-tmp
-node dep/yolain.js compile || exit 1
+node dep/yolan.js compile || exit 1
 touch src/*
-node build/yolain.js compile || exit 1
+node build/yolan.js compile || exit 1
 mv build/*.js test-tmp
-node dep/yolain.js compile || exit 1
+node dep/yolan.js compile || exit 1
 cd build
 for x in *.js
 do
