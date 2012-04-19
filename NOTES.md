@@ -4,16 +4,16 @@
 
 - general
     - main.yl
-        - build system in yolan
-        - single runner, for both web and local
         - js-compat-lib across platforms
-    - move to separate repository
 - app
     - webapp, replace solsort.com
     - benchmarks from the shootout
 - language
     - macros
+    - simplify core language. Docs should be [annotation [doc blah blah] code], hashmaps should be `[# ['key value] ['key value]]`, arrays should be `[@ val1 val2 ...]`, quotes should be transformed via macro system instead of parser (but be a singular token in beginning of string (parse+prettyprint))
     - type/class system 
+    - add throw
+    - describe core language
 - java backend
     - get bootstrapped via rhino (remove dependency when done)
     - code-gen via ow2-asm
