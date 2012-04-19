@@ -44,6 +44,7 @@
               join '\n\n]
             + '\n]]
         [fs writeFile [dest + '.yl] sourceCode]
+        [fs writeFile [dest + '.js.raw] sourceCode]
         [# reformat js]
         [def uglify [require call null 'uglify-js]]
         [def jsp [uglify get 'parser]]
