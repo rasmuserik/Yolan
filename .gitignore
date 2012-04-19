@@ -1,2 +1,4 @@
-*.sw?
-node_modules/
+build
+*.class
+dep/java
+test-tmp

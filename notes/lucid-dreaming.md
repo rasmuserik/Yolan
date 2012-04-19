@@ -1,8 +1,0 @@
-- dream-log
-- meditation
-    - wake-induced-lucid-dreaming
-- nap
-    - 1.5 hour before end-of-sleep wakeup
-- reality checks
-    - re-read
-    - fingers through hand
