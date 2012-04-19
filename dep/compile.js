@@ -2,6 +2,8 @@ var fs = module.require("fs");
 
 var syntax = module.require("./syntax");
 
+var macros = module.require("./macros");
+
 var jsBackend = module.require("./jsBackend");
 
 var ilBackend = module.require("./ilBackend");
@@ -25,7 +27,7 @@ exports["run"] = function() {
     return exports["sourceFiles"].forEach(function(f) {
         var src = "src/" + f;
         var dest = "build/" + f.slice(0, -3);
-        if (mtime.call(null, dest) < mtime.call(null, src)) {
+        if (mtime.call(null, dest + ".js") < mtime.call(null, src)) {
             compile.call(null, src, dest);
         } else {}
         return undefined;
@@ -37,9 +39,9 @@ var compile = function(src, dest) {
         if (err) {
             return err;
         } else {}
-        var ast = syntax.parse(syntax.tokenize(data));
+        var ast = macros.transform(syntax.parse(syntax.tokenize(data)));
         var js = jsBackend.toJS(ast);
-        var sourceCode = ast.slice(1).map(syntax["prettyprint"]).join("\n\n") + "\n";
+        var sourceCode = macros.reverse(ast).slice(1).map(syntax["prettyprint"]).join("\n\n") + "\n";
         fs.writeFile(dest + ".yl", sourceCode);
         var uglify = require.call(null, "uglify-js");
         var jsp = uglify["parser"];
