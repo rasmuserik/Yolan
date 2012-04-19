@@ -4,7 +4,7 @@
 
 [exports set 'transform
   [fn [node]
-    [console log 'transform]
+    [# console log 'transform]
     [if-else [[node jsType] == 'string] [return node]]
     [set node
       [onEach reduce
@@ -19,7 +19,7 @@
 
 [exports set 'reverse
   [fn [node]
-    [console log 'reverse]
+    [# console log 'reverse]
     [if-else [[node jsType] == 'string] [return node]]
     [set node
       [[onEach reverse] reduce
@@ -27,12 +27,17 @@
         node]]
     [set node [exports reverseList node]]
     [set node
-      [[onEach reverse] reduce
-        [fn [acc obj] [[obj get 'reverse] call null acc]]
+      [[[Object keys macros] reverse] reduce
+        [fn [acc obj] [[[macros get obj] get 'reverse] call null acc]]
         node]]
     node]]
 
 [exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]
+
+[macros set 'quote
+  [new object
+    ['transform [fn [node] node]]
+    ['reverse [fn [node] node]]]]
 
 [macros set 'if
   [new object
@@ -40,9 +45,10 @@
       [fn [node] [new array 'if-else ['[do] concat [exports transformList [node slice 1]]]]]]
     ['reverse
       [fn [node]
+        [console log [[node get 0] == 'if-else] [node get 'length]]
         [if-else [[[node get 0] == 'if-else] and [[node get 'length] == 3]]
           [do
             [if-else [[[node get 1] get 0] == 'do]
-              [return ['[if] concat [[[node get 1] get 0] slice 1]]]
-              [return [new array 'if [node get 1]]]]]]
+              [return [[new array 'if [node get 1]] concat [[[node get 2] get 0] slice 1]]]
+              [return [new array 'if [node get 1] [node get 2]]]]]]
         node]]]]
