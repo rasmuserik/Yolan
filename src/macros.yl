@@ -4,30 +4,40 @@
 
 [exports set 'transform
   [fn [node]
+    [console log 'transform]
+    [if-else [[node jsType] == 'string] [return node]]
     [set node
       [onEach reduce
         [fn [acc obj] [[obj get 'transform] call null acc]]
         node]]
     [if-else [macros get [node get 0]]
-      [set node [[[macros get [node get 0]] get 'transform] call null node]]]
+      [set node [[[macros get [node get 0]] get 'transform] call null node]]
+      [set node [node map [exports get 'transform]]]]
     node]]
+
+[exports set 'transformList [fn [list] [list map [exports get 'transform]]]]
 
 [exports set 'reverse
   [fn [node]
+    [console log 'reverse]
+    [if-else [[node jsType] == 'string] [return node]]
     [set node
       [[onEach reverse] reduce
         [fn [acc obj] [[obj get 'reverse] call null acc]]
         node]]
+    [set node [exports reverseList node]]
     [set node
-      [[onEach get [[Object keys onEach] reverse]] reduce
+      [[onEach reverse] reduce
         [fn [acc obj] [[obj get 'reverse] call null acc]]
         node]]
     node]]
 
+[exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]
+
 [macros set 'if
   [new object
     ['transform
-      [fn [node] [new array 'if-else ['[do] concat [node slice 1]]]]]
+      [fn [node] [new array 'if-else ['[do] concat [exports transformList [node slice 1]]]]]]
     ['reverse
       [fn [node]
         [if-else [[[node get 0] == 'if-else] and [[node get 'length] == 2]]
