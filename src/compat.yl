@@ -2,14 +2,13 @@
 
 [if [[console jsType] fails] [set console [new object]]]
 
-[if [[console get [quote log]] fails]
-  [console set [quote log] [fn [] true]]]
+[if [[console get \' log] fails] [console set \' log [fn [] true]]]
 
-[if [[console get [quote error]] fails]
-  [console set [quote error] [console get [quote log]]]]
+[if [[console get \' error] fails]
+  [console set \' error [console get \' log]]]
 
-[if [[console get [quote info]] fails]
-  [console set [quote info] [console get [quote log]]]]
+[if [[console get \' info] fails]
+  [console set \' info [console get \' log]]]
 
-[if [[console get [quote warn]] fails]
-  [console set [quote warn] [console get [quote log]]]]
+[if [[console get \' warn] fails]
+  [console set \' warn [console get \' log]]]

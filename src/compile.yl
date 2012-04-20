@@ -1,45 +1,44 @@
-[def fs [module require [quote fs]]]
+[def fs [module require \' fs]]
 
-[def syntax [module require [quote ./syntax]]]
+[def syntax [module require \' ./syntax]]
 
-[def macros [module require [quote ./macros]]]
+[def macros [module require \' ./macros]]
 
-[def jsBackend [module require [quote ./jsBackend]]]
+[def jsBackend [module require \' ./jsBackend]]
 
-[def ilBackend [module require [quote ./ilBackend]]]
+[def ilBackend [module require \' ./ilBackend]]
 
-[def action [[process get [quote argv]] get 2]]
+[def action [[process get \' argv] get 2]]
 
-[exports set [quote sourceFiles]
-  [[fs readdirSync [quote src]] filter
-    [fn [name] [[name slice -3] == [quote .yl]]]]]
+[exports set \' sourceFiles
+  [[fs readdirSync \' src] filter [fn [name] [[name slice -3] == \' .yl]]]]
 
 [def mtime
   [fn [fname]
     [try-catch e
-      [return [[[fs statSync fname] get [quote mtime]] getTime]]
+      [return [[[fs statSync fname] get \' mtime] getTime]]
       [return 0]]
     0]]
 
-[exports set [quote run]
+[exports set \' run
   [fn []
-    [[exports get [quote sourceFiles]] forEach
+    [[exports get \' sourceFiles] forEach
       [fn [f]
-        [def src [[quote src/] + f]]
-        [def dest [[quote build/] + [f slice 0 -3]]]
-        [if [[mtime call null [dest + [quote .js]]] < [mtime call null src]]
+        [def src [\' src/ + f]]
+        [def dest [\' build/ + [f slice 0 -3]]]
+        [if [[mtime call null [dest + \' .js]] < [mtime call null src]]
           [compile call null src dest]]
         undefined]]]]
 
-[exports set [quote yl2js]
+[exports set \' yl2js
   [fn [src]
     [jsBackend toJS [macros transform [syntax parse [syntax tokenize src]]]]]]
 
 [def compile
   [fn [src dest]
-    [fs readFile src [quote utf8]
+    [fs readFile src \' utf8
       [fn [err data]
-        [console log src [quote ->] dest]
+        [console log src \' -> dest]
         [if err [return err]]
         [# compile exports to js]
         [def ast [macros transform [syntax parse [syntax tokenize data]]]]
@@ -47,20 +46,20 @@
         [def js [jsBackend toJS ast]]
         [def sourceCode
           [[[[[macros reverse ast] slice 1] map
-                [syntax get [quote prettyprint]]]
-              join [quote \n\n]]
-            + [quote \n]]]
-        [fs writeFile [dest + [quote .yl]] sourceCode]
-        [fs writeFile [dest + [quote .js.raw]] sourceCode]
+                [syntax get \' prettyprint]]
+              join \' \n\n]
+            + \' \n]]
+        [fs writeFile [dest + \' .yl] sourceCode]
+        [fs writeFile [dest + \' .js.raw] sourceCode]
         [# reformat js]
-        [def uglify [require call null [quote uglify-js]]]
-        [def jsp [uglify get [quote parser]]]
-        [def pro [uglify get [quote uglify]]]
+        [def uglify [require call null \' uglify-js]]
+        [def jsp [uglify get \' parser]]
+        [def pro [uglify get \' uglify]]
         [try-catch e
           [def ast [jsp parse js]]
           [do [console log dest] [console log e]]]
-        [set js [pro gen_code ast [new object [[quote beautify] true]]]]
+        [set js [pro gen_code ast [new object [\' beautify true]]]]
         [fs writeFile
-          [dest + [quote .js]]
+          [dest + \' .js]
           js
           [fn [err data] [if err [return err]] true]]]]]]

@@ -1,4 +1,2 @@
-[exports set [quote run]
-  [fn [args]
-    [console log [quote hello] [quote world]]
-    [console log [quote args:] args]]]
+[exports set \' run
+  [fn [args] [console log \' hello \' world] [console log \' args: args]]]
