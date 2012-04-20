@@ -38,11 +38,32 @@
 [exports set [quote reverseList]
   [fn [list] [list map [exports get [quote reverse]]]]]
 
+[Section: Quoting
+[onEach push [new object
+[[quote transform] [fn [node]
+    [# return node]
+    [if [[node jsType] == [quote string]] [return node]]
+    [# console log [quote node] node]
+    [def result [new array]]
+    [def i 0]
+    [while [i < [node get [quote length]]]
+        [if-else [[[node get i] == [quote ']] and [[i + 1] < [node get [quote length]]]] [do
+              [set i [i + 1]]
+              [result push [new array [quote quote] [node get i]]]]
+            [result push [node get i]]]
+        [set i [i + 1]]]
+    [# console log [quote result] result]
+    result]]
+[[quote reverse] [fn [node] node]]
+]]
+
 [macros set [quote quote]
   [new object
     [[quote transform] [fn [node] node]]
     [[quote reverse] [fn [node] node]]]]
+    ]
 
+[Section: Conditionals
 [macros set [quote if]
   [new object
     [[quote transform]
@@ -65,6 +86,7 @@
                 [[node get 2] slice 1]]]
             [return [new array [quote if] [node get 1] [node get 2]]]]]
         node]]]]
+        ]
 
 [Section: comments
   [macros set [quote #]
@@ -105,3 +127,4 @@
               [[[node get 2] get 0] == [quote do]]]
             [return [[node get 1] concat [[node get 2] slice 1]]]]
           node]]]]]
+[console log [quote foo] 'bar]

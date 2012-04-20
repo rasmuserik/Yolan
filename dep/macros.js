@@ -39,6 +39,29 @@ exports["reverseList"] = function(list) {
     return list.map(exports["reverse"]);
 };
 
+onEach.push({
+    transform: function(node) {
+        if (typeof node === "string") {
+            return node;
+        } else {}
+        var result = [];
+        var i = 0;
+        while (i < node["length"]) {
+            if (node[i] === "'" && i + 1 < node["length"]) {
+                i = i + 1;
+                result.push([ "quote", node[i] ]);
+            } else {
+                result.push(node[i]);
+            }
+            i = i + 1;
+        }
+        return result;
+    },
+    reverse: function(node) {
+        return node;
+    }
+});
+
 macros["quote"] = {
     transform: function(node) {
         return node;
@@ -99,3 +122,5 @@ macros["Section:"] = {
         return node;
     }
 };
+
+console.log("foo", "bar");
