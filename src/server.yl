@@ -1,55 +1,52 @@
-[def http [module require \' http]]
+[def http [module require ' http]]
 
-[def fs [module require \' fs]]
+[def fs [module require ' fs]]
 
-[def xml [module require \' ./xml]]
+[def xml [module require ' ./xml]]
 
-[# def scriptList \' [yolan webmain]]
+[# def scriptList ' [yolan webmain]]
 
 [def scriptList
-  [\' [yolan]
+  [' [yolan]
     concat
-    [[[fs readdirSync \' src] filter
-        [fn [name] [[name slice -3] == \' .yl]]]
+    [[[fs readdirSync ' src] filter [fn [name] [[name slice -3] == ' .yl]]]
       map
       [fn [name] [name slice 0 -3]]]]]
 
 [def head
-  [\' <!DOCTYPE\ html><html> +
-    [xml fromYl [module require \' ./htmlheader]]]]
+  [' <!DOCTYPE\ html><html> + [xml fromYl [module require ' ./htmlheader]]]]
 
 [def body
-  [\' <body><script>function\ define(_,_,f){f()};</script> +
+  [' <body><script>function\ define(_,_,f){f()};</script> +
     [[scriptList map
-        [fn [name] [\' <script\ src=" + name \' .js"></script>]]]
+        [fn [name] [' <script\ src=" + name ' .js"></script>]]]
       join ""]
-    \'
+    '
     <script>console.log("A",require("./yolan"));require("./yolan").run(location.hash.slice(1).split("\ "));</script></body></html>]]
 
-[exports set \' run
+[exports set ' run
   [fn []
     [[http createServer
         [fn [request result]
-          [def url [request get \' url]]
-          [console log [request get \' url]]
-          [if [[[url slice -3] == \' .js] fails]
-            [result writeHead 200
-              [new object [\' Content-Type \' text/html]]]
+          [def url [request get ' url]]
+          [console log [request get ' url]]
+          [if [[[url slice -3] == ' .js] fails]
+            [result writeHead 200 [new object [' Content-Type ' text/html]]]
             [result end [head + body]]]
-          [if [[url slice -3] == \' .js]
+          [if [[url slice -3] == ' .js]
             [result writeHead 200
-              [new object [\' Content-Type \' text/javascript]]]
-            [def name [\' . + [url slice 0 -3]]]
+              [new object [' Content-Type ' text/javascript]]]
+            [def name [' . + [url slice 0 -3]]]
             [fs readFile
-              [\' ./src/ + name \' .yl]
-              \' utf8
+              [' ./src/ + name ' .yl]
+              ' utf8
               [fn [err data]
                 [if err [result end ""]]
                 [result end
-                  [\' define(" + name \'
+                  [' define(" + name '
                     ",\["require","exports","module"\],function(require,exports,module){
-                    [[module require \' ./compile] yl2js data]
-                    \' });]]]]]
+                    [[module require ' ./compile] yl2js data]
+                    ' });]]]]]
           true]]
       listen 1234]
-    [console log \' [starting server on localhost port 1234]]]]
+    [console log ' [starting server on localhost port 1234]]]]
