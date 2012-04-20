@@ -42,5 +42,5 @@
                       [[module require './compile] yl2js data]
                       '});]]]]]]
           true]]
-      listen 1234 '127.0.0.1]
+      listen 1234 ]
     [console log '[starting server on localhost port 1234]]]]
