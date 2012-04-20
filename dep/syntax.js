@@ -107,6 +107,10 @@ exports["parse"] = function(tokens) {
     return current;
 };
 
+var screenWidth = 78;
+
+var indentStep = 2;
+
 exports["nspace"] = function(n) {
     var result = [];
     while (0 < n) {
@@ -117,10 +121,6 @@ exports["nspace"] = function(n) {
 };
 
 var indent = 0;
-
-var screenWidth = 78;
-
-var indentStep = 2;
 
 var escapeRegEx = RegExp.call(RegExp, "[' \\[\\]]", "g");
 
@@ -141,9 +141,16 @@ exports["prettyprint"] = function(ast) {
     indent = indent + indentStep;
     var pos = indent;
     strs = ast.map(exports["prettyprint"]);
+    var i = 0;
+    while (i < strs["length"] - 1) {
+        if (!(strs[i] === "'")) {
+            strs[i] = strs[i] + " ";
+        } else {}
+        i = i + 1;
+    }
     if (pos + strs.join()["length"] + 1 < screenWidth) {
         indent = indent - indentStep;
-        return "[" + strs.join(" ") + "]";
+        return "[" + strs.join("") + "]";
     } else {}
     var space = "\n" + exports.nspace(indent);
     var result = [];

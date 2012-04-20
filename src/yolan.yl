@@ -4,59 +4,60 @@
 
 [# Node]
 
-[if [[[process jsType] == ' undefined] fails] [set engine ' node]]
+[if [[[process jsType] == 'undefined] fails] [set engine 'node]]
 
 [# Rhino]
 
-[if [[[java jsType] == ' undefined] fails] [set engine ' rhino]]
+[if [[[java jsType] == 'undefined] fails] [set engine 'rhino]]
 
 [# Browser]
 
 [def loadedModules [new object]]
 
-[if [[[navigator jsType] == ' undefined] fails]
-  [set engine ' web]
-  [if [[window get ' require] fails]
-    [def modules [new object]]
-    [def require
-      [fn [name]
-        [if [[loadedModules get name] fails]
-          [console log ' initialising name]
-          [def module [new object]]
-          [def exports [new object]]
-          [module set ' exports exports]
-          [module set ' require require]
-          [[modules get name] call null require exports module]
-          [loadedModules set name [module get ' exports]]]
-        [loadedModules get name]]]
-    [window set ' define [fn [name dep f] [modules set name f] undefined]]
-    [console log ' def ' require]
-    [window set ' require require]]]
+[if  [[[navigator jsType] == 'undefined] fails] 
+  [set engine 'web] 
+  [if  [[window get 'require] fails] 
+    [def modules [new object]] 
+    [def  require 
+      [fn  [name] 
+        [if  [[loadedModules get name] fails] 
+          [console log 'initialising name] 
+          [def module [new object]] 
+          [def exports [new object]] 
+          [module set 'exports exports] 
+          [module set 'require require] 
+          [[modules get name] call null require exports module] 
+          [loadedModules set name [module get 'exports]]] 
+        [loadedModules get name]]] 
+    [window  set  ' define 
+      [fn [name dep f] [modules set name f] undefined]] 
+    [console log 'def 'require] 
+    [window set 'require require]]]
 
 [# yolan defs]
 
-[yolan set ' engine engine]
+[yolan set 'engine engine]
 
 [# Shims]
 
-[if [[console jsType] == ' undefined]
-  [set console [new object]]
-  [console set ' log [fn [] undefined]]
-  [if [[[print jsType] == ' undefined] fails] [console set ' log print]]]
+[if  [[console jsType] == 'undefined] 
+  [set console [new object]] 
+  [console set 'log [fn [] undefined]] 
+  [if [[[print jsType] == 'undefined] fails] [console set 'log print]]]
 
-[if [[yolan get ' engine] fails] [console log ' Error\ detecting\ engine:]]
+[if [[yolan get 'engine] fails] [console log 'Error\ detecting\ engine:]]
 
 [# Start execution]
 
-[def run
-  [fn [args]
-    [console log ' run]
-    [def moduleName [[args get 0] or [engine + ' main]]]
-    [[[module require [' ./ + moduleName]] get ' run] apply null
+[def  run 
+  [fn  [args] 
+    [console log 'run] 
+    [def moduleName [[args get 0] or [engine + 'main]]] 
+    [[[module require ['./ + moduleName]] get 'run]  apply  null 
       [args slice 1]]]]
 
-[yolan set ' run run]
+[yolan set 'run run]
 
-[if [[[module jsType] == ' undefined] fails] [module set ' exports yolan]]
+[if [[[module jsType] == 'undefined] fails] [module set 'exports yolan]]
 
-[if [engine == ' node] [yolan run [[process get ' argv] slice 2]]]
+[if [engine == 'node] [yolan run [[process get 'argv] slice 2]]]
