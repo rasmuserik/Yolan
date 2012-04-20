@@ -1,4 +1,4 @@
-exports["fromYolain"] = function(xml) {
+exports["fromYl"] = function(xml) {
     if (typeof xml === "string") {
         return xml;
     } else {}
@@ -10,7 +10,7 @@ exports["fromYolain"] = function(xml) {
         attr = attrData;
         xml.shift();
     } else {}
-    var content = xml.map(exports["fromYolain"]).join(" ");
+    var content = xml.map(exports["fromYl"]).join(" ");
     var attrStr = attr.map(function(attr) {
         return " " + attr[0] + '="' + attr.slice(1).join(" ") + '"';
     }).join("");

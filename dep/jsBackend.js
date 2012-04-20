@@ -34,6 +34,9 @@ var compileJS = {
     "#": function() {
         return "";
     },
+    "@annotation": function(syn) {
+        return exports.toJS(syn[2]);
+    },
     "return": function(syn, syn1) {
         return "return " + exports.toJS(syn1);
     },

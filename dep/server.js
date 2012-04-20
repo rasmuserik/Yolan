@@ -2,19 +2,19 @@ var http = module.require("http");
 
 var fs = module.require("fs");
 
-var syntax = module.require("./syntax");
-
-var jsBackend = module.require("./jsBackend");
-
 var xml = module.require("./xml");
 
-var scriptList = [ "yolan", "webmain" ];
+var scriptList = [ "yolan" ].concat(fs.readdirSync("src").filter(function(name) {
+    return name.slice(-3) === ".yl";
+}).map(function(name) {
+    return name.slice(0, -3);
+}));
 
-var head = "<!DOCTYPE html><html>" + xml.fromYolain([ "head", [ "title", "Hello", "world" ] ]);
+var head = "<!DOCTYPE html><html>" + xml.fromYl(module.require("./htmlheader"));
 
 var body = "<body><script>function define(_,_,f){f()};</script>" + scriptList.map(function(name) {
     return '<script src="' + name + '.js"></script>';
-}).join("") + '<script>require("./webmain").run();</script>' + "</body></html>";
+}).join("") + '<script>console.log("A",require("./yolan"));require("./yolan").run(location.hash.slice(1).split(" "));</script></body></html>';
 
 exports["run"] = function() {
     http.createServer(function(request, result) {
@@ -35,10 +35,10 @@ exports["run"] = function() {
                 if (err) {
                     result.end("");
                 } else {}
-                return result.end('define("' + name + '",["require","exports","module"],function(require,exports,module){' + jsBackend.toJS(syntax.parse(syntax.tokenize(data))) + "});");
+                return result.end('define("' + name + '",["require","exports","module"],function(require,exports,module){' + module.require("./compile").yl2js(data) + "});");
             });
         } else {}
         return true;
-    }).listen(1234, "127.0.0.1");
+    }).listen(1234);
     return console.log([ "starting", "server", "on", "localhost", "port", "1234" ]);
 };

@@ -10,20 +10,31 @@ if (!(typeof java === "undefined")) {
     engine = "rhino";
 } else {}
 
+var loadedModules = {};
+
 if (!(typeof navigator === "undefined")) {
-    engine = "browser";
-    var modules = {};
-    var require = function(name) {
-        return modules[name];
-    };
-    window["define"] = function(name, dep, f) {
-        var module = {};
-        var exports = {};
-        module["exports"] = exports;
-        f.call(null, require, exports, module);
-        return modules[name] = module["exports"];
-    };
-    window["require"] = require;
+    engine = "web";
+    if (!window["require"]) {
+        var modules = {};
+        var require = function(name) {
+            if (!loadedModules[name]) {
+                console.log("initialising", name);
+                var module = {};
+                var exports = {};
+                module["exports"] = exports;
+                module["require"] = require;
+                modules[name].call(null, require, exports, module);
+                loadedModules[name] = module["exports"];
+            } else {}
+            return loadedModules[name];
+        };
+        window["define"] = function(name, dep, f) {
+            modules[name] = f;
+            return undefined;
+        };
+        console.log("def", "require");
+        window["require"] = require;
+    } else {}
 } else {}
 
 yolan["engine"] = engine;
@@ -43,7 +54,8 @@ if (!yolan["engine"]) {
 } else {}
 
 var run = function(args) {
-    var moduleName = args[0] || engine + "-run";
+    console.log("run");
+    var moduleName = args[0] || engine + "main";
     return module.require("./" + moduleName)["run"].apply(null, args.slice(1));
 };
 

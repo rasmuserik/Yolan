@@ -41,7 +41,6 @@
   [new object
     ['transform
       [fn [node]
-        [# console log 'transform-if node]
         [new array 'if-else
           [exports transform [node get 1]]
           ['[do] concat [exports transformList [node slice 2]]]]]]
@@ -55,3 +54,10 @@
               [[new array 'if [node get 1]] concat [[node get 2] slice 1]]]
             [return [new array 'if [node get 1] [node get 2]]]]]
         node]]]]
+[macros set '#
+  [new object
+    ['transform
+      [fn [node] [new array '@annotation ['[#] concat [node slice 1]]]]]
+    ['reverse
+      [fn [node] [if [[[node get 0] == '@annotation] and [[node get 'length] == 2] [[[node get 1] get 0] == '#]]
+        [return [node get 1]]] node]]]]

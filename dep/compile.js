@@ -34,8 +34,13 @@ exports["run"] = function() {
     });
 };
 
+exports["yl2js"] = function(src) {
+    return jsBackend.toJS(macros.transform(syntax.parse(syntax.tokenize(src))));
+};
+
 var compile = function(src, dest) {
     return fs.readFile(src, "utf8", function(err, data) {
+        console.log(src, "->", dest);
         if (err) {
             return err;
         } else {}
@@ -59,9 +64,7 @@ var compile = function(src, dest) {
         return fs.writeFile(dest + ".js", js, function(err, data) {
             if (err) {
                 return err;
-            } else {
-                console.log(src, "->", dest);
-            }
+            } else {}
             return true;
         });
     });

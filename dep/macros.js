@@ -63,3 +63,14 @@ macros["if"] = {
         return node;
     }
 };
+
+macros["#"] = {
+    transform: function(node) {
+        return [ "@annotation", [ "#" ].concat(node.slice(1)) ];
+    },
+    reverse: function(node) {
+        return node;
+    }
+};
+
+console.log("HERE", "annotation");
