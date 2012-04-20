@@ -58,7 +58,21 @@ onEach.push({
         return result;
     },
     reverse: function(node) {
-        return node;
+        if (typeof node === "string") {
+            return node;
+        } else {}
+        var result = [];
+        var i = 0;
+        while (i < node["length"]) {
+            if (node[i][0] === "quote" && node[i]["length"] === 2) {
+                result.push("'");
+                result.push(node[i][1]);
+            } else {
+                result.push(node[i]);
+            }
+            i = i + 1;
+        }
+        return result;
     }
 });
 
