@@ -12,7 +12,7 @@
       [fn [name] [name slice 0 -3]]]]]
 
 [def head
-  ['<!DOCTYPE\ html><html> + [xml fromYl '[head [title Hello world]]]]]
+  ['<!DOCTYPE\ html><html> + [xml fromYl [module require './htmlheader]]]] 
 
 [def body
   ['<body><script>function\ define(_,_,f){f()};</script> +

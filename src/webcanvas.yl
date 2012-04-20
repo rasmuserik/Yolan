@@ -2,11 +2,11 @@
 
 [exports set 'init
   [fn [obj]
-    [def update [[obj get 'update] or [fn [ctx h w canvas]]]]
-    [def mousedown [[obj get 'mousedown] or [fn [x y]]]]
-    [def mousemove [[obj get 'mousemove] or [fn [x0 y0 x1 y1]]]]
-    [def mouseup [[obj get 'mouseup] or [fn [x y]]]]
-    [def keydown [[obj get 'keydown] or [fn [k]]]]
+    [def update [[obj get 'update] or [fn [ctx h w canvas] undefined]]]
+    [def mousedown [[obj get 'mousedown] or [fn [x y] undefined]]]
+    [def mousemove [[obj get 'mousemove] or [fn [x0 y0 x1 y1] undefined]]]
+    [def mouseup [[obj get 'mouseup] or [fn [x y] undefined]]]
+    [def keydown [[obj get 'keydown] or [fn [k]undefined]]]
     [def width [window get 'innerWidth]]
     [def height [window get 'innerHeight]]
     [def body [document get 'body]]
