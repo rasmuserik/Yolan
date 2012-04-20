@@ -1,8 +1,8 @@
 [# yolan-xml data structure to an xml-string]
 
-[exports set 'fromYl
+[exports set [quote fromYl]
   [fn [xml]
-    [if [[xml jsType] == 'string] [return xml]]
+    [if [[xml jsType] == [quote string]] [return xml]]
     [set xml [xml slice 0]]
     [def tagname [xml shift]]
     [def attr [new array]]
@@ -10,10 +10,18 @@
     [if [attrData and [Array isArray [attrData get 0]]]
       [set attr attrData]
       [xml shift]]
-    [def content [[xml map [exports get 'fromYl]] join '\ ]]
+    [def content [[xml map [exports get [quote fromYl]]] join [quote \ ]]]
     [def attrStr
       [[attr map
-          [fn [attr] ['\  + [attr get 0] '=" [[attr slice 1] join '\ ] '"]]]
+          [fn [attr]
+            [[quote \ ] +
+              [attr get 0]
+              [quote ="]
+              [[attr slice 1] join [quote \ ]]
+              [quote "]]]]
         join ""]]
-    [if content [return ['< + tagname attrStr '> content '</ tagname '>]]]
-    ['< + tagname attrStr '/>]]]
+    [if content
+      [return
+        [[quote <] + tagname attrStr [quote >] content [quote </] tagname
+          [quote >]]]]
+    [[quote <] + tagname attrStr [quote />]]]]

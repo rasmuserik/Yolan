@@ -1,6 +1,7 @@
-[[document get 'body] set 'innerHTML
-  ['[<h1>yay I am here again!!!</h1>] join '\ ]]
+[[document get [quote body]] set [quote innerHTML]
+  [[quote [<h1>yay I am here again!!!</h1>]] join [quote \ ]]]
 
-[exports set 'run
+[exports set [quote run]
   [fn []
-    [[document get 'body] set 'innerHTML ['[<h1>RUNNING!</h1>] join '\ ]]]]
+    [[document get [quote body]] set [quote innerHTML]
+      [[quote [<h1>RUNNING!</h1>]] join [quote \ ]]]]]

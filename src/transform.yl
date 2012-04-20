@@ -1,6 +1,6 @@
-[exports set 'transform
+[exports set [quote transform]
   [fn [x]
-    [if [[x jsType] == 'string] [return x]]
-    [set x [x map [exports get 'transform]]]
-    [if [[x get 0] == 'if] [x set 0 'if-else]]
+    [if [[x jsType] == [quote string]] [return x]]
+    [set x [x map [exports get [quote transform]]]]
+    [if [[x get 0] == [quote if]] [x set 0 [quote if-else]]]
     x]]

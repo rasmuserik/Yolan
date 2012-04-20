@@ -2,93 +2,106 @@
 
 [def onEach [new array]]
 
-[exports set 'transform
+[exports set [quote transform]
   [fn [node]
-    [if [[node jsType] == 'string] [return node]]
+    [if [[node jsType] == [quote string]] [return node]]
     [set node
       [onEach reduce
-        [fn [acc obj] [[obj get 'transform] call null acc]]
+        [fn [acc obj] [[obj get [quote transform]] call null acc]]
         node]]
-    [# console log 'transform [node get 0]]
+    [# console log [quote transform] [node get 0]]
     [if-else [macros get [node get 0]]
-      [set node [[[macros get [node get 0]] get 'transform] call null node]]
-      [set node [node map [exports get 'transform]]]]
+      [set node
+        [[[macros get [node get 0]] get [quote transform]] call null node]]
+      [set node [node map [exports get [quote transform]]]]]
     node]]
 
-[exports set 'transformList [fn [list] [list map [exports get 'transform]]]]
+[exports set [quote transformList]
+  [fn [list] [list map [exports get [quote transform]]]]]
 
-[exports set 'reverse
+[exports set [quote reverse]
   [fn [node]
-    [# console log 'reverse]
-    [if [[node jsType] == 'string] [return node]]
+    [# console log [quote reverse]]
+    [if [[node jsType] == [quote string]] [return node]]
     [set node
       [[onEach reverse] reduce
-        [fn [acc obj] [[obj get 'reverse] call null acc]]
+        [fn [acc obj] [[obj get [quote reverse]] call null acc]]
         node]]
     [set node [exports reverseList node]]
     [set node
       [[[Object keys macros] reverse] reduce
-        [fn [acc obj] [[[macros get obj] get 'reverse] call null acc]]
+        [fn [acc obj]
+          [[[macros get obj] get [quote reverse]] call null acc]]
         node]]
     node]]
 
-[exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]
+[exports set [quote reverseList]
+  [fn [list] [list map [exports get [quote reverse]]]]]
 
-[macros set 'quote
-  [new object ['transform [fn [node] node]] ['reverse [fn [node] node]]]]
-
-[macros set 'if
+[macros set [quote quote]
   [new object
-    ['transform
+    [[quote transform] [fn [node] node]]
+    [[quote reverse] [fn [node] node]]]]
+
+[macros set [quote if]
+  [new object
+    [[quote transform]
       [fn [node]
-        [new array 'if-else
+        [new array [quote if-else]
           [exports transform [node get 1]]
-          ['[do] concat [exports transformList [node slice 2]]]]]]
-    ['reverse
+          [[quote [do]] concat [exports transformList [node slice 2]]]]]]
+    [[quote reverse]
       [fn [node]
-        [# console log [[node get 0] == 'if-else] [node get 'length]]
-        [if [[[node get 0] == 'if-else] and [[node get 'length] == 3]]
+        [# console log
+          [[node get 0] == [quote if-else]]
+          [node get [quote length]]]
+        [if
+          [[[node get 0] == [quote if-else]] and
+            [[node get [quote length]] == 3]]
           [# console log [[node get 2] get 0]]
-          [if-else [[[node get 2] get 0] == 'do]
+          [if-else [[[node get 2] get 0] == [quote do]]
             [return
-              [[new array 'if [node get 1]] concat [[node get 2] slice 1]]]
-            [return [new array 'if [node get 1] [node get 2]]]]]
+              [[new array [quote if] [node get 1]] concat
+                [[node get 2] slice 1]]]
+            [return [new array [quote if] [node get 1] [node get 2]]]]]
         node]]]]
 
 [Section: comments
-  [macros set '#
+  [macros set [quote #]
     [new object
-      ['transform
-        [fn [node] [new array '@annotation ['[#] concat [node slice 1]]]]]
-      ['reverse
+      [[quote transform]
+        [fn [node]
+          [new array [quote @annotation]
+            [[quote [#]] concat [node slice 1]]]]]
+      [[quote reverse]
         [fn [node]
           [if
-            [[[node get 0] == '@annotation] and
-              [[node get 'length] == 2]
-              [[[node get 1] get 0] == '#]]
+            [[[node get 0] == [quote @annotation]] and
+              [[node get [quote length]] == 2]
+              [[[node get 1] get 0] == [quote #]]]
             [return [node get 1]]]
           node]]]]
-  [macros set 'Section:
+  [macros set [quote Section:]
     [new object
-      ['transform
+      [[quote transform]
         [fn [node]
-          [def doc '[]]
-          [def code '[do]]
+          [def doc [quote []]]
+          [def code [quote [do]]]
           [def i 0]
-          [while [[[node get i] jsType] == 'string]
+          [while [[[node get i] jsType] == [quote string]]
             [doc push [node get i]]
             [set i [i + 1]]]
-          [while [i < [node get 'length]]
+          [while [i < [node get [quote length]]]
             [code push [node get i]]
             [set i [i + 1]]]
           [set code [exports transform code]]
-          [new array '@annotation doc code]]]
-      ['reverse
+          [new array [quote @annotation] doc code]]]
+      [[quote reverse]
         [fn [node]
           [if
-            [[[node get 0] == '@annotation] and
-              [[node get 'length] == 3]
-              [[[node get 1] get 0] == 'Section:]
-              [[[node get 2] get 0] == 'do]]
+            [[[node get 0] == [quote @annotation]] and
+              [[node get [quote length]] == 3]
+              [[[node get 1] get 0] == [quote Section:]]
+              [[[node get 2] get 0] == [quote do]]]
             [return [[node get 1] concat [[node get 2] slice 1]]]]
           node]]]]]

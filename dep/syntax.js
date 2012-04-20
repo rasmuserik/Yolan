@@ -11,6 +11,9 @@ exports["tokenize"] = function(str) {
     var isWs = function() {
         return c === " " || c === "\n" || c === "\r" || c === "	";
     };
+    var isPrefix = function() {
+        return c === "'" || c === "'" || c === "'" || c === "'";
+    };
     var isBracket = function() {
         return c === "[" || c === "]";
     };
@@ -26,15 +29,15 @@ exports["tokenize"] = function(str) {
                 result.push(rbracket);
                 nextc.call();
             } else {
-                if (c === "'") {
-                    result.push(quote);
+                if (isPrefix.call()) {
+                    result.push(c);
                     nextc.call();
                 } else {
                     var symb = "";
                     while (c && !isWs.call() && !isBracket.call()) {
                         if (c === "\\") {
                             nextc.call();
-                            if (!(isWs.call() || isBracket.call() || c === "'")) {
+                            if (!(isWs.call() || isBracket.call() || isPrefix.call())) {
                                 symb = symb + "\\";
                             } else {}
                         } else {}
@@ -95,13 +98,9 @@ exports["parse"] = function(tokens) {
             if (token === rbracket) {
                 var t = current;
                 current = stack.pop();
-                current.push(addQuotes.call(null, t));
+                current.push(t);
             } else {
-                if (token === quote) {
-                    current.push(quote);
-                } else {
-                    current.push(JSON.parse('"' + token + '"'));
-                }
+                current.push(JSON.parse('"' + token + '"'));
             }
         }
     }
@@ -132,9 +131,6 @@ exports["prettyprint"] = function(ast) {
         return JSON.stringify(ast).slice(1, -1).replace(escapeRegEx, function(s) {
             return "\\" + s;
         }).replace(escapeRegEx2, '"');
-    } else {}
-    if (2 === ast["length"] && "quote" === ast[0]) {
-        return "'" + exports.prettyprint(ast[1]);
     } else {}
     if (0 === ast["length"]) {
         return "[]";

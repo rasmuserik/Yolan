@@ -1,117 +1,137 @@
 [def compileJS
   [new object
-    ['do [fn [syn] [[[syn slice 1] map [exports get 'toJS]] join ';]]]
-    ['def [fn [syn syn1] ['var\  + syn1 '= [exports toJS [syn get 2]]]]]
-    ['set [fn [syn syn1] [syn1 + '= [exports toJS [syn get 2]]]]]
-    ['new
+    [[quote do]
+      [fn [syn]
+        [[[syn slice 1] map [exports get [quote toJS]]] join [quote ;]]]]
+    [[quote def]
       [fn [syn syn1]
-        [if [syn1 == 'object]
+        [[quote var\ ] + syn1 [quote =] [exports toJS [syn get 2]]]]]
+    [[quote set]
+      [fn [syn syn1] [syn1 + [quote =] [exports toJS [syn get 2]]]]]
+    [[quote new]
+      [fn [syn syn1]
+        [if [syn1 == [quote object]]
           [return
-            ['{ +
+            [[quote {] +
               [[[syn slice 2] map
                   [fn [pair]
-                    [[exports toJS [pair get 0]] + ':
+                    [[exports toJS [pair get 0]] + [quote :]
                       [exports toJS [pair get 1]]]]]
-                join ',]
-              '}]]]
-        [if [syn1 == 'array]
+                join [quote ,]]
+              [quote }]]]]
+        [if [syn1 == [quote array]]
           [return
-            ['\[ + [[[syn slice 2] map [exports get 'toJS]] join ',] '\]]]]
+            [[quote \[] +
+              [[[syn slice 2] map [exports get [quote toJS]]] join [quote ,]]
+              [quote \]]]]]
         undefined]]
-    ['fn
+    [[quote fn]
       [fn [syn syn1]
-        ['function( +
-          [syn1 join ',]
-          '){
-          [[[syn slice 2 -1] map [exports get 'toJS]] join ';]
-          ';return\ 
-          [exports toJS [syn get [[syn get 'length] - 1]]]
-          '}]]]
-    ['try-catch
+        [[quote function(] +
+          [syn1 join [quote ,]]
+          [quote ){]
+          [[[syn slice 2 -1] map [exports get [quote toJS]]] join [quote ;]]
+          [quote ;return\ ]
+          [exports toJS [syn get [[syn get [quote length]] - 1]]]
+          [quote }]]]]
+    [[quote try-catch]
       [fn [syn syn1]
-        ['try{ +
+        [[quote try{] +
           [exports toJS [syn get 2]]
-          '}catch(
+          [quote }catch(]
           [syn get 1]
-          '){
+          [quote ){]
           [exports toJS [syn get 3]]
-          '}]]]
-    ['while
+          [quote }]]]]
+    [[quote while]
       [fn [syn syn1]
-        ['while( +
+        [[quote while(] +
           [exports toJS syn1]
-          '){
-          [[[syn slice 2] map [exports get 'toJS]] join ';]
-          '}]]]
-    ['if-else
+          [quote ){]
+          [[[syn slice 2] map [exports get [quote toJS]]] join [quote ;]]
+          [quote }]]]]
+    [[quote if-else]
       [fn [syn syn1]
-        ['if( +
+        [[quote if(] +
           [exports toJS syn1]
-          '){
+          [quote ){]
           [exports toJS [syn get 2]]
-          '}else{
+          [quote }else{]
           [exports toJS [syn get 3]]
-          '}]]]
-    ['@annotation [fn [syn] [exports toJS [syn get 2]]]]
-    ['return [fn [syn syn1] ['return\  + [exports toJS syn1]]]]
-    ['quote [fn [syn syn1] [JSON stringify syn1]]]]]
+          [quote }]]]]
+    [[quote @annotation] [fn [syn] [exports toJS [syn get 2]]]]
+    [[quote return] [fn [syn syn1] [[quote return\ ] + [exports toJS syn1]]]]
+    [[quote quote] [fn [syn syn1] [JSON stringify syn1]]]]]
 
-[exports set 'toJS
+[exports set [quote toJS]
   [fn [syn]
     [if [syn fails] [return ""]]
     [def syn0 [syn get 0]]
     [def syn1 [syn get 1]]
     [def syn2 [syn get 2]]
-    [if [[syn jsType] == 'string] [return syn]]
+    [if [[syn jsType] == [quote string]] [return syn]]
     [if [compileJS get syn0]
       [return [[compileJS get syn0] call null syn syn1]]]
-    [if [syn1 == 'set]
+    [if [syn1 == [quote set]]
       [return
-        [[exports toJS syn0] + '\[
+        [[exports toJS syn0] + [quote \[]
           [exports toJS syn2]
-          '\]=
+          [quote \]=]
           [exports toJS [syn get 3]]]]]
-    [if [syn1 == '+]
+    [if [syn1 == [quote +]]
       [return
-        ['( +
+        [[quote (] +
           [[[new array [exports toJS syn0]] concat
-              [[syn slice 2] map [exports get 'toJS]]]
-            join '+]
-          ')]]]
-    [if [syn1 == '-]
+              [[syn slice 2] map [exports get [quote toJS]]]]
+            join [quote +]]
+          [quote )]]]]
+    [if [syn1 == [quote -]]
       [return
-        ['( +
+        [[quote (] +
           [[[new array [exports toJS syn0]] concat
-              [[syn slice 2] map [exports get 'toJS]]]
-            join '-]
-          ')]]]
-    [if [syn1 == 'and]
+              [[syn slice 2] map [exports get [quote toJS]]]]
+            join [quote -]]
+          [quote )]]]]
+    [if [syn1 == [quote and]]
       [return
-        ['( +
+        [[quote (] +
           [[[new array [exports toJS syn0]] concat
-              [[syn slice 2] map [exports get 'toJS]]]
-            join '&&]
-          ')]]]
-    [if [syn1 == 'or]
+              [[syn slice 2] map [exports get [quote toJS]]]]
+            join [quote &&]]
+          [quote )]]]]
+    [if [syn1 == [quote or]]
       [return
-        ['( +
+        [[quote (] +
           [[[new array [exports toJS syn0]] concat
-              [[syn slice 2] map [exports get 'toJS]]]
-            join '||]
-          ')]]]
-    [if [syn1 == '==]
-      [return ['( + [exports toJS syn0] '=== [exports toJS syn2] ')]]]
-    [if [syn1 == '<]
-      [return ['( + [exports toJS syn0] '< [exports toJS syn2] ')]]]
-    [if [syn1 == 'fails] [return ['!( + [exports toJS syn0] ')]]]
-    [if [syn1 == 'jsType] [return ['typeof\  + [exports toJS syn0]]]]
-    [if [syn1 == 'get]
-      [return [[exports toJS syn0] + '\[ [exports toJS syn2] '\]]]]
-    [if [[syn0 jsType] == 'string]
+              [[syn slice 2] map [exports get [quote toJS]]]]
+            join [quote ||]]
+          [quote )]]]]
+    [if [syn1 == [quote ==]]
       [return
-        [[exports toJS syn0] + '. syn1 '(
-          [[[syn slice 2] map [exports get 'toJS]] join ',]
-          ')]]]
-    [[exports toJS syn0] + '. syn1 '(
-      [[[syn slice 2] map [exports get 'toJS]] join ',]
-      ')]]]
+        [[quote (] +
+          [exports toJS syn0]
+          [quote ===]
+          [exports toJS syn2]
+          [quote )]]]]
+    [if [syn1 == [quote <]]
+      [return
+        [[quote (] +
+          [exports toJS syn0]
+          [quote <]
+          [exports toJS syn2]
+          [quote )]]]]
+    [if [syn1 == [quote fails]]
+      [return [[quote !(] + [exports toJS syn0] [quote )]]]]
+    [if [syn1 == [quote jsType]]
+      [return [[quote typeof\ ] + [exports toJS syn0]]]]
+    [if [syn1 == [quote get]]
+      [return
+        [[exports toJS syn0] + [quote \[] [exports toJS syn2] [quote \]]]]]
+    [if [[syn0 jsType] == [quote string]]
+      [return
+        [[exports toJS syn0] + [quote .] syn1 [quote (]
+          [[[syn slice 2] map [exports get [quote toJS]]] join [quote ,]]
+          [quote )]]]]
+    [[exports toJS syn0] + [quote .] syn1 [quote (]
+      [[[syn slice 2] map [exports get [quote toJS]]] join [quote ,]]
+      [quote )]]]]
