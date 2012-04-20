@@ -69,8 +69,9 @@ macros["#"] = {
         return [ "@annotation", [ "#" ].concat(node.slice(1)) ];
     },
     reverse: function(node) {
+        if (node[0] === "@annotation" && node["length"] === 2 && node[1][0] === "#") {
+            return node[1];
+        } else {}
         return node;
     }
 };
-
-console.log("HERE", "annotation");
