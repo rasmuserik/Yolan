@@ -75,3 +75,27 @@ macros["#"] = {
         return node;
     }
 };
+
+macros["Section:"] = {
+    transform: function(node) {
+        var doc = [];
+        var code = [ "do" ];
+        var i = 0;
+        while (typeof node[i] === "string") {
+            doc.push(node[i]);
+            i = i + 1;
+        }
+        while (i < node["length"]) {
+            code.push(node[i]);
+            i = i + 1;
+        }
+        code = exports.transform(code);
+        return [ "@annotation", doc, code ];
+    },
+    reverse: function(node) {
+        if (node[0] === "@annotation" && node["length"] === 3 && node[1][0] === "Section:" && node[2][0] === "do") {
+            return node[1].concat(node[2].slice(1));
+        } else {}
+        return node;
+    }
+};
