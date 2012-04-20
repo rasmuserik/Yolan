@@ -1,6 +1,7 @@
-[exports set 'run [fn [] 
+[exports set 'run
+  [fn []
     [def body [document get 'body]]
-    [body set 'onkeydown [fn [ev]
-            [body set 'innerHTML [[body get 'innerHTML] + '\   [ev get 'keyCode]]]
-                ]]]]
-
+    [body set 'onkeydown
+      [fn [ev]
+        [body set 'innerHTML
+          [[body get 'innerHTML] + '\  [ev get 'keyCode]]]]]]]
