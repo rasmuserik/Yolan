@@ -12,18 +12,30 @@
 
 [# Browser]
 
+[def loadedModules [new object]]
+
 [if-else [[[navigator jsType] == 'undefined] fails]
-  [do [set engine 'browser]
+  [do [set engine 'web]
+  [if-else [[window get 'require] fails] [do
     [def modules [new object]]
-    [def require [fn [name] [modules get name]]]
+    [def require [fn [name] 
+        [if [[loadedModules get name] fails]
+            [console log 'initialising name]
+            [def module [new object]]
+            [def exports [new object]]
+            [module set 'exports exports]
+            [module set 'require require]
+            [[modules get name] call null require exports module]
+            [loadedModules set name [module get 'exports]]]
+        [loadedModules get name]
+        ]]
     [window set 'define
       [fn [name dep f]
-        [def module [new object]]
-        [def exports [new object]]
-        [module set 'exports exports]
-        [f call null require exports module]
-        [modules set name [module get 'exports]]]]
-    [window set 'require require]]]
+        [modules set name f]
+        undefined
+        ]]
+    [console log 'def 'require]
+    [window set 'require require]]]]]
 
 [# yolan defs]
 
@@ -44,7 +56,8 @@
 
 [def run
   [fn [args]
-    [def moduleName [[args get 0] or [engine + '-run]]]
+    [console log 'run]
+    [def moduleName [[args get 0] or [engine + 'main]]]
     [[[module require ['./ + moduleName]] get 'run] apply null
       [args slice 1]]]]
 

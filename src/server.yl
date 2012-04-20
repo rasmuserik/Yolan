@@ -2,22 +2,19 @@
 
 [def fs [module require 'fs]]
 
-[def syntax [module require './syntax]]
-
-[def jsBackend [module require './jsBackend]]
-
 [def xml [module require './xml]]
 
-[def scriptList '[yolan webmain]]
+[# def scriptList '[yolan webmain]]
+[def scriptList ['[yolan] concat[[[fs readdirSync 'src] filter [fn [name] [[name slice -3] == '.yl]]] map [fn [name] [name slice 0 -3]]]]]
 
 [def head
-  ['<!DOCTYPE\ html><html> + [xml fromYolain '[head [title Hello world]]]]]
+  ['<!DOCTYPE\ html><html> + [xml fromYl '[head [title Hello world]]]]]
 
 [def body
   ['<body><script>function\ define(_,_,f){f()};</script> +
     [[scriptList map [fn [name] ['<script\ src=" + name '.js"></script>]]]
       join ""]
-    '<script>require("./webmain").run();</script> '</body></html>]]
+    '<script>console.log("A",require("./yolan"));require("./yolan").run(location.hash.slice(1).split("\ "));</script></body></html>]]
 
 [exports set 'run
   [fn []
@@ -42,7 +39,7 @@
                   [result end
                     ['define(" + name
                       '",\["require","exports","module"\],function(require,exports,module){
-                      [jsBackend toJS [syntax parse [syntax tokenize data]]]
+                      [[module require './compile] yl2js data]
                       '});]]]]]]
           true]]
       listen 1234 '127.0.0.1]

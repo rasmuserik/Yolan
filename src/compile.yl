@@ -30,10 +30,14 @@
           [do [compile call null src dest]]]
         undefined]]]]
 
+[exports set 'yl2js [fn [src] 
+    [jsBackend toJS [macros transform [syntax parse [syntax tokenize src]]]]]]
+
 [def compile
   [fn [src dest]
     [fs readFile src 'utf8
       [fn [err data]
+        [console log src '-> dest]
         [if-else err [return err]]
         [# compile exports to js]
         [def ast [macros transform [syntax parse [syntax tokenize data]]]]
@@ -57,5 +61,5 @@
           [dest + '.js]
           js
           [fn [err data]
-            [if-else err [return err] [console log src '-> dest]]
+            [if-else err [return err] ]
             true]]]]]]
