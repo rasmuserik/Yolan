@@ -81,6 +81,7 @@
   [exports set \' prettyprint
     [fn [ast]
       [if [[ast jsType] == \' string]
+        [if [ast == ''] [return '']]
         [return
           [[[[JSON stringify ast] slice 1 -1] replace escapeRegEx
               [fn [s] [\' \\ + s]]]

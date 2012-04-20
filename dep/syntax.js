@@ -128,6 +128,9 @@ var escapeRegEx2 = RegExp.call(RegExp, '\\\\"', "g");
 
 exports["prettyprint"] = function(ast) {
     if (typeof ast === "string") {
+        if (ast === "'") {
+            return "'";
+        } else {}
         return JSON.stringify(ast).slice(1, -1).replace(escapeRegEx, function(s) {
             return "\\" + s;
         }).replace(escapeRegEx2, '"');
