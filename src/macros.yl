@@ -45,6 +45,8 @@
           [if [[node jsType] == 'string] [return node]] 
           [# console log 'node node] 
           [def result [new array]] 
+          [if [[[node get 0] == ''] and [[node get 'length] == 2]]
+            [return ['[quote] concat [node get 1]]]]
           [def i 0] 
           [while  [i < [node get 'length]] 
             [if-else 
@@ -58,6 +60,8 @@
       [' reverse 
         [fn  [node] 
           [if [[node jsType] == 'string] [return node]] 
+          [if-else [[[node get 'length] == 2] and [[node get 0] == 'quote]] [return ['[']concat [node get 1]]] [return node]]
+          [# if-else [[[node get 0] == 'quote] and [[node get 'length] == 1]] [return ['['] concat [node get 1]]] [return node]]
           [def result [new array]] 
           [def i 0] 
           [while  [i < [node get 'length]] 

@@ -45,6 +45,9 @@ onEach.push({
             return node;
         } else {}
         var result = [];
+        if (node[0] === "'" && node["length"] === 2) {
+            return [ "quote" ].concat(node[1]);
+        } else {}
         var i = 0;
         while (i < node["length"]) {
             if (node[i] === "'" && i + 1 < node["length"]) {
@@ -61,6 +64,11 @@ onEach.push({
         if (typeof node === "string") {
             return node;
         } else {}
+        if (node["length"] === 2 && node[0] === "quote") {
+            return [ "'" ].concat(node[1]);
+        } else {
+            return node;
+        }
         var result = [];
         var i = 0;
         while (i < node["length"]) {
