@@ -1,41 +1,38 @@
 [def xml [module require './xml]]
 
-[exports  set  ' init 
-  [fn  [obj] 
-    [def update [[obj get 'update] or [fn [ctx h w canvas] undefined]]] 
-    [def mousedown [[obj get 'mousedown] or [fn [x y] undefined]]] 
-    [def mousemove [[obj get 'mousemove] or [fn [x0 y0 x1 y1] undefined]]] 
-    [def mouseup [[obj get 'mouseup] or [fn [x y] undefined]]] 
-    [def keydown [[obj get 'keydown] or [fn [k] undefined]]] 
-    [def width [window get 'innerWidth]] 
-    [def height [window get 'innerHeight]] 
-    [def body [document get 'body]] 
-    [body  set  ' innerHTML 
-      [xml  fromYl  '
-        [canvas  [[id canvas]] 
-          This  webapp  requires  a  browser  that  has  canvas  support. 
-          You  need  to  upgrade  your  browser  to  see  this  site.]]] 
-    [def canvas [document getElementById 'canvas]] 
-    [def style [canvas get 'style]] 
-    [console log canvas style] 
-    [style set 'position 'absolute] 
-    [style set 'top '0px] 
-    [style set 'left '0px] 
-    [style set 'height [height + 'px]] 
-    [style set 'width [width + 'px]] 
-    [canvas set 'height height] 
-    [canvas set 'width width] 
-    [body set 'onkeydown [fn [ev] [console log ev]]] 
-    [canvas focus] 
-    [def ctx [canvas getContext '2d]] 
+[exports set 'init
+  [fn [obj ]
+    [def update [[obj get 'update] or [fn [ctx h w canvas] undefined]]]
+    [def mousedown [[obj get 'mousedown] or [fn [x y] undefined]]]
+    [def mousemove [[obj get 'mousemove] or [fn [x0 y0 x1 y1] undefined]]]
+    [def mouseup [[obj get 'mouseup] or [fn [x y] undefined]]]
+    [def keydown [[obj get 'keydown] or [fn [k ] undefined]]]
+    [def width [window get 'innerWidth]]
+    [def height [window get 'innerHeight]]
+    [def body [document get 'body]]
+    [body set 'innerHTML
+      [xml fromYl
+        '[canvas [[id canvas] ] This webapp requires a browser that has
+          canvas support. You need to upgrade your browser to see this site.]]]
+    [def canvas [document getElementById 'canvas]]
+    [def style [canvas get 'style]]
+    [console log canvas style]
+    [style set 'position 'absolute]
+    [style set 'top '0px]
+    [style set 'left '0px]
+    [style set 'height [height + 'px]]
+    [style set 'width [width + 'px]]
+    [canvas set 'height height]
+    [canvas set 'width width]
+    [body set 'onkeydown [fn [ev ] [console log ev]]]
+    [canvas focus]
+    [def ctx [canvas getContext '2d]]
     [update call null ctx height width]]]
 
-[exports  set  ' run 
-  [fn  [] 
-    [exports  init 
-      [new  object 
-        [' update 
-          [fn  [ctx h w] 
-            [ctx set 'fillStyle '#990] 
-            [ctx fillText 'Hello\ canvas 100 100] 
+[exports set 'run
+  [fn []
+    [exports init
+      [new object
+        ['update [fn [ctx h w] [ctx set 'fillStyle '#990]
+            [ctx fillText 'Hello\ canvas 100 100]
             [ctx fillRect -5 -5 10000 1000]]]]]]]
