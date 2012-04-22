@@ -59,18 +59,11 @@
           result]] 
       [' reverse 
         [fn  [node] 
+          [console log node]
           [if [[node jsType] == 'string] [return node]] 
-          [if-else [[[node get 'length] == 2] and [[node get 0] == 'quote]] [return ['[']concat [node get 1]]] [return node]]
-          [def result [new array]] 
-          [def i 0] 
-          [while  [i < [node get 'length]] 
-            [if-else 
-              [[[[node get i] get 0] == 'quote]  and 
-                [[[node get i] get 'length] == 2]] 
-              [do [result push ''] [result push [[node get i] get 1]]] 
-              [result push [node get i]]] 
-            [set i [i + 1]]] 
-          result]]]] 
+          [if-else [[[node get 'length] == 2] and [[node get 0] == 'quote]] [console log ['[']concat [node get 1]]]]
+          [if-else [[[node get 'length] == 2] and [[node get 0] == 'quote]] [return [new array '' [node get 1]]]]
+          node]]]]
   [macros  set  ' quote 
     [new  object 
       ['transform [fn [node] node]] 
@@ -133,3 +126,5 @@
               [[[node get 2] get 0] == 'do]] 
             [return [[node get 1] concat [[node get 2] slice 1]]]] 
           node]]]]]
+[console log '[ ] '[1] '[ 1 2] '3]
+
