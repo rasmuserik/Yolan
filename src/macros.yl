@@ -36,6 +36,7 @@
     node]]
 
 [exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]
+    
 
 [Section: Quoting
   [onEach push
@@ -64,6 +65,23 @@
   [macros set
     'quote
     [new object ['transform [fn [node] node]] ['reverse [fn [node] node]]]]]
+
+[# Section: shorthand for \[... \' ... \] as \[... get \'...\]
+
+  [# Commented out because \[... \' ... \] actually may happen, ie: \[return \[\'...\]\] and \[new object \[... \'...\]]
+  [onEach push
+    [new object
+      ['transform
+        [fn [node] 
+            [while [[2 < [node get 'length]] and [[[node get 1] get 'length] == 2] [[[node get 1] get 0] == 'quote]]
+                [set node [[new array [new array [node get 0] 'get [node get 1]]] concat [node slice 2]]]]
+            [if [[1 < [node get 'length]] and [[[node get 1] get 0] == 'quote]]
+                [set node [new array [node get 0] 'get [node get 1]]]]
+            node]]
+                
+      ['reverse
+        [fn [node] node]]]]]
+
 
 [Section: Conditionals
   [macros set
@@ -124,3 +142,6 @@
               [[[node get 2] get 0] == 'do]]
             [return [[node get 1] concat [[node get 2] slice 1]]]]
           node]]]]]
+
+[# def x [new object ['foo [new object ['bar [fn [x] [x + 1]]]]]]]
+[# console log [x 'foo] [x 'foo 'bar] [x 'foo bar 41]]
