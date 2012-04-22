@@ -109,19 +109,6 @@
 
 [Section: comments
   [macros set
-    '#
-    [new object
-      ['transform
-        [fn [node] [new array 'Annotation: ['[;] concat [node slice 1]]]]]
-      ['reverse
-        [fn [node]
-          [if
-            [[[node get 0] == 'Annotation:] and
-              [[node get 'length] == 2]
-              [[[node get 1] get 0] == '#]]
-            [return [node get 1]]]
-          node]]]]
-  [macros set
     ';
     [new object
       ['transform
