@@ -98,10 +98,10 @@ macros["if"] = {
 
 macros["#"] = {
     transform: function(node) {
-        return [ "@annotation", [ "#" ].concat(node.slice(1)) ];
+        return [ "Annotation:", [ "#" ].concat(node.slice(1)) ];
     },
     reverse: function(node) {
-        if (node[0] === "@annotation" && node["length"] === 2 && node[1][0] === "#") {
+        if (node[0] === "Annotation:" && node["length"] === 2 && node[1][0] === "#") {
             return node[1];
         } else {}
         return node;
@@ -122,10 +122,10 @@ macros["Section:"] = {
             i = i + 1;
         }
         code = exports.transform(code);
-        return [ "@annotation", doc, code ];
+        return [ "Annotation:", doc, code ];
     },
     reverse: function(node) {
-        if (node[0] === "@annotation" && node["length"] === 3 && node[1][0] === "Section:" && node[2][0] === "do") {
+        if (node[0] === "Annotation:" && node["length"] === 3 && node[1][0] === "Section:" && node[2][0] === "do") {
             return node[1].concat(node[2].slice(1));
         } else {}
         return node;

@@ -108,11 +108,11 @@
     '#
     [new object
       ['transform
-        [fn [node] [new array '@annotation ['[#] concat [node slice 1]]]]]
+        [fn [node] [new array 'Annotation: ['[#] concat [node slice 1]]]]]
       ['reverse
         [fn [node]
           [if
-            [[[node get 0] == '@annotation] and
+            [[[node get 0] == 'Annotation:] and
               [[node get 'length] == 2]
               [[[node get 1] get 0] == '#]]
             [return [node get 1]]]
@@ -132,11 +132,11 @@
             [code push [node get i]]
             [set i [i + 1]]]
           [set code [exports transform code]]
-          [new array '@annotation doc code]]]
+          [new array 'Annotation: doc code]]]
       ['reverse
         [fn [node]
           [if
-            [[[node get 0] == '@annotation] and
+            [[[node get 0] == 'Annotation:] and
               [[node get 'length] == 3]
               [[[node get 1] get 0] == 'Section:]
               [[[node get 2] get 0] == 'do]]

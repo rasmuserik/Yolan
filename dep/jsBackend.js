@@ -31,7 +31,7 @@ var compileJS = {
     "if-else": function(syn, syn1) {
         return "if(" + exports.toJS(syn1) + "){" + exports.toJS(syn[2]) + "}else{" + exports.toJS(syn[3]) + "}";
     },
-    "@annotation": function(syn) {
+    "Annotation:": function(syn) {
         return exports.toJS(syn[2]);
     },
     "return": function(syn, syn1) {
