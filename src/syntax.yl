@@ -89,17 +89,17 @@
               [fn [s] ['\\ + s]]] 
             replace  escapeRegEx2  ' "]]] 
       [if [0 == [ast get 'length]] [return '\[\]]]
+      [if [[2 == [ast get 'length]] and [[ast get 0] == '']] [return ['' + [exports prettyprint [ast get 1]]]]]
       [set indent [indent + indentStep]] 
-      [def pos indent] 
       [def lineStart ['\[ + [exports prettyprint [ast get 0]] '\ ]]
       [def lineEnd '\]]
+      [def pos [indent + [lineStart get 'length]] ]
       [set ast [ast slice 1]]
       [def strs [ast map [exports get 'prettyprint]]] 
-      [# BUG, this doesn't work: set pos [pos + [lineStart get 'length]]]
-
+      [Section: Single line
       [if [[pos + [[strs join] get 'length] 1] < screenWidth] 
         [set indent [indent - indentStep]] 
-        [return [lineStart + [strs join '\ ] lineEnd]]] 
+        [return [lineStart + [strs join '\ ] lineEnd]]]] 
 
       [def space ['\n + [exports nspace indent]]] 
       [def result [new array]] 

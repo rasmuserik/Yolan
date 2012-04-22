@@ -138,31 +138,30 @@ exports["prettyprint"] = function(ast) {
     if (0 === ast["length"]) {
         return "[]";
     } else {}
+    if (2 === ast["length"] && ast[0] === "'") {
+        return "'" + exports.prettyprint(ast[1]);
+    } else {}
     indent = indent + indentStep;
-    var pos = indent;
-    strs = ast.map(exports["prettyprint"]);
-    var i = 0;
-    while (i < strs["length"] - 1) {
-        if (!(strs[i] === "'")) {
-            strs[i] = strs[i] + " ";
-        } else {}
-        i = i + 1;
-    }
+    var lineStart = "[" + exports.prettyprint(ast[0]) + " ";
+    var lineEnd = "]";
+    var pos = indent + lineStart["length"];
+    ast = ast.slice(1);
+    var strs = ast.map(exports["prettyprint"]);
     if (pos + strs.join()["length"] + 1 < screenWidth) {
         indent = indent - indentStep;
-        return "[" + strs.join("") + "]";
+        return lineStart + strs.join(" ") + lineEnd;
     } else {}
     var space = "\n" + exports.nspace(indent);
     var result = [];
-    result.push("[");
+    result.push(lineStart);
     result.push(strs[0]);
     pos = pos + strs[0]["length"] + 1;
-    var i = 1;
     var forceNewLine = false;
     var currentIsString = true;
-    while (i < ast["length"]) {
+    var i = 1;
+    while (i < strs["length"]) {
         var prevIsString = currentIsString;
-        currentIsString = typeof ast[i] === "string" || "quote" === ast[i][0];
+        currentIsString = typeof ast[i] === "string";
         forceNewLine = false;
         if (!prevIsString || !currentIsString) {
             forceNewLine = true;
@@ -181,7 +180,7 @@ exports["prettyprint"] = function(ast) {
         pos = pos + strs[i]["length"] + 1;
         i = i + 1;
     }
-    result.push("]");
+    result.push(lineEnd);
     indent = indent - indentStep;
     return result.join("");
 };
