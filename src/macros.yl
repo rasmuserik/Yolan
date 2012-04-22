@@ -9,7 +9,6 @@
       [onEach  reduce 
         [fn [acc obj] [[obj get 'transform] call null acc]] 
         node]] 
-    [# console log 'transform [node get 0]] 
     [if-else  [macros get [node get 0]] 
       [set  node 
         [[[macros get [node get 0]] get 'transform] call null node]] 
@@ -21,7 +20,6 @@
 
 [exports  set  ' reverse 
   [fn  [node] 
-    [# console log 'reverse] 
     [if [[node jsType] == 'string] [return node]] 
     [set  node 
       [[onEach reverse]  reduce 
@@ -41,9 +39,7 @@
     [new  object 
       [' transform 
         [fn  [node] 
-          [# return node] 
           [if [[node jsType] == 'string] [return node]] 
-          [# console log 'node node] 
           [def result [new array]] 
           [if [[[node get 0] == ''] and [[node get 'length] == 2]]
             [return ['[quote] concat [node get 1]]]]
@@ -55,13 +51,10 @@
                 [result push [new array 'quote [node get i]]]] 
               [result push [node get i]]] 
             [set i [i + 1]]] 
-          [# console log 'result result] 
           result]] 
       [' reverse 
         [fn  [node] 
-          [console log node]
           [if [[node jsType] == 'string] [return node]] 
-          [if-else [[[node get 'length] == 2] and [[node get 0] == 'quote]] [console log ['[']concat [node get 1]]]]
           [if-else [[[node get 'length] == 2] and [[node get 0] == 'quote]] [return [new array '' [node get 1]]]]
           node]]]]
   [macros  set  ' quote 
@@ -79,9 +72,7 @@
             ['[do] concat [exports transformList [node slice 2]]]]]] 
       [' reverse 
         [fn  [node] 
-          [# console log [[node get 0] == 'if-else] [node get 'length]] 
           [if  [[[node get 0] == 'if-else] and [[node get 'length] == 3]] 
-            [# console log [[node get 2] get 0]] 
             [if-else  [[[node get 2] get 0] == 'do] 
               [return 
                 [[new array 'if [node get 1]]  concat 
@@ -126,5 +117,3 @@
               [[[node get 2] get 0] == 'do]] 
             [return [[node get 1] concat [[node get 2] slice 1]]]] 
           node]]]]]
-[console log '[ ] '[1] '[ 1 2] '3]
-

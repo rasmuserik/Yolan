@@ -65,22 +65,9 @@ onEach.push({
             return node;
         } else {}
         if (node["length"] === 2 && node[0] === "quote") {
-            return [ "'" ].concat(node[1]);
-        } else {
-            return node;
-        }
-        var result = [];
-        var i = 0;
-        while (i < node["length"]) {
-            if (node[i][0] === "quote" && node[i]["length"] === 2) {
-                result.push("'");
-                result.push(node[i][1]);
-            } else {
-                result.push(node[i]);
-            }
-            i = i + 1;
-        }
-        return result;
+            return [ "'", node[1] ];
+        } else {}
+        return node;
     }
 });
 
