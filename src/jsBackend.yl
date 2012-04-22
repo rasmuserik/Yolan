@@ -19,7 +19,8 @@
         [if [syn1 == 'array]
           [return
             ['\[ + [[[syn slice 2] map [exports get 'toJS]] join ',] '\]]]]
-        undefined]]
+        ['new\  + syn1 '()]
+        ]]
     ['fn
       [fn [syn syn1]
         ['function( +

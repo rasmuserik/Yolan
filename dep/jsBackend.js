@@ -17,7 +17,7 @@ var compileJS = {
         if (syn1 === "array") {
             return "[" + syn.slice(2).map(exports["toJS"]).join(",") + "]";
         } else {}
-        return undefined;
+        return "new " + syn1 + "()";
     },
     fn: function(syn, syn1) {
         return "function(" + syn1.join(",") + "){" + syn.slice(2, -1).map(exports["toJS"]).join(";") + ";return " + exports.toJS(syn[syn["length"] - 1]) + "}";

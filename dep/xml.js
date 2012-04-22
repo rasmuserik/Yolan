@@ -1,3 +1,5 @@
+console.log("hereInXml");
+
 exports["fromYl"] = function(xml) {
     if (typeof xml === "string") {
         return xml;
