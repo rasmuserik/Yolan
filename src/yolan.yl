@@ -2,15 +2,15 @@
 
 [def engine undefined]
 
-[# Node]
+[; Node]
 
 [if [[[process jsType] == 'undefined] fails] [set engine 'node]]
 
-[# Rhino]
+[; Rhino]
 
 [if [[[java jsType] == 'undefined] fails] [set engine 'rhino]]
 
-[# Browser]
+[; Browser]
 
 [def loadedModules [new object]]
 
@@ -33,11 +33,11 @@
     [console log 'def 'require]
     [window set 'require require]]]
 
-[# yolan defs]
+[; yolan defs]
 
 [yolan set 'engine engine]
 
-[# Shims]
+[; Shims]
 
 [if [[console jsType] == 'undefined]
   [set console [new object]]
@@ -46,7 +46,7 @@
 
 [if [[yolan get 'engine] fails] [console log 'Error\ detecting\ engine:]]
 
-[# Start execution]
+[; Start execution]
 
 [def run
   [fn [args]

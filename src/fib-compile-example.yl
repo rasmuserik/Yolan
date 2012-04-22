@@ -10,7 +10,7 @@
 
 [console log [fib call null 10]]
 
-[# yvm
+[; yvm
   [function _0
     [global [fib console null]]
     [local [result]]

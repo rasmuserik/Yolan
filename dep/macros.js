@@ -98,10 +98,22 @@ macros["if"] = {
 
 macros["#"] = {
     transform: function(node) {
-        return [ "Annotation:", [ "#" ].concat(node.slice(1)) ];
+        return [ "Annotation:", [ ";" ].concat(node.slice(1)) ];
     },
     reverse: function(node) {
         if (node[0] === "Annotation:" && node["length"] === 2 && node[1][0] === "#") {
+            return node[1];
+        } else {}
+        return node;
+    }
+};
+
+macros[";"] = {
+    transform: function(node) {
+        return [ "Annotation:", [ ";" ].concat(node.slice(1)) ];
+    },
+    reverse: function(node) {
+        if (node[0] === "Annotation:" && node["length"] === 2 && node[1][0] === ";") {
             return node[1];
         } else {}
         return node;

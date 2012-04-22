@@ -117,7 +117,7 @@
                 [if [withArg fails] [code push '[pop]]]
                 [return code]]]
             [if [withArg fails] [return '[]]]
-            [# look up var]
+            [; look up var]
             [if [[[parseFloat call null expr] toString] == expr]
               [return [new array [new array 'num expr]]]]
             [def name expr]

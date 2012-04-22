@@ -1,4 +1,4 @@
-[# yolan-xml data structure to an xml-string]
+[; yolan-xml data structure to an xml-string]
 
 [exports set
   'fromYl

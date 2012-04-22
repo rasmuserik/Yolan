@@ -45,9 +45,9 @@
       [fn [err data]
         [console log src '-> dest]
         [if err [return err]]
-        [# compile exports to js]
+        [; compile exports to js]
         [def ast [macros transform [syntax parse [syntax tokenize data]]]]
-        [# console log [syntax prettyprint ast]]
+        [; console log [syntax prettyprint ast]]
         [def js [jsBackend toJS ast]]
         [def sourceCode
           [[[[[macros reverse ast] slice 1] map
@@ -58,7 +58,7 @@
             '\n]]
         [fs writeFile [dest + '.yl] sourceCode]
         [fs writeFile [dest + '.js.raw] sourceCode]
-        [# reformat js]
+        [; reformat js]
         [def uglify [require call null 'uglify-js]]
         [def jsp [uglify get 'parser]]
         [def pro [uglify get 'uglify]]
