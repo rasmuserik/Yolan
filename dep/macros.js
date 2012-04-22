@@ -136,5 +136,3 @@ macros["Section:"] = {
         return node;
     }
 };
-
-console.log("foo", "bar");

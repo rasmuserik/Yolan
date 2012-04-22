@@ -130,5 +130,3 @@
               [[[node get 2] get 0] == 'do]] 
             [return [[node get 1] concat [[node get 2] slice 1]]]] 
           node]]]]]
-
-[console log 'foo 'bar]

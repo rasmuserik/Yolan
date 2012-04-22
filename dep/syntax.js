@@ -9,7 +9,7 @@ exports["tokenize"] = function(str) {
         return c;
     };
     var isWs = function() {
-        return c === " " || c === "\n" || c === "\r" || c === "	";
+        return c === " " || c === "\n" || c === "\r" || c === "\t";
     };
     var isPrefix = function() {
         return c === "'" || c === "'" || c === "'" || c === "'";

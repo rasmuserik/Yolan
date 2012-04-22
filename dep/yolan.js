@@ -54,7 +54,6 @@ if (!yolan["engine"]) {
 } else {}
 
 var run = function(args) {
-    console.log("run");
     var moduleName = args[0] || engine + "main";
     return module.require("./" + moduleName)["run"].apply(null, args.slice(1));
 };

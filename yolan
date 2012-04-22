@@ -1,1 +1,2 @@
+install -d build
 node ./build/yolan.js $*
