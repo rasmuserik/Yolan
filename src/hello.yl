@@ -1,2 +1,3 @@
-[exports set 'run
-  [fn [args ] [console log 'hello 'world] [console log 'args: args]]]
+[exports set
+  'run
+  [fn [args] [console log 'hello 'world] [console log 'args: args]]]

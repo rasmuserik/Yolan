@@ -1,6 +1,8 @@
 [Section: Tokenization
-  [exports set 'tokenize
-    [fn [str ] [def result [new array]]
+  [exports set
+    'tokenize
+    [fn [str]
+      [def result [new array]]
       [def i 0]
       [def tokeniser [new object]]
       [def c [str get 0]]
@@ -8,14 +10,21 @@
       [def isWs [fn [] [[c == '\ ] or [c == '\n] [c == '\r] [c == '\t]]]]
       [def isPrefix [fn [] [[c == ''] or [c == ''] [c == ''] [c == '']]]]
       [def isBracket [fn [] [[c == '\[] or [c == '\]]]]]
-      [while c [while [isWs call] [nextc call]]
-        [if-else [c == '\[] [do [result push lbracket] [nextc call]]
-          [if-else [c == '\]] [do [result push rbracket] [nextc call]]
-            [if-else [isPrefix call] [do [result push c] [nextc call]]
+      [while c
+        [while [isWs call] [nextc call]]
+        [if-else [c == '\[]
+          [do [result push lbracket] [nextc call]]
+          [if-else [c == '\]]
+            [do [result push rbracket] [nextc call]]
+            [if-else [isPrefix call]
+              [do [result push c] [nextc call]]
               [do [def symb ""]
                 [while [c and [[isWs call] fails] [[isBracket call] fails]]
-                  [if [c == '\\] [nextc call]
-                    [if [[[isWs call] or [isBracket call] [isPrefix call]] fails]
+                  [if [c == '\\]
+                    [nextc call]
+                    [if
+                      [[[isWs call] or [isBracket call] [isPrefix call]]
+                        fails]
                       [set symb [symb + '\\]]]]
                   [if [c == '"] [set symb [symb + '\\]]]
                   [set symb [symb + c]]
@@ -32,19 +41,25 @@
 
 [Section: Parsing
   [def addQuotes
-    [fn [list ] [def i 0]
+    [fn [list]
+      [def i 0]
       [def result [new array]]
-      [while [i < [list get 'length]] [def elem [list get i]]
-        [if [elem == quote] [set i [i + 1]]
+      [while [i < [list get 'length]]
+        [def elem [list get i]]
+        [if [elem == quote]
+          [set i [i + 1]]
           [set elem [new array 'quote [list get i]]]]
         [result push elem]
         [set i [i + 1]]]
       result]]
-  [exports set 'parse
-    [fn [tokens ] [set tokens [tokens reverse]]
+  [exports set
+    'parse
+    [fn [tokens]
+      [set tokens [tokens reverse]]
       [def stack [new array]]
       [def current [new array 'do]]
-      [while [tokens get 'length] [def token [tokens pop]]
+      [while [tokens get 'length]
+        [def token [tokens pop]]
         [if-else [token == lbracket]
           [do [stack push current] [set current [new array]]]
           [if-else [token == rbracket]
@@ -57,29 +72,33 @@
     [def screenWidth 78]
     [def indentStep 2]]
   [Section: Utility for creating line-prepended whitespace
-    [exports set 'nspace
-      [fn [n ] [def result [new array]]
+    [exports set
+      'nspace
+      [fn [n]
+        [def result [new array]]
         [while [0 < n] [set n [n - 1]] [result push '\ ]]
         [result join ""]]]]
   [def indent 0]
   [def escapeRegEx [RegExp call RegExp '\[\'\ \\\[\\\]\] 'g]]
   [def escapeRegEx2 [RegExp call RegExp '\\\\" 'g]]
-  [exports set 'prettyprint
-    [fn [ast ]
+  [exports set
+    'prettyprint
+    [fn [ast]
       [Section: Handle strings, empty lists and quotes
-        [if [[ast jsType] == 'string] [if [ast == ''] [return '']]
-          [return [[[[JSON stringify ast] slice 1 -1] replace escapeRegEx
-                [fn [s ] ['\\ + s]]] replace
-              escapeRegEx2
+        [if [[ast jsType] == 'string]
+          [if [ast == ''] [return '']]
+          [return
+            [[[[JSON stringify ast] slice 1 -1] replace escapeRegEx
+                [fn [s] ['\\ + s]]]
+              replace escapeRegEx2
               '"]]]
         [if [0 == [ast get 'length]] [return '\[\]]]
         [if [[2 == [ast get 'length]] and [[ast get 0] == '']]
           [return ['' + [exports prettyprint [ast get 1]]]]]]
       [set indent [indent + indentStep]]
-      [def lineStart ['\[ + [exports prettyprint [ast get 0]] '\ ]]
+      [def lineStart '\[]
       [def lineEnd '\]]
       [def pos [indent + [lineStart get 'length]]]
-      [set ast [ast slice 1]]
       [def strs [ast map [exports get 'prettyprint]]]
       [Section: Single line
         [if [[pos + [[strs join] get 'length] 1] < screenWidth]
@@ -93,7 +112,8 @@
       [def forceNewLine false]
       [def currentIsString true]
       [def i 1]
-      [while [i < [strs get 'length]] [def prevIsString currentIsString]
+      [while [i < [strs get 'length]]
+        [def prevIsString currentIsString]
         [set currentIsString [[[ast get i] jsType] == 'string]]
         [set forceNewLine false]
         [if [[prevIsString fails] or [currentIsString fails]]
@@ -101,7 +121,8 @@
         [if [i < 2] [set forceNewLine false]]
         [def prevIsString currentIsString]
         [result push '\ ]
-        [if [forceNewLine or
+        [if
+          [forceNewLine or
             [screenWidth < [pos + [[strs get i] get 'length]]]]
           [result pop]
           [result push space]

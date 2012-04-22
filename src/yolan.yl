@@ -14,10 +14,12 @@
 
 [def loadedModules [new object]]
 
-[if [[[navigator jsType] == 'undefined] fails] [set engine 'web]
-  [if [[window get 'require] fails] [def modules [new object]]
+[if [[[navigator jsType] == 'undefined] fails]
+  [set engine 'web]
+  [if [[window get 'require] fails]
+    [def modules [new object]]
     [def require
-      [fn [name ]
+      [fn [name]
         [if [[loadedModules get name] fails]
           [console log 'initialising name]
           [def module [new object]]
@@ -37,7 +39,8 @@
 
 [# Shims]
 
-[if [[console jsType] == 'undefined] [set console [new object]]
+[if [[console jsType] == 'undefined]
+  [set console [new object]]
   [console set 'log [fn [] undefined]]
   [if [[[print jsType] == 'undefined] fails] [console set 'log print]]]
 
@@ -46,7 +49,8 @@
 [# Start execution]
 
 [def run
-  [fn [args ] [def moduleName [[args get 0] or [engine + 'main]]]
+  [fn [args]
+    [def moduleName [[args get 0] or [engine + 'main]]]
     [[[module require ['./ + moduleName]] get 'run] apply null
       [args slice 1]]]]
 

@@ -142,10 +142,9 @@ exports["prettyprint"] = function(ast) {
         return "'" + exports.prettyprint(ast[1]);
     } else {}
     indent = indent + indentStep;
-    var lineStart = "[" + exports.prettyprint(ast[0]) + " ";
+    var lineStart = "[";
     var lineEnd = "]";
     var pos = indent + lineStart["length"];
-    ast = ast.slice(1);
     var strs = ast.map(exports["prettyprint"]);
     if (pos + strs.join()["length"] + 1 < screenWidth) {
         indent = indent - indentStep;
