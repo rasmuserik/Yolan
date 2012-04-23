@@ -1,3 +1,5 @@
 [exports set
   'run
-  [fn [args] [console log 'hello 'world] [console log 'args: args]]]
+  [fn [args] 
+  [console log 'hello]
+  [[module require './yolan] readTextFile 'src/hello.yl [fn [result] [console log result]]]]]

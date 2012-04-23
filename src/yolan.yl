@@ -46,20 +46,6 @@
 
 [if [[yolan get 'engine] fails] [console log 'Error\ detecting\ engine:]]
 
-[; Start execution]
-
-[def run
-  [fn [args]
-    [def moduleName [[args get 0] or [engine + 'main]]]
-    [[[module require ['./ + moduleName]] get 'run] apply null
-      [args slice 1]]]]
-
-[yolan set 'run run]
-
-[if [[[module jsType] == 'undefined] fails] [module set 'exports yolan]]
-
-[if [engine == 'node] [yolan run [[process get 'argv] slice 2]]]
-
 
 [Section: Cross-platform file-io
 [if [engine == 'node]
@@ -84,5 +70,7 @@
       [req open 'GET ['/readTextFile/ + fname] true]
       [req send null]]
 ]]
-
 ]
+
+[if [[[module jsType] == 'undefined] fails] [module set 'exports yolan]]
+

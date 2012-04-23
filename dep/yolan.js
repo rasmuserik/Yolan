@@ -53,17 +53,40 @@ if (!yolan["engine"]) {
     console.log("Error detecting engine:");
 } else {}
 
-var run = function(args) {
-    var moduleName = args[0] || engine + "main";
-    return module.require("./" + moduleName)["run"].apply(null, args.slice(1));
-};
+if (engine === "node") {
+    exports["readTextFile"] = function(fname, callback) {
+        module.require("fs").readFile(fname, "utf8", callback);
+        return function(err, data) {
+            if (err) {
+                return callback.call(null, {
+                    err: err
+                });
+            } else {}
+            return callback.call(null, data);
+        };
+    };
+} else {}
 
-yolan["run"] = run;
+if (engine === "web") {
+    exports["readTextFile"] = function(fname, callback) {
+        var req = new XMLHttpRequest;
+        req["onreadystatechange"] = function(event) {
+            if (req["readyState"] === 4) {
+                if (!(req["status"] === 200)) {
+                    return callback.call(null, {
+                        err: "Request error: status not 200 OK",
+                        req: req
+                    });
+                } else {}
+                callback.call(null, req["responseText"]);
+            } else {}
+            return undefined;
+        };
+        req.open("GET", "/readTextFile/" + fname, true);
+        return req.send(null);
+    };
+} else {}
 
 if (!(typeof module === "undefined")) {
     module["exports"] = yolan;
-} else {}
-
-if (engine === "node") {
-    yolan.run(process["argv"].slice(2));
 } else {}
