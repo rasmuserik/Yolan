@@ -1,4 +1,7 @@
 var compileJS = {
+    "builtin:": function(syn) {
+        return exports.toJS(syn.slice(1));
+    },
     "do": function(syn) {
         return syn.slice(1).map(exports["toJS"]).join(";");
     },
@@ -7,6 +10,15 @@ var compileJS = {
     },
     set: function(syn, syn1) {
         return syn1 + "=" + exports.toJS(syn[2]);
+    },
+    "new-object": function(syn) {
+        var result = [];
+        var i = 1;
+        while (i < syn["length"]) {
+            result.push(exports.toJS(syn[i]) + ":" + exports.toJS(syn[i + 1]));
+            i = i + 2;
+        }
+        return "{" + result.join(",") + "}";
     },
     "new": function(syn, syn1) {
         if (syn1 === "object") {

@@ -1,8 +1,18 @@
 [def compileJS
   [new object
+    ['builtin: [fn [syn] [exports toJS [syn slice 1]]]]
     ['do [fn [syn] [[[syn slice 1] map [exports get 'toJS]] join ';]]]
     ['def [fn [syn syn1] ['var\  + syn1 '= [exports toJS [syn get 2]]]]]
     ['set [fn [syn syn1] [syn1 + '= [exports toJS [syn get 2]]]]]
+    ['new-object [fn [syn]
+        [def result '[]]
+        [def i 1]
+        [while [i < [syn get 'length]]
+            [result push [[exports toJS [syn get i]] + ': [exports toJS [syn get [i + 1]]]]]
+            [set i [i + 2]]
+            ]
+        ['{ + [result join ","] '}]
+    ]]
     ['new
       [fn [syn syn1]
         [if [syn1 == 'object]
