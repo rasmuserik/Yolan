@@ -46,31 +46,33 @@
 
 [if [[yolan get 'engine] fails] [console log 'Error\ detecting\ engine:]]
 
-
 [Section: Cross-platform file-io
-[if [engine == 'node]
-[exports set 'readTextFile [fn [fname callback]
-  [[module require 'fs] readFile fname 'utf8 callback]
-    [fn [err data] 
-      [if err
-	[return [callback call null [new object ['err err]]]]]
-      [callback call null data]]
-]]]
-[if [engine == 'web]
-  [exports set 'readTextFile [fn [fname callback]
-    [def req [new XMLHttpRequest]]
-      [req set
-        'onreadystatechange
-        [fn [event]
-          [if [[req get 'readyState] == 4]
-            [if [[[req get 'status] == 200] fails]
-                [return [callback call null [new object ['err 'Request\ error:\ status\ not\ 200\ OK] ['req req]]]]]
-            [callback call null [req get 'responseText]]]
-          undefined]]
-      [req open 'GET ['/readTextFile/ + fname] true]
-      [req send null]]
-]]
-]
+  [if [engine == 'node]
+    [exports set
+      'readTextFile
+      [fn [fname callback]
+        [[module require 'fs] readFile fname 'utf8 callback]
+        [fn [err data]
+          [if err [return [callback call null [new object ['err err]]]]]
+          [callback call null data]]]]]
+  [if [engine == 'web]
+    [exports set
+      'readTextFile
+      [fn [fname callback]
+        [def req [new XMLHttpRequest]]
+        [req set
+          'onreadystatechange
+          [fn [event]
+            [if [[req get 'readyState] == 4]
+              [if [[[req get 'status] == 200] fails]
+                [return
+                  [callback call null
+                    [new object
+                      ['err 'Request\ error:\ status\ not\ 200\ OK]
+                      ['req req]]]]]
+              [callback call null [req get 'responseText]]]
+            undefined]]
+        [req open 'GET ['/readTextFile/ + fname] true]
+        [req send null]]]]]
 
 [if [[[module jsType] == 'undefined] fails] [module set 'exports yolan]]
-

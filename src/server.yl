@@ -4,7 +4,7 @@
 
 [def xml [module require './xml]]
 
-[; def scriptList '[yolan webmain]]
+[; def scriptList ' [yolan webmain]]
 
 [def scriptList
   ['[yolan] concat

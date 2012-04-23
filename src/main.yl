@@ -1,14 +1,13 @@
 [Annotation: [Annotation: [; Start execution]]]
 
-[def engine [[module require [quote ./yolan]] get [quote engine]]]
+[def engine [[module require './yolan] get 'engine]]
 
 [def run
   [fn [args]
-    [def moduleName [[args get 0] or [engine + [quote main]]]]
-    [[[module require [[quote ./] + moduleName]] get [quote run]] apply null
+    [def moduleName [[args get 0] or [engine + 'main]]]
+    [[[module require ['./ + moduleName]] get 'run] apply null
       [args slice 1]]]]
 
-[exports set [quote run] run]
+[exports set 'run run]
 
-[if-else [engine == [quote node]]
-  [do [exports run [[process get [quote argv]] slice 2]]]]
+[if [engine == 'node] [exports run [[process get 'argv] slice 2]]]
