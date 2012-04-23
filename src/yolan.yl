@@ -28,21 +28,24 @@
           [set exports [new object]]
           [module set 'exports exports]
           [module set 'require require]
-          [[Function call null [readFile call null ['build/ + name '.js]]] call]
+          [[Function call null [readFile call null ['build/ + name '.js]]]
+            call]
           [console log exports]
-          [modules set name [module get 'exports]
-          [set module prevModule]
-          [set exports prevExports]
-          ]]
+          [modules set name
+            [module get 'exports]
+            [set module prevModule]
+            [set exports prevExports]]]
         [modules get name]]]
     [set console [new object]]
-    [console set 'log [fn []
-        [print call null [[[[Array get 'prototype] get 'slice] call arguments 0] join '\ ]]]]
+    [console set
+      'log
+      [fn []
+        [print call null
+          [[[[Array get 'prototype] get 'slice] call arguments 0] join '\ ]]]]
     [set module [new object]]
     [module set 'require require]]]
 
 [; Browser]
-
 
 [if [[[navigator jsType] == 'undefined] fails]
   [def loadedModules [new object ['yolan yolan]]]
@@ -123,8 +126,7 @@
                     [new object
                       ['err 'Request\ error:\ status\ not\ 200\ OK]
                       ['req req]]]]]
-
               [callback call null null]]
             undefined]]
-          [req open 'POST ['/writeTextFile/ + fname] true]
-          [req send data]]]]]
+        [req open 'POST ['/writeTextFile/ + fname] true]
+        [req send data]]]]]

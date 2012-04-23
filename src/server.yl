@@ -67,8 +67,13 @@
                   [url slice 15]
                   buf
                   [fn [err data]
-                    [if err [result writeHead 500 [new object ['Content-Type 'text/plain]]] [result end [err toString]] [return false]]
-                    [result writeHead 200 [new object ['Content-Type 'text/plain]]]
+                    [if err
+                      [result writeHead 500
+                        [new object ['Content-Type 'text/plain]]]
+                      [result end [err toString]]
+                      [return false]]
+                    [result writeHead 200
+                      [new object ['Content-Type 'text/plain]]]
                     [result end "OK"]]]]]
             [return true]]
           [if [[url slice 0 5] == '/get/]
