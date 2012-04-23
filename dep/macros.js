@@ -17,7 +17,7 @@ exports["transform"] = function(node) {
     };
     while (0 < i) {
         i = i - 1;
-        node = forwardTransform[i].call(null, node, finish);
+        node = forwardTransforms[i].call(null, node, finish);
         if (done) {
             return node;
         } else {}
@@ -47,7 +47,7 @@ exports["reverse"] = function(node) {
         return done = true;
     };
     while (i < reverseTransforms["length"]) {
-        node = reverseTransform[i].call(null, node, finish);
+        node = reverseTransforms[i].call(null, node, finish);
         if (done) {
             return node;
         } else {}
@@ -108,21 +108,23 @@ macros["quote"] = {
     }
 };
 
-macros["if"] = {
-    transform: function(node) {
+forwardTransforms.push(function(node) {
+    if (node[0] === "if") {
         return [ "if-else", exports.transform(node[1]), [ "do" ].concat(exports.transformList(node.slice(2))) ];
-    },
-    reverse: function(node) {
-        if (node[0] === "if-else" && node["length"] === 3) {
-            if (node[2][0] === "do") {
-                return [ "if", node[1] ].concat(node[2].slice(1));
-            } else {
-                return [ "if", node[1], node[2] ];
-            }
-        } else {}
-        return node;
-    }
-};
+    } else {}
+    return node;
+});
+
+reverseTransforms.push(function(node) {
+    if (node[0] === "if-else" && node["length"] === 3) {
+        if (node[2][0] === "do") {
+            return [ "if", node[1] ].concat(node[2].slice(1));
+        } else {
+            return [ "if", node[1], node[2] ];
+        }
+    } else {}
+    return node;
+});
 
 macros[";"] = {
     transform: function(node) {

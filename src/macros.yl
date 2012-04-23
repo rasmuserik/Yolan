@@ -17,7 +17,7 @@
         [def finish [fn [] [set done true]]]
         [while [0 < i]
           [set i [i - 1]]
-          [set node [[forwardTransform get i] call null node finish]]
+          [set node [[forwardTransforms get i] call null node finish]]
           [if done [return node]]]
         [; set node [node map [exports get ' transform]]]]
       [set node
@@ -41,7 +41,7 @@
         [def done false]
         [def finish [fn [] [set done true]]]
         [while [i < [reverseTransforms get 'length]]
-          [set node [[reverseTransform get i] call null node finish]]
+          [set node [[reverseTransforms get i] call null node finish]]
           [if done [return node]]
           [set i [i + 1]]]
         [; set node [node map [exports get ' transform]]]]
@@ -108,16 +108,15 @@
       [' reverse [fn [node] node]]]]]
 
 [Section: Conditionals
-  [macros set
-    'if
-    [new object
-      ['transform
-        [fn [node]
+  [forwardTransforms push [fn [node]
+    [if [[node get 0] == 'if]
+        [return
           [new array
             'if-else
             [exports transform [node get 1]]
             ['[do] concat [exports transformList [node slice 2]]]]]]
-      ['reverse
+    node]]
+  [reverseTransforms push 
         [fn [node]
           [if [[[node get 0] == 'if-else] and [[node get 'length] == 3]]
             [if-else [[[node get 2] get 0] == 'do]
@@ -125,7 +124,7 @@
                 [[new array 'if [node get 1]] concat
                   [[node get 2] slice 1]]]
               [return [new array 'if [node get 1] [node get 2]]]]]
-          node]]]]]
+    node]]]
 
 [Section: comments
   [macros set
@@ -166,7 +165,3 @@
               [[[node get 2] get 0] == 'do]]
             [return [[node get 1] concat [[node get 2] slice 1]]]]
           node]]]]]
-
-[; def x [new object [' foo [new object [' bar [fn [x] [x + 1]]]]]]]
-
-[; console log [x ' foo] [x ' foo ' bar] [x ' foo bar 41]]
