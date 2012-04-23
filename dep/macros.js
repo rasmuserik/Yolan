@@ -67,36 +67,30 @@ exports["reverseList"] = function(list) {
     return list.map(exports["reverse"]);
 };
 
-onEach.push({
-    transform: function(node) {
-        if (typeof node === "string") {
-            return node;
-        } else {}
-        var result = [];
-        if (node[0] === "'" && node["length"] === 2) {
-            return [ "quote" ].concat(node[1]);
-        } else {}
-        var i = 0;
-        while (i < node["length"]) {
-            if (node[i] === "'" && i + 1 < node["length"]) {
-                i = i + 1;
-                result.push([ "quote", node[i] ]);
-            } else {
-                result.push(node[i]);
-            }
+forwardTransforms.push(function(node, finish) {
+    var result = [];
+    if (node[0] === "'" && node["length"] === 2) {
+        finish.call();
+        return [ "quote" ].concat(node[1]);
+    } else {}
+    var i = 0;
+    while (i < node["length"]) {
+        if (node[i] === "'" && i + 1 < node["length"]) {
             i = i + 1;
+            result.push([ "quote", node[i] ]);
+        } else {
+            result.push(node[i]);
         }
-        return result;
-    },
-    reverse: function(node) {
-        if (typeof node === "string") {
-            return node;
-        } else {}
-        if (node["length"] === 2 && node[0] === "quote") {
-            return [ "'", node[1] ];
-        } else {}
-        return node;
+        i = i + 1;
     }
+    return result;
+});
+
+reverseTransforms.push(function(node) {
+    if (node["length"] === 2 && node[0] === "quote") {
+        return [ "'", node[1] ];
+    } else {}
+    return node;
 });
 
 macros["quote"] = {

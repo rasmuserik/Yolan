@@ -58,29 +58,25 @@
   [exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]]
 
 [Section: Quoting
-  [onEach push
-    [new object
-      ['transform
-        [fn [node]
-          [if [[node jsType] == 'string] [return node]]
-          [def result [new array]]
-          [if [[[node get 0] == ''] and [[node get 'length] == 2]]
-            [return ['[quote] concat [node get 1]]]]
-          [def i 0]
-          [while [i < [node get 'length]]
-            [if-else
-              [[[node get i] == ''] and [[i + 1] < [node get 'length]]]
-              [do [set i [i + 1]]
-                [result push [new array 'quote [node get i]]]]
-              [result push [node get i]]]
-            [set i [i + 1]]]
-          result]]
-      ['reverse
-        [fn [node]
-          [if [[node jsType] == 'string] [return node]]
-          [if [[[node get 'length] == 2] and [[node get 0] == 'quote]]
-            [return [new array '' [node get 1]]]]
-          node]]]]
+  [forwardTransforms push
+    [fn [node finish]
+      [def result [new array]]
+      [if [[[node get 0] == ''] and [[node get 'length] == 2]]
+        [finish call]
+        [return ['[quote] concat [node get 1]]]]
+      [def i 0]
+      [while [i < [node get 'length]]
+        [if-else [[[node get i] == ''] and [[i + 1] < [node get 'length]]]
+          [do [set i [i + 1]]
+            [result push [new array 'quote [node get i]]]]
+          [result push [node get i]]]
+        [set i [i + 1]]]
+      result]]
+  [reverseTransforms push
+    [fn [node]
+      [if [[[node get 'length] == 2] and [[node get 0] == 'quote]]
+        [return [new array '' [node get 1]]]]
+      node]]
   [macros set
     'quote
     [new object ['transform [fn [node] node]] ['reverse [fn [node] node]]]]]
@@ -145,25 +141,25 @@
   [forwardTransforms push
     [fn [node finish]
       [if [[node get 0] == 'Section:]
-          [finish call]
-          [def doc '[]]
-          [def code '[do]]
-          [def i 0]
-          [while [[[node get i] jsType] == 'string]
-            [doc push [node get i]]
-            [set i [i + 1]]]
-          [while [i < [node get 'length]]
-            [code push [node get i]]
-            [set i [i + 1]]]
-          [set code [exports transform code]]
-          [return [new array 'Annotation: doc code]]]
-       node]]
+        [finish call]
+        [def doc '[]]
+        [def code '[do]]
+        [def i 0]
+        [while [[[node get i] jsType] == 'string]
+          [doc push [node get i]]
+          [set i [i + 1]]]
+        [while [i < [node get 'length]]
+          [code push [node get i]]
+          [set i [i + 1]]]
+        [set code [exports transform code]]
+        [return [new array 'Annotation: doc code]]]
+      node]]
   [reverseTransforms push
-        [fn [node]
-          [if
-            [[[node get 0] == 'Annotation:] and
-              [[node get 'length] == 3]
-              [[[node get 1] get 0] == 'Section:]
-              [[[node get 2] get 0] == 'do]]
-            [return [[node get 1] concat [[node get 2] slice 1]]]]
-          node]]]
+    [fn [node]
+      [if
+        [[[node get 0] == 'Annotation:] and
+          [[node get 'length] == 3]
+          [[[node get 1] get 0] == 'Section:]
+          [[[node get 2] get 0] == 'do]]
+        [return [[node get 1] concat [[node get 2] slice 1]]]]
+      node]]]
