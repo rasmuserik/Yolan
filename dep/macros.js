@@ -46,7 +46,7 @@ exports["reverse"] = function(node) {
         } else {}
         i = i + 1;
     }
-    node = node.map(exports["transform"]);
+    node = node.map(exports["reverse"]);
     return node;
 };
 
