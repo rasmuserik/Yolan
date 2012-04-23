@@ -39,14 +39,6 @@ exports["run"] = function() {
             result.writeHead(200, {
                 "Content-Type": "text/plain"
             });
-            result.end("");
-            return true;
-        } else {}
-        if (url.slice(0, 5) === "/put/") {
-            console.log(request);
-            result.writeHead(200, {
-                "Content-Type": "text/plain"
-            });
             fs.readFile("./src/" + url.slice(5) + ".yl", "utf8", function(err, data) {
                 if (err) {
                     result.end(err.toString());
@@ -56,11 +48,30 @@ exports["run"] = function() {
             });
             return true;
         } else {}
+        if (url.slice(0, 5) === "/put/") {
+            var buf = "";
+            result.writeHead(200, {
+                "Content-Type": "text/plain"
+            });
+            request.on("data", function(data) {
+                return buf = buf + data.toString();
+            });
+            request.on("end", function(data) {
+                return fs.writeFile("./src/" + url.slice(5) + ".yl", buf, function(err, data) {
+                    if (err) {
+                        result.end(err.toString());
+                        return false;
+                    } else {}
+                    return result.end("");
+                });
+            });
+            return true;
+        } else {}
         result.writeHead(200, {
             "Content-Type": "text/html"
         });
         result.end(head + body);
         return true;
-    }).listen(1234);
+    }).listen(1234, "localhost");
     return console.log([ "starting", "server", "on", "localhost", "port", "1234" ]);
 };

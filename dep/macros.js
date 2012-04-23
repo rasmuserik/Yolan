@@ -2,10 +2,26 @@ var macros = {};
 
 var onEach = [];
 
+var forwardTransforms = [];
+
+var reverseTransforms = [];
+
 exports["transform"] = function(node) {
     if (typeof node === "string") {
         return node;
     } else {}
+    var i = forwardTransforms["length"];
+    var done = false;
+    var finish = function() {
+        return done = true;
+    };
+    while (0 < i) {
+        i = i - 1;
+        node = forwardTransform[i].call(null, node, finish);
+        if (done) {
+            return node;
+        } else {}
+    }
     node = onEach.reduce(function(acc, obj) {
         return obj["transform"].call(null, acc);
     }, node);
@@ -25,6 +41,18 @@ exports["reverse"] = function(node) {
     if (typeof node === "string") {
         return node;
     } else {}
+    var i = 0;
+    var done = false;
+    var finish = function() {
+        return done = true;
+    };
+    while (i < reverseTransforms["length"]) {
+        node = reverseTransform[i].call(null, node, finish);
+        if (done) {
+            return node;
+        } else {}
+        i = i + 1;
+    }
     node = onEach.reverse().reduce(function(acc, obj) {
         return obj["reverse"].call(null, acc);
     }, node);

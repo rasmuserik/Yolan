@@ -2,40 +2,60 @@
 
 [def onEach [new array]]
 
-[exports set
-  'transform
-  [fn [node]
-    [if [[node jsType] == 'string] [return node]]
-    [set node
-      [onEach reduce
-        [fn [acc obj] [[obj get 'transform] call null acc]]
-        node]]
-    [if-else [macros get [node get 0]]
+[def forwardTransforms [new array]]
+
+[def reverseTransforms [new array]]
+
+[Section: Macro system
+  [exports set
+    'transform
+    [fn [node]
+      [if [[node jsType] == 'string] [return node]]
+      [Section: macro transform
+        [def i [forwardTransforms get 'length]]
+        [def done false]
+        [def finish [fn [] [set done true]]]
+        [while [0 < i]
+          [set i [i - 1]]
+          [set node [[forwardTransform get i] call null node finish]]
+          [if done [return node]]]
+        [; set node [node map [exports get ' transform]]]]
       [set node
-        [[[macros get [node get 0]] get 'transform] call null node]]
-      [set node [node map [exports get 'transform]]]]
-    node]]
-
-[exports set
-  'transformList
-  [fn [list] [list map [exports get 'transform]]]]
-
-[exports set
-  'reverse
-  [fn [node]
-    [if [[node jsType] == 'string] [return node]]
-    [set node
-      [[onEach reverse] reduce
-        [fn [acc obj] [[obj get 'reverse] call null acc]]
-        node]]
-    [set node [exports reverseList node]]
-    [set node
-      [[[Object keys macros] reverse] reduce
-        [fn [acc obj] [[[macros get obj] get 'reverse] call null acc]]
-        node]]
-    node]]
-
-[exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]
+        [onEach reduce
+          [fn [acc obj] [[obj get 'transform] call null acc]]
+          node]]
+      [if-else [macros get [node get 0]]
+        [set node
+          [[[macros get [node get 0]] get 'transform] call null node]]
+        [set node [node map [exports get 'transform]]]]
+      node]]
+  [exports set
+    'transformList
+    [fn [list] [list map [exports get 'transform]]]]
+  [exports set
+    'reverse
+    [fn [node]
+      [if [[node jsType] == 'string] [return node]]
+      [Section: macro transform
+        [def i 0]
+        [def done false]
+        [def finish [fn [] [set done true]]]
+        [while [i < [reverseTransforms get 'length]]
+          [set node [[reverseTransform get i] call null node finish]]
+          [if done [return node]]
+          [set i [i + 1]]]
+        [; set node [node map [exports get ' transform]]]]
+      [set node
+        [[onEach reverse] reduce
+          [fn [acc obj] [[obj get 'reverse] call null acc]]
+          node]]
+      [set node [exports reverseList node]]
+      [set node
+        [[[Object keys macros] reverse] reduce
+          [fn [acc obj] [[[macros get obj] get 'reverse] call null acc]]
+          node]]
+      node]]
+  [exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]]
 
 [Section: Quoting
   [onEach push
