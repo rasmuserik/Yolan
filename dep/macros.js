@@ -22,14 +22,7 @@ exports["transform"] = function(node) {
             return node;
         } else {}
     }
-    node = onEach.reduce(function(acc, obj) {
-        return obj["transform"].call(null, acc);
-    }, node);
-    if (macros[node[0]]) {
-        node = macros[node[0]]["transform"].call(null, node);
-    } else {
-        node = node.map(exports["transform"]);
-    }
+    node = node.map(exports["transform"]);
     return node;
 };
 
@@ -53,13 +46,7 @@ exports["reverse"] = function(node) {
         } else {}
         i = i + 1;
     }
-    node = onEach.reverse().reduce(function(acc, obj) {
-        return obj["reverse"].call(null, acc);
-    }, node);
-    node = exports.reverseList(node);
-    node = Object.keys(macros).reverse().reduce(function(acc, obj) {
-        return macros[obj]["reverse"].call(null, acc);
-    }, node);
+    node = node.map(exports["transform"]);
     return node;
 };
 

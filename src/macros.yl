@@ -19,15 +19,7 @@
           [set i [i - 1]]
           [set node [[forwardTransforms get i] call null node finish]]
           [if done [return node]]]
-        [; set node [node map [exports get ' transform]]]]
-      [set node
-        [onEach reduce
-          [fn [acc obj] [[obj get 'transform] call null acc]]
-          node]]
-      [if-else [macros get [node get 0]]
-        [set node
-          [[[macros get [node get 0]] get 'transform] call null node]]
-        [set node [node map [exports get 'transform]]]]
+        [set node [node map [exports get ' transform]]]]
       node]]
   [exports set
     'transformList
@@ -44,16 +36,7 @@
           [set node [[reverseTransforms get i] call null node finish]]
           [if done [return node]]
           [set i [i + 1]]]
-        [; set node [node map [exports get ' transform]]]]
-      [set node
-        [[onEach reverse] reduce
-          [fn [acc obj] [[obj get 'reverse] call null acc]]
-          node]]
-      [set node [exports reverseList node]]
-      [set node
-        [[[Object keys macros] reverse] reduce
-          [fn [acc obj] [[[macros get obj] get 'reverse] call null acc]]
-          node]]
+        [set node [node map [exports get ' transform]]]]
       node]]
   [exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]]
 
