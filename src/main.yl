@@ -1,13 +1,23 @@
-[Annotation: [Annotation: [; Start execution]]]
+[Annotation: [; Start execution]]
+
+
+[if [[[require jsType] == 'undefined] and [[load jsType] == 'function]]
+    [load call null 'build/yolan.js]
+    [def exports [new object]]]
+
 
 [def engine [[module require './yolan] get 'engine]]
 
 [def run
   [fn [args]
     [def moduleName [[args get 0] or [engine + 'main]]]
+    [console log 'getting moduleName]
     [[[module require ['./ + moduleName]] get 'run] apply null
       [args slice 1]]]]
 
 [exports set 'run run]
 
 [if [engine == 'node] [exports run [[process get 'argv] slice 2]]]
+
+[if [engine == 'rhino] [exports run [[[Array get 'prototype] get 'slice] call arguments 0]]]
+
