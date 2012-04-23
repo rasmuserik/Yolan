@@ -4,4 +4,4 @@
     [console log 'hello]
     [[module require './yolan] readTextFile
       'src/hello.yl
-      [fn [result] [console log result]]]]]
+      [fn [err result] [console log result]]]]]

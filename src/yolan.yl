@@ -1,5 +1,10 @@
 [set yolan [new object]]
 
+[if-else [[exports jsType] == 'undefined]
+    [set exports yolan]
+    [set yolan exports]]
+[if [[[module jsType] == 'undefined] fails] [module set 'exports yolan]]
+
 [def engine undefined]
 
 [; Node]
@@ -8,7 +13,19 @@
 
 [; Rhino]
 
-[if [[[java jsType] == 'undefined] fails] [set engine 'rhino]]
+[ if [[[java jsType] == 'undefined] fails] 
+    [set engine 'rhino]
+    [if [[require jsType] == 'undefined] 
+        [def modules [new object ['./yolan yolan]]]
+        [def require [fn [name]
+            [if [[modules get name] fails]
+                [set module [new object]]
+                [set exports [new object]]
+                [module set 'exports exports]
+                [module set 'require require]
+                [load call null ['build/ + name '.js]]
+                [modules set name [module get 'exports]]]
+            [modules get name]]]]]
 
 [; Browser]
 
@@ -48,15 +65,12 @@
 
 [Section: Cross-platform file-io
   [if [engine == 'node]
-    [exports set
+    [yolan set
       'readTextFile
       [fn [fname callback]
-        [[module require 'fs] readFile fname 'utf8 callback]
-        [fn [err data]
-          [if err [return [callback call null [new object ['err err]]]]]
-          [callback call null data]]]]]
+        [[module require 'fs] readFile fname 'utf8  callback]]]]
   [if [engine == 'web]
-    [exports set
+    [yolan set
       'readTextFile
       [fn [fname callback]
         [def req [new XMLHttpRequest]]
@@ -70,9 +84,31 @@
                     [new object
                       ['err 'Request\ error:\ status\ not\ 200\ OK]
                       ['req req]]]]]
-              [callback call null [req get 'responseText]]]
+              [callback call null null [req get 'responseText]]]
             undefined]]
         [req open 'GET ['/readTextFile/ + fname] true]
-        [req send null]]]]]
-
-[if [[[module jsType] == 'undefined] fails] [module set 'exports yolan]]
+        [req send null]]]]
+  [if [engine == 'node]
+    [yolan set
+      'writeTextFile
+      [fn [fname content callback]
+        [[module require 'fs] writeFile fname data 'utf8 callback]]]]
+  [if [engine == 'web]
+    [yolan set
+      'writeTextFile
+      [fn [fname data callback]
+        [def req [new XMLHttpRequest]]
+        [req set
+          'onreadystatechange
+          [fn [event]
+            [if [[req get 'readyState] == 4]
+              [if [[[req get 'status] == 200] fails]
+                [return
+                  [callback call null
+                    [new object
+                      ['err 'Request\ error:\ status\ not\ 200\ OK]
+                      ['req req]]]]]
+              [callback call null null]]
+            undefined]
+        [req open 'POST ['/writeTextFile/ + fname] true]
+        [req send data]]]]]]

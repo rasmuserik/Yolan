@@ -2,6 +2,8 @@
 
 [def fs [module require 'fs]]
 
+[def yolan [module require './yolan]]
+
 [def xml [module require './xml]]
 
 [; def scriptList ' [yolan webmain]]
@@ -20,7 +22,7 @@
     [[scriptList map
         [fn [name] ['<script\ src="/ + name '.js"></script>]]]
       join ""]
-    '<script>console.log("A",require("./yolan"));require("./yolan").run(location.hash.slice(1).split("\ "));</script></body></html>]]
+    '<script>require("./main").run(location.hash.slice(1).split("\ "));</script></body></html>]]
 
 [exports set
   'run
@@ -45,6 +47,14 @@
                     '});]]]]
             [return true]]
           [console log [url slice 0 5]]
+          [if [[url slice 0 14] == '/readTextFile/]
+            [result writeHead 200 [new object ['Content-Type 'text/plain]]]
+            [yolan readTextFile
+              [url slice 14]
+              [fn [err data]
+                [if err [result end [JSON stringify err]] [return false]]
+                [result end data]]]
+            [return true]]
           [if [[url slice 0 5] == '/get/]
             [result writeHead 200 [new object ['Content-Type 'text/plain]]]
             [fs readFile
