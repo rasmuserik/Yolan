@@ -68,11 +68,11 @@ exports["reverseList"] = function(list) {
 };
 
 forwardTransforms.push(function(node, finish) {
-    var result = [];
     if (node[0] === "'" && node["length"] === 2) {
         finish.call();
         return [ "quote" ].concat(node[1]);
     } else {}
+    var result = [];
     var i = 0;
     while (i < node["length"]) {
         if (node[i] === "'" && i + 1 < node["length"]) {
@@ -93,14 +93,12 @@ reverseTransforms.push(function(node) {
     return node;
 });
 
-macros["quote"] = {
-    transform: function(node) {
-        return node;
-    },
-    reverse: function(node) {
-        return node;
-    }
-};
+forwardTransforms.push(function(node, finish) {
+    if (node[0] === "quote") {
+        finish.call();
+    } else {}
+    return node;
+});
 
 forwardTransforms.push(function(node) {
     if (node[0] === "if") {

@@ -60,10 +60,10 @@
 [Section: Quoting
   [forwardTransforms push
     [fn [node finish]
-      [def result [new array]]
       [if [[[node get 0] == ''] and [[node get 'length] == 2]]
         [finish call]
         [return ['[quote] concat [node get 1]]]]
+      [def result [new array]]
       [def i 0]
       [while [i < [node get 'length]]
         [if-else [[[node get i] == ''] and [[i + 1] < [node get 'length]]]
@@ -77,9 +77,11 @@
       [if [[[node get 'length] == 2] and [[node get 0] == 'quote]]
         [return [new array '' [node get 1]]]]
       node]]
-  [macros set
-    'quote
-    [new object ['transform [fn [node] node]] ['reverse [fn [node] node]]]]]
+  [forwardTransforms push
+    [fn [node finish]
+      [if [[node get 0] == 'quote]
+        [finish call]]
+      node]]]
 
 [; Section: shorthand for get
   [# Commented out because \[...\'... \] actually may happen, ie:
