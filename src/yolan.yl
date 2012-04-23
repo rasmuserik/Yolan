@@ -43,9 +43,9 @@
 
 [; Browser]
 
-[def loadedModules [new object]]
 
 [if [[[navigator jsType] == 'undefined] fails]
+  [def loadedModules [new object ['yolan yolan]]]
   [set engine 'web]
   [if [[window get 'require] fails]
     [def modules [new object]]
@@ -115,6 +115,7 @@
         [req set
           'onreadystatechange
           [fn [event]
+            [if [callback fails] return]
             [if [[req get 'readyState] == 4]
               [if [[[req get 'status] == 200] fails]
                 [return
@@ -122,7 +123,8 @@
                     [new object
                       ['err 'Request\ error:\ status\ not\ 200\ OK]
                       ['req req]]]]]
+
               [callback call null null]]
-            undefined]
+            undefined]]
           [req open 'POST ['/writeTextFile/ + fname] true]
-          [req send data]]]]]]
+          [req send data]]]]]

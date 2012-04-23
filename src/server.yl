@@ -55,6 +55,22 @@
                 [if err [result end [JSON stringify err]] [return false]]
                 [result end data]]]
             [return true]]
+          [if [[url slice 0 15] == '/writeTextFile/]
+            [def buf ""]
+            [request on
+              'data
+              [fn [data] [set buf [buf + [data toString]]]]]
+            [request on
+              'end
+              [fn [data]
+                [fs writeFile
+                  [url slice 15]
+                  buf
+                  [fn [err data]
+                    [if err [result writeHead 500 [new object ['Content-Type 'text/plain]]] [result end [err toString]] [return false]]
+                    [result writeHead 200 [new object ['Content-Type 'text/plain]]]
+                    [result end "OK"]]]]]
+            [return true]]
           [if [[url slice 0 5] == '/get/]
             [result writeHead 200 [new object ['Content-Type 'text/plain]]]
             [fs readFile
