@@ -19,11 +19,12 @@
           [set i [i - 1]]
           [set node [[forwardTransforms get i] call null node finish]]
           [if done [return node]]]
-        [set node [node map [exports get ' transform]]]]
+        [set node [node map [exports get 'transform]]]]
       node]]
   [exports set
     'transformList
     [fn [list] [list map [exports get 'transform]]]]
+
   [exports set
     'reverse
     [fn [node]
@@ -36,7 +37,7 @@
           [set node [[reverseTransforms get i] call null node finish]]
           [if done [return node]]
           [set i [i + 1]]]
-        [set node [node map [exports get ' transform]]]]
+        [set node [node map [exports get 'reverse]]]]
       node]]
   [exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]]
 
@@ -55,6 +56,7 @@
           [result push [node get i]]]
         [set i [i + 1]]]
       result]]
+
   [reverseTransforms push
     [fn [node]
       [if [[[node get 'length] == 2] and [[node get 0] == 'quote]]
