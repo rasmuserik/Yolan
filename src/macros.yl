@@ -108,43 +108,44 @@
       [' reverse [fn [node] node]]]]]
 
 [Section: Conditionals
-  [forwardTransforms push [fn [node]
-    [if [[node get 0] == 'if]
+  [forwardTransforms push
+    [fn [node]
+      [if [[node get 0] == 'if]
         [return
           [new array
             'if-else
             [exports transform [node get 1]]
             ['[do] concat [exports transformList [node slice 2]]]]]]
-    node]]
-  [reverseTransforms push 
-        [fn [node]
-          [if [[[node get 0] == 'if-else] and [[node get 'length] == 3]]
-            [if-else [[[node get 2] get 0] == 'do]
-              [return
-                [[new array 'if [node get 1]] concat
-                  [[node get 2] slice 1]]]
-              [return [new array 'if [node get 1] [node get 2]]]]]
-    node]]]
+      node]]
+  [reverseTransforms push
+    [fn [node]
+      [if [[[node get 0] == 'if-else] and [[node get 'length] == 3]]
+        [if-else [[[node get 2] get 0] == 'do]
+          [return
+            [[new array 'if [node get 1]] concat [[node get 2] slice 1]]]
+          [return [new array 'if [node get 1] [node get 2]]]]]
+      node]]]
 
 [Section: comments
-  [macros set
-    ';
-    [new object
-      ['transform
-        [fn [node] [new array 'Annotation: ['[;] concat [node slice 1]]]]]
-      ['reverse
-        [fn [node]
-          [if
-            [[[node get 0] == 'Annotation:] and
-              [[node get 'length] == 2]
-              [[[node get 1] get 0] == ';]]
-            [return [node get 1]]]
-          node]]]]
-  [macros set
-    'Section:
-    [new object
-      ['transform
-        [fn [node]
+  [forwardTransforms push
+    [fn [node finish]
+      [if [[node get 0] == ';]
+        [finish call]
+        [return [new array 'Annotation: node]]]
+      node]]
+  [reverseTransforms push
+    [fn [node finish]
+      [if
+        [[[node get 0] == 'Annotation:] and
+          [[node get 'length] == 2]
+          [[[node get 1] get 0] == ';]]
+        [finish call]
+        [return [node get 1]]]
+      node]]
+  [forwardTransforms push
+    [fn [node finish]
+      [if [[node get 0] == 'Section:]
+          [finish call]
           [def doc '[]]
           [def code '[do]]
           [def i 0]
@@ -155,8 +156,9 @@
             [code push [node get i]]
             [set i [i + 1]]]
           [set code [exports transform code]]
-          [new array 'Annotation: doc code]]]
-      ['reverse
+          [return [new array 'Annotation: doc code]]]
+       node]]
+  [reverseTransforms push
         [fn [node]
           [if
             [[[node get 0] == 'Annotation:] and
@@ -164,4 +166,4 @@
               [[[node get 1] get 0] == 'Section:]
               [[[node get 2] get 0] == 'do]]
             [return [[node get 1] concat [[node get 2] slice 1]]]]
-          node]]]]]
+          node]]]

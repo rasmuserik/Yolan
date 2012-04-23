@@ -7,36 +7,39 @@
       'innerHTML
       [[module require './xml] fromYl
         '[div
-          [[style position: absolute; top: 0px; left: 0px; margin: 0; padding:
-              0; width: 100%; height: 100%; overflow: hidden]]
+          [[style position: absolute; top: 0px; left: 0px; margin: 0;
+              padding: 0; width: 100%; height: 100%; overflow: hidden]]
           [textarea [[id editarea] [style width:100%; height: 90%]] \ ]
-          [button [[id savebutton][style position: absolute; top: 90%; left 0; width:100%; height: 10%]] save] 
-          ]]]
+          [button
+            [[id savebutton]
+              [style position: absolute; top: 90%; left 0; width:100%;
+                height: 10%]]
+            save]]]]
     [Section: Load content into textarea
-        [def req [new XMLHttpRequest]]
-        [req set 'onreadystatechange [fn [event]
-           [if [[req get 'readyState] == 4]
+      [def req [new XMLHttpRequest]]
+      [req set
+        'onreadystatechange
+        [fn [event]
+          [if [[req get 'readyState] == 4]
             [console log 'httpResult [req get 'status]]
             [console log [req get 'responseText]]
-            [[document getElementById 'editarea] set 'value [req get 'responseText]]
+            [[document getElementById 'editarea] set
+              'value
+              [req get 'responseText]]
             [console log req]]
-           undefined
-        ]]
-        [req open 'GET ['/get/ + fname] true]
-        [req send null]
-     ]
-     [Section: Save button
-        [[document getElementById 'savebutton] set 'onclick [fn [ev]
-        [def req [new XMLHttpRequest]]
-        [req set 'onreadystatechange [fn [event]
-           [if [[req get 'readyState] == 4]
-            [console log req]]
-           undefined
-        ]]
-        [req open 'POST ['/put/ + fname] true]
-        [req send [[document getElementById 'editarea] get 'value]]
-        ]]
-     ]
-
-     
-     undefined]]
+          undefined]]
+      [req open 'GET ['/get/ + fname] true]
+      [req send null]]
+    [Section: Save button
+      [[document getElementById 'savebutton] set
+        'onclick
+        [fn [ev]
+          [def req [new XMLHttpRequest]]
+          [req set
+            'onreadystatechange
+            [fn [event]
+              [if [[req get 'readyState] == 4] [console log req]]
+              undefined]]
+          [req open 'POST ['/put/ + fname] true]
+          [req send [[document getElementById 'editarea] get 'value]]]]]
+    undefined]]

@@ -57,19 +57,22 @@
           [if [[url slice 0 5] == '/put/]
             [def buf ""]
             [result writeHead 200 [new object ['Content-Type 'text/plain]]]
-            [request on 'data [fn [data]
-               [set buf [buf + [data toString]]]]]
-            [request on 'end[fn [data]
-             [fs writeFile
-              ['./src/ + [url slice 5] '.yl]
-              buf
-              [fn [err data]
-                [if err [result end [err toString]] [return false]]
-            [result end ""]]]]]
+            [request on
+              'data
+              [fn [data] [set buf [buf + [data toString]]]]]
+            [request on
+              'end
+              [fn [data]
+                [fs writeFile
+                  ['./src/ + [url slice 5] '.yl]
+                  buf
+                  [fn [err data]
+                    [if err [result end [err toString]] [return false]]
+                    [result end ""]]]]]
             [return true]]
-
           [result writeHead 200 [new object ['Content-Type 'text/html]]]
           [result end [head + body]]
           true]]
-      listen 1234 'localhost]
+      listen 1234
+      'localhost]
     [console log '[starting server on localhost port 1234]]]]

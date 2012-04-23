@@ -126,20 +126,25 @@ reverseTransforms.push(function(node) {
     return node;
 });
 
-macros[";"] = {
-    transform: function(node) {
-        return [ "Annotation:", [ ";" ].concat(node.slice(1)) ];
-    },
-    reverse: function(node) {
-        if (node[0] === "Annotation:" && node["length"] === 2 && node[1][0] === ";") {
-            return node[1];
-        } else {}
-        return node;
-    }
-};
+forwardTransforms.push(function(node, finish) {
+    if (node[0] === ";") {
+        finish.call();
+        return [ "Annotation:", node ];
+    } else {}
+    return node;
+});
 
-macros["Section:"] = {
-    transform: function(node) {
+reverseTransforms.push(function(node, finish) {
+    if (node[0] === "Annotation:" && node["length"] === 2 && node[1][0] === ";") {
+        finish.call();
+        return node[1];
+    } else {}
+    return node;
+});
+
+forwardTransforms.push(function(node, finish) {
+    if (node[0] === "Section:") {
+        finish.call();
         var doc = [];
         var code = [ "do" ];
         var i = 0;
@@ -153,11 +158,13 @@ macros["Section:"] = {
         }
         code = exports.transform(code);
         return [ "Annotation:", doc, code ];
-    },
-    reverse: function(node) {
-        if (node[0] === "Annotation:" && node["length"] === 3 && node[1][0] === "Section:" && node[2][0] === "do") {
-            return node[1].concat(node[2].slice(1));
-        } else {}
-        return node;
-    }
-};
+    } else {}
+    return node;
+});
+
+reverseTransforms.push(function(node) {
+    if (node[0] === "Annotation:" && node["length"] === 3 && node[1][0] === "Section:" && node[2][0] === "do") {
+        return node[1].concat(node[2].slice(1));
+    } else {}
+    return node;
+});
