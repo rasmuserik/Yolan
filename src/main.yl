@@ -1,0 +1,14 @@
+[Annotation: [Annotation: [; Start execution]]]
+
+[def engine [[module require [quote ./yolan]] get [quote engine]]]
+
+[def run
+  [fn [args]
+    [def moduleName [[args get 0] or [engine + [quote main]]]]
+    [[[module require [[quote ./] + moduleName]] get [quote run]] apply null
+      [args slice 1]]]]
+
+[exports set [quote run] run]
+
+[if-else [engine == [quote node]]
+  [do [exports run [[process get [quote argv]] slice 2]]]]
