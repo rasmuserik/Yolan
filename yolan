@@ -1,2 +1,2 @@
-install -d build
+install -d build test-tmp
 node ./build/main.js $*

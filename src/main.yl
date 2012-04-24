@@ -9,7 +9,6 @@
 [def run
   [fn [args]
     [def moduleName [[args get 0] or [engine + 'main]]]
-    [console log 'getting moduleName]
     [[[module require ['./ + moduleName]] get 'run] apply null
       [args slice 1]]]]
 

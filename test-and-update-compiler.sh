@@ -12,5 +12,4 @@ do
     diff $x ../test-tmp/$x || exit 1
 done
 cd ..
-rm -fr test-tmp
 cp build/*.js dep

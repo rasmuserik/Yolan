@@ -30,7 +30,6 @@
           [module set 'require require]
           [[Function call null [readFile call null ['build/ + name '.js]]]
             call]
-          [console log exports]
           [modules set name
             [module get 'exports]
             [set module prevModule]
@@ -109,7 +108,7 @@
     [yolan set
       'writeTextFile
       [fn [fname content callback]
-        [[module require 'fs] writeFile fname data 'utf8 callback]]]]
+        [[module require 'fs] writeFile fname content 'utf8 callback]]]]
   [if [engine == 'web]
     [yolan set
       'writeTextFile
