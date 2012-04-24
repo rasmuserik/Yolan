@@ -1,18 +1,21 @@
 [def test exports]
 
 [Section: testing library
-  [test set 'start [fn [testname] [console log 'Starting\ test: testname]]]
+  [def proto
+    [new object
+      ['fail
+        [fn [message]
+          [console log 'Test\ failure: [this get 'name] message]
+          this]]
+      ['assertEqual
+        [fn [a b] [console log 'AssertEqual a b '( [this get 'name] ')]]]
+      ['done [fn [] [console log 'Test\ done [this get 'name]]]]]]
   [test set
-    'fail
-    [fn [testname message]
-      [console log 'Test\ failed: testname 'with\ message: message]]]
-  [test set
-    'finish
-    [fn [testname] [console log 'Test\ finished: testname]]]
-  [test set
-    'assertEqual
-    [fn [testname val1 val2]
-      [console log 'Assert\ equal: val1 val2 'in\ test: testname]]]]
+    'create
+    [fn [name]
+      [def result [Object create proto]]
+      [result set 'name name]
+      result]]]
 
 [def yolan [module require './yolan]]
 
@@ -20,16 +23,16 @@
   'run
   [fn [args]
     [Section: yolan test
-      [test start 'yolanIO]
+      [def testcase [test create 'yolanIO]]
       [yolan writeTextFile
         'test-tmp/yolanIOtest
         'testvalue
         [fn [err]
-          [if err [test fail 'yolanIO 'writeError]]
+          [if err [testcase fail 'writeError]]
           [yolan readTextFile
             'test-tmp/yolanIOtest
             [fn [err data]
-              [if err [test fail 'yolanIO 'readError]]
-              [test assertEqual 'yolanIO data 'testvalue]
-              [test finish 'yolanIO]]]]]]
+              [if err [testcase fail 'readError]]
+              [testcase assertEqual data 'testvalue]
+              [testcase done]]]]]]
     undefined]]
