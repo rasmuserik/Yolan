@@ -1,0 +1,20 @@
+[def test exports]
+[Section: testing library
+[test set 'start [fn [testname] [console log 'Starting\ test: testname]]]
+[test set 'fail [fn [testname message] [console log 'Test\ failed: testname 'with\ message: message]]]
+[test set 'finish [fn [testname] [console log 'Test\ finished: testname]]]
+[test set 'assertEqual [fn [testname val1 val2] [console log 'Assert\ equal: val1 val2 'in\ test: testname]]]]
+
+[def yolan [module require './yolan]]
+[test set 'run [fn [args]
+[Section: yolan test
+    [test start 'yolanIO]
+    [yolan writeTextFile 'test-tmp/yolanIOtest 'testvalue [fn [err]
+        [if err [test fail 'yolanIO 'writeError]]
+        [yolan readTextFile 'test-tmp/yolanIOtest [fn [err data]
+        [if err [test fail 'yolanIO 'readError]]
+        [test assertEqual 'yolanIO data 'testvalue]
+        [test finish 'yolanIO]]]]]]
+       undefined 
+        ]
+        ]
