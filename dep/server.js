@@ -2,6 +2,8 @@ var http = module.require("http");
 
 var fs = module.require("fs");
 
+var yolan = module.require("./yolan");
+
 var xml = module.require("./xml");
 
 var scriptList = [ "yolan" ].concat(fs.readdirSync("src").filter(function(name) {
@@ -14,7 +16,7 @@ var head = "<!DOCTYPE html><html>" + xml.fromYl(module.require("./htmlheader"));
 
 var body = "<body><script>function define(_,_,f){f()};</script>" + scriptList.map(function(name) {
     return '<script src="/' + name + '.js"></script>';
-}).join("") + '<script>console.log("A",require("./yolan"));require("./yolan").run(location.hash.slice(1).split(" "));</script></body></html>';
+}).join("") + '<script>require("./main").run(location.hash.slice(1).split(" "));</script></body></html>';
 
 exports["run"] = function() {
     http.createServer(function(request, result) {
@@ -35,6 +37,41 @@ exports["run"] = function() {
             return true;
         } else {}
         console.log(url.slice(0, 5));
+        if (url.slice(0, 14) === "/readTextFile/") {
+            result.writeHead(200, {
+                "Content-Type": "text/plain"
+            });
+            yolan.readTextFile(url.slice(14), function(err, data) {
+                if (err) {
+                    result.end(JSON.stringify(err));
+                    return false;
+                } else {}
+                return result.end(data);
+            });
+            return true;
+        } else {}
+        if (url.slice(0, 15) === "/writeTextFile/") {
+            var buf = "";
+            request.on("data", function(data) {
+                return buf = buf + data.toString();
+            });
+            request.on("end", function(data) {
+                return fs.writeFile(url.slice(15), buf, function(err, data) {
+                    if (err) {
+                        result.writeHead(500, {
+                            "Content-Type": "text/plain"
+                        });
+                        result.end(err.toString());
+                        return false;
+                    } else {}
+                    result.writeHead(200, {
+                        "Content-Type": "text/plain"
+                    });
+                    return result.end("OK");
+                });
+            });
+            return true;
+        } else {}
         if (url.slice(0, 5) === "/get/") {
             result.writeHead(200, {
                 "Content-Type": "text/plain"

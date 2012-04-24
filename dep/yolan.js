@@ -1,5 +1,15 @@
 yolan = {};
 
+if (typeof exports === "undefined") {
+    exports = yolan;
+} else {
+    yolan = exports;
+}
+
+if (!(typeof module === "undefined")) {
+    module["exports"] = yolan;
+} else {}
+
 var engine = undefined;
 
 if (!(typeof process === "undefined")) {
@@ -8,11 +18,37 @@ if (!(typeof process === "undefined")) {
 
 if (!(typeof java === "undefined")) {
     engine = "rhino";
+    if (typeof require === "undefined") {
+        var modules = {
+            "./yolan": yolan
+        };
+        require = function(name) {
+            if (!modules[name]) {
+                console.log("loading module", name);
+                var prevModule = module;
+                var prevExports = exports;
+                module = {};
+                exports = {};
+                module["exports"] = exports;
+                module["require"] = require;
+                Function.call(null, readFile.call(null, "build/" + name + ".js")).call();
+                modules[name] = module["exports"];
+            } else {}
+            return modules[name];
+        };
+        console = {};
+        console["log"] = function() {
+            return print.call(null, Array["prototype"]["slice"].call(arguments, 0).join(" "));
+        };
+        module = {};
+        module["require"] = require;
+    } else {}
 } else {}
 
-var loadedModules = {};
-
 if (!(typeof navigator === "undefined")) {
+    var loadedModules = {
+        yolan: yolan
+    };
     engine = "web";
     if (!window["require"]) {
         var modules = {};
@@ -54,21 +90,13 @@ if (!yolan["engine"]) {
 } else {}
 
 if (engine === "node") {
-    exports["readTextFile"] = function(fname, callback) {
-        module.require("fs").readFile(fname, "utf8", callback);
-        return function(err, data) {
-            if (err) {
-                return callback.call(null, {
-                    err: err
-                });
-            } else {}
-            return callback.call(null, data);
-        };
+    yolan["readTextFile"] = function(fname, callback) {
+        return module.require("fs").readFile(fname, "utf8", callback);
     };
 } else {}
 
 if (engine === "web") {
-    exports["readTextFile"] = function(fname, callback) {
+    yolan["readTextFile"] = function(fname, callback) {
         var req = new XMLHttpRequest;
         req["onreadystatechange"] = function(event) {
             if (req["readyState"] === 4) {
@@ -78,7 +106,7 @@ if (engine === "web") {
                         req: req
                     });
                 } else {}
-                callback.call(null, req["responseText"]);
+                callback.call(null, null, req["responseText"]);
             } else {}
             return undefined;
         };
@@ -87,6 +115,31 @@ if (engine === "web") {
     };
 } else {}
 
-if (!(typeof module === "undefined")) {
-    module["exports"] = yolan;
+if (engine === "node") {
+    yolan["writeTextFile"] = function(fname, content, callback) {
+        return module.require("fs").writeFile(fname, content, "utf8", callback);
+    };
+} else {}
+
+if (engine === "web") {
+    yolan["writeTextFile"] = function(fname, data, callback) {
+        var req = new XMLHttpRequest;
+        req["onreadystatechange"] = function(event) {
+            if (!callback) {
+                return;
+            } else {}
+            if (req["readyState"] === 4) {
+                if (!(req["status"] === 200)) {
+                    return callback.call(null, {
+                        err: "Request error: status not 200 OK",
+                        req: req
+                    });
+                } else {}
+                callback.call(null, null);
+            } else {}
+            return undefined;
+        };
+        req.open("POST", "/writeTextFile/" + fname, true);
+        return req.send(data);
+    };
 } else {}
