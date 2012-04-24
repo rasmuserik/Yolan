@@ -1,3 +1,4 @@
+[def yolan [module require './yolan]]
 [exports set
   'run
   [fn [fname]
@@ -16,30 +17,13 @@
                 height: 10%]]
             save]]]]
     [Section: Load content into textarea
-      [def req [new XMLHttpRequest]]
-      [req set
-        'onreadystatechange
-        [fn [event]
-          [if [[req get 'readyState] == 4]
-            [console log 'httpResult [req get 'status]]
-            [console log [req get 'responseText]]
-            [[document getElementById 'editarea] set
-              'value
-              [req get 'responseText]]
-            [console log req]]
-          undefined]]
-      [req open 'GET ['/get/ + fname] true]
-      [req send null]]
+      [yolan readTextFile fname [fn [err data] 
+        [if err [set data [err toString]]]
+        [[document getElementById 'editarea] set 'value data]
+        [console log 'readfile fname data err]]]]
+
     [Section: Save button
       [[document getElementById 'savebutton] set
-        'onclick
-        [fn [ev]
-          [def req [new XMLHttpRequest]]
-          [req set
-            'onreadystatechange
-            [fn [event]
-              [if [[req get 'readyState] == 4] [console log req]]
-              undefined]]
-          [req open 'POST ['/put/ + fname] true]
-          [req send [[document getElementById 'editarea] get 'value]]]]]
-    undefined]]
+        'onclick [fn [ev]
+        [yolan writeTextFile fname [[document getElementById 'editarea] get 'value]]
+    undefined]]]]]

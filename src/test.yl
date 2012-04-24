@@ -8,11 +8,19 @@
           [console log 'Test\ failure: [this get 'name] message]
           this]]
       ['assertEqual
-        [fn [a b] [console log 'AssertEqual a b '( [this get 'name] ')]]]
-      ['done [fn [] [console log 'Test\ done [this get 'name]]]]]]
+        [fn [a b] 
+        [console log 'AssertEqual a b '( [this get 'name] ')]
+        [try-catch e
+            [if [[[JSON stringify a] == [JSON stringify b]] fails]
+                [console log 'Error\ not\ equal a b 'in [this get 'name]]]
+            [console log 'Error\ could\ not\ compare a b 'in [test get 'name] 'error: e]]
+            this
+            ]]
+      ['done [fn [] [console log 'Test\ done [this get 'name]] this]]]]
   [test set
-    'create
+    'case
     [fn [name]
+      [console log 'Starting\ testcase: name]
       [def result [Object create proto]]
       [result set 'name name]
       result]]]
@@ -23,7 +31,7 @@
   'run
   [fn [args]
     [Section: yolan test
-      [def testcase [test create 'yolanIO]]
+      [def testcase [test case 'yolanIO]]
       [yolan writeTextFile
         'test-tmp/yolanIOtest
         'testvalue
