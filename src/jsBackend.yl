@@ -32,6 +32,13 @@
           [return
             ['\[ + [[[syn slice 2] map [exports get 'toJS]] join ',] '\]]]]
         ['new\  + syn1 '()]]]
+    ['function
+      [fn [syn syn1]
+        ['function( +
+          [syn1 join ',]
+          '){
+          [[[syn slice 2] map [exports get 'toJS]] join ';]
+          '}]]]
     ['fn
       [fn [syn syn1]
         ['function( +

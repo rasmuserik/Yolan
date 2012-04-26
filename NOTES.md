@@ -1,5 +1,23 @@
 # Yolain - YOcto LAnguage INfrastructure
 
+# NEXT
+
+- change function syntax, - no implicit return
+- list-model-object-class
+
+# List editor tasks
+
+- layout
+    - function mapping between yolan ast and list-object with layout information
+    - layout calculation
+        - update-layout-fn
+    - render to html-absolute
+- editor
+    - think through event/workflow/dataflow
+
+
+
+
 # Next TODO
 
 - general
@@ -9,7 +27,6 @@
     - webapp, replace solsort.com
     - benchmarks from the shootout
 - language
-    - macros
     - simplify core language. Docs should be [annotation [doc blah blah] code], hashmaps should be `[# ['key value] ['key value]]`, arrays should be `[@ val1 val2 ...]`, quotes should be transformed via macro system instead of parser (but be a singular token in beginning of string (parse+prettyprint))
     - type/class system 
     - add throw
@@ -17,6 +34,7 @@
 - java backend
     - get bootstrapped via rhino (remove dependency when done)
     - code-gen via ow2-asm
+    - (other backends via xmlvm)
 
 
 
