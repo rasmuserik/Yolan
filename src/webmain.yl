@@ -1,4 +1,4 @@
-[[document get 'body] set
+[[document 'body] set
   'innerHTML
   ['[<h1>yay I am here again!!!</h1>] join '\ ]]
 
@@ -6,4 +6,4 @@
   'run
   [fn []
     [return
-      [[document get 'body] set 'innerHTML ['[<h1>RUNNING!</h1>] join '\ ]]]]]
+      [[document 'body] set 'innerHTML ['[<h1>RUNNING!</h1>] join '\ ]]]]]

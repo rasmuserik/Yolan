@@ -50,7 +50,6 @@
     [forwardTransforms push [fn [node]
         [if [[[node get 'length] < 2] or [[[[node get 1] get 0] == 'quote] fails] [yolan arrayHasMember builtins [node get 0]]]
             [return node]]
-          [console log 'here node]
           [while
             [[2 < [node get ' length]] and
               [[[node get 1] get ' length] == 2]
@@ -159,6 +158,3 @@
           [[[node get 2] get 0] == 'do]]
         [return [[node get 1] concat [[node get 2] slice 1]]]]
       [return node]]]]
-
-[def x [new object ['a 1]]]
-[console log 'here x [x get 'a]]

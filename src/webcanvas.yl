@@ -4,15 +4,15 @@
   'init
   [fn [obj]
     [def update
-      [[obj get 'update] or [fn [ctx h w canvas] [return undefined]]]]
-    [def mousedown [[obj get 'mousedown] or [fn [x y] [return undefined]]]]
+      [[obj 'update] or [fn [ctx h w canvas] [return undefined]]]]
+    [def mousedown [[obj 'mousedown] or [fn [x y] [return undefined]]]]
     [def mousemove
-      [[obj get 'mousemove] or [fn [x0 y0 x1 y1] [return undefined]]]]
-    [def mouseup [[obj get 'mouseup] or [fn [x y] [return undefined]]]]
-    [def keydown [[obj get 'keydown] or [fn [k] [return undefined]]]]
-    [def width [window get 'innerWidth]]
-    [def height [window get 'innerHeight]]
-    [def body [document get 'body]]
+      [[obj 'mousemove] or [fn [x0 y0 x1 y1] [return undefined]]]]
+    [def mouseup [[obj 'mouseup] or [fn [x y] [return undefined]]]]
+    [def keydown [[obj 'keydown] or [fn [k] [return undefined]]]]
+    [def width [window 'innerWidth]]
+    [def height [window 'innerHeight]]
+    [def body [document 'body]]
     [body set
       'innerHTML
       [xml fromYl
@@ -20,7 +20,7 @@
           This webapp requires a browser that has canvas support. You need to
           upgrade your browser to see this site.]]]
     [def canvas [document getElementById 'canvas]]
-    [def style [canvas get 'style]]
+    [def style [canvas 'style]]
     [console log canvas style]
     [style set 'position 'absolute]
     [style set 'top '0px]

@@ -8,7 +8,7 @@
 
 [def ilBackend [module require './ilBackend]]
 
-[def action [[process get 'argv] get 2]]
+[def action [[process 'argv] get 2]]
 
 [exports set
   'sourceFiles
@@ -18,7 +18,7 @@
 [def mtime
   [fn [fname]
     [try-catch e
-      [return [[[fs statSync fname] get 'mtime] getTime]]
+      [return [[[fs statSync fname] 'mtime] getTime]]
       [return 0]]
     [return 0]]]
 
@@ -26,7 +26,7 @@
   'run
   [fn []
     [return
-      [[exports get 'sourceFiles] forEach
+      [[exports 'sourceFiles] forEach
         [fn [f]
           [def src ['src/ + f]]
           [def dest ['build/ + [f slice 0 -3]]]
@@ -55,8 +55,7 @@
           [; console log [syntax prettyprint ast]]
           [def js [jsBackend toJS ast]]
           [def sourceCode
-            [[[[[macros reverse ast] slice 1] map
-                  [syntax get 'prettyprint]]
+            [[[[[macros reverse ast] slice 1] map [syntax 'prettyprint]]
                 join
                 '\n\n]
               +
@@ -65,8 +64,8 @@
           [fs writeFile [dest + '.js.raw] sourceCode]
           [; reformat js]
           [def uglify [require call null 'uglify-js]]
-          [def jsp [uglify get 'parser]]
-          [def pro [uglify get 'uglify]]
+          [def jsp [uglify 'parser]]
+          [def pro [uglify 'uglify]]
           [try-catch e
             [def ast [jsp parse js]]
             [do [console log dest] [console log e]]]

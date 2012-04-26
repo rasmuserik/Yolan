@@ -62,12 +62,23 @@ forwardTransforms.push(function(node) {
     if (node["length"] < 2 || !(node[1][0] === "quote") || yolan.arrayHasMember(builtins, node[0])) {
         return node;
     } else {}
-    console.log("here", node);
     while (2 < node["length"] && node[1]["length"] === 2 && node[1][0] === "quote") {
         node = [ [ node[0], "get", node[1] ] ].concat(node.slice(2));
     }
     if (1 < node["length"] && node[1][0] === "quote") {
         node = [ node[0], "get", node[1] ];
+    } else {}
+    return node;
+});
+
+reverseTransforms.push(function(node) {
+    if (yolan.arrayHasMember(builtins, node[0])) {
+        return node;
+    } else {}
+    if (node["length"] === 3 && node[1] === "get" && node[2][0] === "quote") {
+        node = node.slice(0);
+        node[1] = node[2];
+        node.pop();
     } else {}
     return node;
 });
@@ -165,7 +176,3 @@ reverseTransforms.push(function(node) {
     } else {}
     return node;
 });
-
-var x = {
-    a: 1
-};

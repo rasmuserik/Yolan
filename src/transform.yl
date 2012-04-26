@@ -2,6 +2,6 @@
   'transform
   [fn [x]
     [if [[x jsType] == 'string] [return x]]
-    [set x [x map [exports get 'transform]]]
+    [set x [x map [exports 'transform]]]
     [if [[x get 0] == 'if] [x set 0 'if-else]]
     [return x]]]

@@ -3,7 +3,7 @@
   [fn [tree acc]
     [def joinResult [acc fails]]
     [set acc [acc or '[]]]
-    [acc push [String fromCharCode [tree get 'length]]]
+    [acc push [String fromCharCode [tree 'length]]]
     [if-else [Array isArray tree]
       [do [acc push '{]
         [tree map [fn [elem] [return [exports binaryEncode elem acc]]]]]
@@ -84,7 +84,7 @@
                 [functions push createdFunction]
                 [def i 0]
                 [def fnGlobals [createdFunction get 4]]
-                [while [i < [fnGlobals get 'length]]
+                [while [i < [fnGlobals 'length]]
                   [def globName [fnGlobals get i]]
                   [if [[globals hasValue globName] fails]
                     [globals push globName]]
@@ -92,7 +92,7 @@
                 [return [new array [new array 'fn id]]]]
               [if [first == 'do]
                 [def i 1]
-                [def length [expr get 'length]]
+                [def length [expr 'length]]
                 [while [i < length]
                   [set code
                     [code concat
@@ -106,7 +106,7 @@
                 [set expr [expr slice 1]]
                 [expr set 0 first]
                 [def types [expr map [fn [] [return 'var]]]]
-                [while [0 < [expr get 'length]]
+                [while [0 < [expr 'length]]
                   [set code
                     [code concat
                       [compileExpression call null [expr pop] true]]]]

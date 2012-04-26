@@ -30,8 +30,8 @@
   [fn []
     [[http createServer
         [fn [request result]
-          [def url [request get 'url]]
-          [console log [request get 'url]]
+          [def url [request 'url]]
+          [console log [request 'url]]
           [if [[url slice -3] == '.js]
             [result writeHead 200
               [new-object 'Content-Type 'text/javascript]]

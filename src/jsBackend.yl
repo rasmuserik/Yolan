@@ -1,8 +1,7 @@
 [def compileJS
   [new object
     ['builtin: [fn [syn] [return [exports toJS [syn slice 1]]]]]
-    ['do
-      [fn [syn] [return [[[syn slice 1] map [exports get 'toJS]] join ';]]]]
+    ['do [fn [syn] [return [[[syn slice 1] map [exports 'toJS]] join ';]]]]
     ['def
       [fn [syn syn1]
         [return ['var\  + syn1 '= [exports toJS [syn get 2]]]]]]
@@ -11,7 +10,7 @@
       [fn [syn]
         [def result '[]]
         [def i 1]
-        [while [i < [syn get 'length]]
+        [while [i < [syn 'length]]
           [result push
             [[exports toJS [syn get i]] +
               ':
@@ -33,8 +32,7 @@
                 ',]
               '}]]]
         [if [syn1 == 'array]
-          [return
-            ['\[ + [[[syn slice 2] map [exports get 'toJS]] join ',] '\]]]]
+          [return ['\[ + [[[syn slice 2] map [exports 'toJS]] join ',] '\]]]]
         [return ['new\  + syn1 '()]]]]
     ['fn
       [fn [syn syn1]
@@ -42,7 +40,7 @@
           ['function( +
             [syn1 join ',]
             '){
-            [[[syn slice 2] map [exports get 'toJS]] join ';]
+            [[[syn slice 2] map [exports 'toJS]] join ';]
             '}]]]]
     ['try-catch
       [fn [syn syn1]
@@ -60,7 +58,7 @@
           ['while( +
             [exports toJS syn1]
             '){
-            [[[syn slice 2] map [exports get 'toJS]] join ';]
+            [[[syn slice 2] map [exports 'toJS]] join ';]
             '}]]]]
     ['if-else
       [fn [syn syn1]
@@ -97,7 +95,7 @@
       [return
         ['( +
           [[[new array [exports toJS syn0]] concat
-              [[syn slice 2] map [exports get 'toJS]]]
+              [[syn slice 2] map [exports 'toJS]]]
             join
             '+]
           ')]]]
@@ -105,7 +103,7 @@
       [return
         ['( +
           [[[new array [exports toJS syn0]] concat
-              [[syn slice 2] map [exports get 'toJS]]]
+              [[syn slice 2] map [exports 'toJS]]]
             join
             '-]
           ')]]]
@@ -113,7 +111,7 @@
       [return
         ['( +
           [[[new array [exports toJS syn0]] concat
-              [[syn slice 2] map [exports get 'toJS]]]
+              [[syn slice 2] map [exports 'toJS]]]
             join
             '&&]
           ')]]]
@@ -121,7 +119,7 @@
       [return
         ['( +
           [[[new array [exports toJS syn0]] concat
-              [[syn slice 2] map [exports get 'toJS]]]
+              [[syn slice 2] map [exports 'toJS]]]
             join
             '||]
           ')]]]
@@ -139,12 +137,12 @@
           '.
           syn1
           '(
-          [[[syn slice 2] map [exports get 'toJS]] join ',]
+          [[[syn slice 2] map [exports 'toJS]] join ',]
           ')]]]
     [return
       [[exports toJS syn0] +
         '.
         syn1
         '(
-        [[[syn slice 2] map [exports get 'toJS]] join ',]
+        [[[syn slice 2] map [exports 'toJS]] join ',]
         ')]]]]

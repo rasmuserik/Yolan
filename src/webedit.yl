@@ -3,7 +3,7 @@
 [exports set
   'run
   [fn [fname]
-    [def body [document get 'body]]
+    [def body [document 'body]]
     [console log fname]
     [body set
       'innerHTML
@@ -29,5 +29,5 @@
           'onclick
           [fn [ev]
             [yolan writeTextFile fname
-              [[document getElementById 'editarea] get 'value]]
+              [[document getElementById 'editarea] 'value]]
             [return undefined]]]]]]]

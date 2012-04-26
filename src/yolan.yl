@@ -31,7 +31,7 @@
           [[Function call null [readFile call null ['build/ + name '.js]]]
             call]
           [modules set name
-            [module get 'exports]
+            [module 'exports]
             [set module prevModule]
             [set exports prevExports]]]
         [return [modules get name]]]]
@@ -41,8 +41,7 @@
       [fn []
         [return
           [print call null
-            [[[[Array get 'prototype] get 'slice] call arguments 0] join
-              '\ ]]]]]
+            [[[[Array 'prototype] 'slice] call arguments 0] join '\ ]]]]]
     [set module [new object]]
     [module set 'require require]]]
 
@@ -51,7 +50,7 @@
 [if [[[navigator jsType] == 'undefined] fails]
   [def loadedModules [new object ['yolan yolan]]]
   [set engine 'web]
-  [if [[window get 'require] fails]
+  [if [[window 'require] fails]
     [def modules [new object]]
     [def require
       [fn [name]
@@ -62,7 +61,7 @@
           [module set 'exports exports]
           [module set 'require require]
           [[modules get name] call null require exports module]
-          [loadedModules set name [module get 'exports]]]
+          [loadedModules set name [module 'exports]]]
         [return [loadedModules get name]]]]
     [window set
       'define
@@ -81,7 +80,7 @@
   [console set 'log [fn [] [return undefined]]]
   [if [[[print jsType] == 'undefined] fails] [console set 'log print]]]
 
-[if [[yolan get 'engine] fails] [console log 'Error\ detecting\ engine:]]
+[if [[yolan 'engine] fails] [console log 'Error\ detecting\ engine:]]
 
 [Section: Cross-platform file-io
   [if [engine == 'node]
@@ -97,15 +96,15 @@
         [req set
           'onreadystatechange
           [fn [event]
-            [if [[req get 'readyState] == 4]
-              [if [[[req get 'status] == 200] fails]
+            [if [[req 'readyState] == 4]
+              [if [[[req 'status] == 200] fails]
                 [return
                   [callback call null
                     [new-object 'err
                       'Request\ error:\ status\ not\ 200\ OK
                       'req
                       req]]]]
-              [callback call null null [req get 'responseText]]]
+              [callback call null null [req 'responseText]]]
             [return undefined]]]
         [req open 'GET ['/readTextFile/ + fname] true]
         [return [req send null]]]]]
@@ -124,8 +123,8 @@
           'onreadystatechange
           [fn [event]
             [if [callback fails] return]
-            [if [[req get 'readyState] == 4]
-              [if [[[req get 'status] == 200] fails]
+            [if [[req 'readyState] == 4]
+              [if [[[req 'status] == 200] fails]
                 [return
                   [callback call null
                     [new-object 'err
