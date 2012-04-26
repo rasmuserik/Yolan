@@ -1,0 +1,19 @@
+[; list model which keeps track of stuff for the ui too]
+
+[def Model [new object]]
+
+[exports set
+  'create
+  [fn [list]
+    [def result [Object create Model]]
+    [if [[Array isArray list] fails]
+      [result set 'value list]
+      [return result]]
+    [result set
+      'children
+      [list map
+        [fn [elem]
+          [def t [exports create elem]]
+          [t set 'parent result]
+          [return t]]]]
+    [return result]]]
