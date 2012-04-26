@@ -7,10 +7,11 @@
 [def engine [[module require './yolan] get 'engine]]
 
 [def run
-  [fn [args]
+  [function [args]
     [def moduleName [[args get 0] or [engine + 'main]]]
-    [[[module require ['./ + moduleName]] get 'run] apply null
-      [args slice 1]]]]
+    [return
+      [[[module require ['./ + moduleName]] get 'run] apply null
+        [args slice 1]]]]]
 
 [exports set 'run run]
 

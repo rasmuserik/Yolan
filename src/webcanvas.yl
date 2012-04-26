@@ -2,12 +2,16 @@
 
 [exports set
   'init
-  [fn [obj]
-    [def update [[obj get 'update] or [fn [ctx h w canvas] undefined]]]
-    [def mousedown [[obj get 'mousedown] or [fn [x y] undefined]]]
-    [def mousemove [[obj get 'mousemove] or [fn [x0 y0 x1 y1] undefined]]]
-    [def mouseup [[obj get 'mouseup] or [fn [x y] undefined]]]
-    [def keydown [[obj get 'keydown] or [fn [k] undefined]]]
+  [function [obj]
+    [def update
+      [[obj get 'update] or [function [ctx h w canvas] [return undefined]]]]
+    [def mousedown
+      [[obj get 'mousedown] or [function [x y] [return undefined]]]]
+    [def mousemove
+      [[obj get 'mousemove] or [function [x0 y0 x1 y1] [return undefined]]]]
+    [def mouseup
+      [[obj get 'mouseup] or [function [x y] [return undefined]]]]
+    [def keydown [[obj get 'keydown] or [function [k] [return undefined]]]]
     [def width [window get 'innerWidth]]
     [def height [window get 'innerHeight]]
     [def body [document get 'body]]
@@ -27,18 +31,19 @@
     [style set 'width [width + 'px]]
     [canvas set 'height height]
     [canvas set 'width width]
-    [body set 'onkeydown [fn [ev] [console log ev]]]
+    [body set 'onkeydown [function [ev] [return [console log ev]]]]
     [canvas focus]
     [def ctx [canvas getContext '2d]]
-    [update call null ctx height width]]]
+    [return [update call null ctx height width]]]]
 
 [exports set
   'run
-  [fn []
-    [exports init
-      [new object
-        ['update
-          [fn [ctx h w]
-            [ctx set 'fillStyle '#990]
-            [ctx fillText 'Hello\ canvas 100 100]
-            [ctx fillRect -5 -5 10000 1000]]]]]]]
+  [function []
+    [return
+      [exports init
+        [new object
+          ['update
+            [function [ctx h w]
+              [ctx set 'fillStyle '#990]
+              [ctx fillText 'Hello\ canvas 100 100]
+              [return [ctx fillRect -5 -5 10000 1000]]]]]]]]]

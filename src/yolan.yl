@@ -19,7 +19,7 @@
   [if [[require jsType] == 'undefined]
     [def modules [new object ['./yolan yolan]]]
     [set require
-      [fn [name]
+      [function [name]
         [if [[modules get name] fails]
           [console log 'loading\ module name]
           [def prevModule module]
@@ -34,13 +34,15 @@
             [module get 'exports]
             [set module prevModule]
             [set exports prevExports]]]
-        [modules get name]]]
+        [return [modules get name]]]]
     [set console [new object]]
     [console set
       'log
-      [fn []
-        [print call null
-          [[[[Array get 'prototype] get 'slice] call arguments 0] join '\ ]]]]
+      [function []
+        [return
+          [print call null
+            [[[[Array get 'prototype] get 'slice] call arguments 0] join
+              '\ ]]]]]
     [set module [new object]]
     [module set 'require require]]]
 
@@ -52,7 +54,7 @@
   [if [[window get 'require] fails]
     [def modules [new object]]
     [def require
-      [fn [name]
+      [function [name]
         [if [[loadedModules get name] fails]
           [console log 'initialising name]
           [def module [new object]]
@@ -61,8 +63,10 @@
           [module set 'require require]
           [[modules get name] call null require exports module]
           [loadedModules set name [module get 'exports]]]
-        [loadedModules get name]]]
-    [window set 'define [fn [name dep f] [modules set name f] undefined]]
+        [return [loadedModules get name]]]]
+    [window set
+      'define
+      [function [name dep f] [modules set name f] [return undefined]]]
     [console log 'def 'require]
     [window set 'require require]]]
 
@@ -74,7 +78,7 @@
 
 [if [[console jsType] == 'undefined]
   [set console [new object]]
-  [console set 'log [fn [] undefined]]
+  [console set 'log [function [] [return undefined]]]
   [if [[[print jsType] == 'undefined] fails] [console set 'log print]]]
 
 [if [[yolan get 'engine] fails] [console log 'Error\ detecting\ engine:]]
@@ -83,16 +87,16 @@
   [if [engine == 'node]
     [yolan set
       'readTextFile
-      [fn [fname callback]
-        [[module require 'fs] readFile fname 'utf8 callback]]]]
+      [function [fname callback]
+        [return [[module require 'fs] readFile fname 'utf8 callback]]]]]
   [if [engine == 'web]
     [yolan set
       'readTextFile
-      [fn [fname callback]
+      [function [fname callback]
         [def req [new XMLHttpRequest]]
         [req set
           'onreadystatechange
-          [fn [event]
+          [function [event]
             [if [[req get 'readyState] == 4]
               [if [[[req get 'status] == 200] fails]
                 [return
@@ -101,22 +105,23 @@
                       ['err 'Request\ error:\ status\ not\ 200\ OK]
                       ['req req]]]]]
               [callback call null null [req get 'responseText]]]
-            undefined]]
+            [return undefined]]]
         [req open 'GET ['/readTextFile/ + fname] true]
-        [req send null]]]]
+        [return [req send null]]]]]
   [if [engine == 'node]
     [yolan set
       'writeTextFile
-      [fn [fname content callback]
-        [[module require 'fs] writeFile fname content 'utf8 callback]]]]
+      [function [fname content callback]
+        [return
+          [[module require 'fs] writeFile fname content 'utf8 callback]]]]]
   [if [engine == 'web]
     [yolan set
       'writeTextFile
-      [fn [fname data callback]
+      [function [fname data callback]
         [def req [new XMLHttpRequest]]
         [req set
           'onreadystatechange
-          [fn [event]
+          [function [event]
             [if [callback fails] return]
             [if [[req get 'readyState] == 4]
               [if [[[req get 'status] == 200] fails]
@@ -126,6 +131,6 @@
                       ['err 'Request\ error:\ status\ not\ 200\ OK]
                       ['req req]]]]]
               [callback call null null]]
-            undefined]]
+            [return undefined]]]
         [req open 'POST ['/writeTextFile/ + fname] true]
-        [req send data]]]]]
+        [return [req send data]]]]]]

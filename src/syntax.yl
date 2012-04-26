@@ -1,15 +1,19 @@
 [Section: Tokenization
   [exports set
     'tokenize
-    [fn [str]
+    [function [str]
       [def result [new array]]
       [def i 0]
       [def tokeniser [new object]]
       [def c [str get 0]]
-      [def nextc [fn [] [set i [i + 1]] [set c [str get i]] c]]
-      [def isWs [fn [] [[c == '\ ] or [c == '\n] [c == '\r] [c == '\t]]]]
-      [def isPrefix [fn [] [[c == ''] or [c == ''] [c == ''] [c == '']]]]
-      [def isBracket [fn [] [[c == '\[] or [c == '\]]]]]
+      [def nextc
+        [function [] [set i [i + 1]] [set c [str get i]] [return c]]]
+      [def isWs
+        [function []
+          [return [[c == '\ ] or [c == '\n] [c == '\r] [c == '\t]]]]]
+      [def isPrefix
+        [function [] [return [[c == ''] or [c == ''] [c == ''] [c == '']]]]]
+      [def isBracket [function [] [return [[c == '\[] or [c == '\]]]]]]
       [while c
         [while [isWs call] [nextc call]]
         [if-else [c == '\[]
@@ -32,7 +36,7 @@
                 [result push symb]]]]]]
       [if [[[result get [[result get 'length] - 1]] get 'length] == 0]
         [result pop]]
-      result]]]
+      [return result]]]]
 
 [Section: Special tokens
   [def quote [new object ['quote true]]]
@@ -41,7 +45,7 @@
 
 [Section: Parsing
   [def addQuotes
-    [fn [list]
+    [function [list]
       [def i 0]
       [def result [new array]]
       [while [i < [list get 'length]]
@@ -51,10 +55,10 @@
           [set elem [new array 'quote [list get i]]]]
         [result push elem]
         [set i [i + 1]]]
-      result]]
+      [return result]]]
   [exports set
     'parse
-    [fn [tokens]
+    [function [tokens]
       [set tokens [tokens reverse]]
       [def stack [new array]]
       [def current [new array 'do]]
@@ -65,7 +69,7 @@
           [if-else [token == rbracket]
             [do [def t current] [set current [stack pop]] [current push t]]
             [current push [JSON parse ['" + token '"]]]]]]
-      current]]]
+      [return current]]]]
 
 [Section: PrettyPrinting
   [Section: Prettyprint configuration
@@ -74,22 +78,22 @@
   [Section: Utility for creating line-prepended whitespace
     [exports set
       'nspace
-      [fn [n]
+      [function [n]
         [def result [new array]]
         [while [0 < n] [set n [n - 1]] [result push '\ ]]
-        [result join ""]]]]
+        [return [result join ""]]]]]
   [def indent 0]
   [def escapeRegEx [RegExp call RegExp '\[\'\ \\\[\\\]\] 'g]]
   [def escapeRegEx2 [RegExp call RegExp '\\\\" 'g]]
   [exports set
     'prettyprint
-    [fn [ast]
+    [function [ast]
       [Section: Handle strings, empty lists and quotes
         [if [[ast jsType] == 'string]
           [if [ast == ''] [return '']]
           [return
             [[[[JSON stringify ast] slice 1 -1] replace escapeRegEx
-                [fn [s] ['\\ + s]]]
+                [function [s] [return ['\\ + s]]]]
               replace escapeRegEx2
               '"]]]
         [if [0 == [ast get 'length]] [return '\[\]]]
@@ -132,4 +136,4 @@
         [set i [i + 1]]]
       [result push lineEnd]
       [set indent [indent - indentStep]]
-      [result join ""]]]]
+      [return [result join ""]]]]]

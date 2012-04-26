@@ -1,12 +1,12 @@
 [console log 123]
 
 [def fib
-  [fn [n]
+  [function [n]
     [def result 1]
     [if [1 < n]
       [set result [[fib call null [n - 1]] + [fib call null [n - 2]]]]]
     [console log result]
-    result]]
+    [return result]]]
 
 [console log [fib call null 10]]
 

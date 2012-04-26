@@ -12,61 +12,67 @@
 
 [exports set
   'sourceFiles
-  [[fs readdirSync 'src] filter [fn [name] [[name slice -3] == '.yl]]]]
+  [[fs readdirSync 'src] filter
+    [function [name] [return [[name slice -3] == '.yl]]]]]
 
 [def mtime
-  [fn [fname]
+  [function [fname]
     [try-catch e
       [return [[[fs statSync fname] get 'mtime] getTime]]
       [return 0]]
-    0]]
+    [return 0]]]
 
 [exports set
   'run
-  [fn []
-    [[exports get 'sourceFiles] forEach
-      [fn [f]
-        [def src ['src/ + f]]
-        [def dest ['build/ + [f slice 0 -3]]]
-        [if [[mtime call null [dest + '.js]] < [mtime call null src]]
-          [compile call null src dest]]
-        undefined]]]]
+  [function []
+    [return
+      [[exports get 'sourceFiles] forEach
+        [function [f]
+          [def src ['src/ + f]]
+          [def dest ['build/ + [f slice 0 -3]]]
+          [if [[mtime call null [dest + '.js]] < [mtime call null src]]
+            [compile call null src dest]]
+          [return undefined]]]]]]
 
 [exports set
   'yl2js
-  [fn [src]
-    [jsBackend toJS
-      [macros transform [syntax parse [syntax tokenize src]]]]]]
+  [function [src]
+    [return
+      [jsBackend toJS
+        [macros transform [syntax parse [syntax tokenize src]]]]]]]
 
 [def compile
-  [fn [src dest]
-    [fs readFile src
-      'utf8
-      [fn [err data]
-        [console log src '-> dest]
-        [if err [return err]]
-        [; compile exports to js]
-        [def ast [macros transform [syntax parse [syntax tokenize data]]]]
-        [; console log [syntax prettyprint ast]]
-        [def js [jsBackend toJS ast]]
-        [def sourceCode
-          [[[[[macros reverse ast] slice 1] map
-                [syntax get 'prettyprint]]
-              join
-              '\n\n]
-            +
-            '\n]]
-        [fs writeFile [dest + '.yl] sourceCode]
-        [fs writeFile [dest + '.js.raw] sourceCode]
-        [; reformat js]
-        [def uglify [require call null 'uglify-js]]
-        [def jsp [uglify get 'parser]]
-        [def pro [uglify get 'uglify]]
-        [try-catch e
-          [def ast [jsp parse js]]
-          [do [console log dest] [console log e]]]
-        [set js [pro gen_code ast [new object ['beautify true]]]]
-        [fs writeFile
-          [dest + '.js]
-          js
-          [fn [err data] [if err [return err]] true]]]]]]
+  [function [src dest]
+    [return
+      [fs readFile src
+        'utf8
+        [function [err data]
+          [console log src '-> dest]
+          [if err [return err]]
+          [; compile exports to js]
+          [def ast
+            [macros transform [syntax parse [syntax tokenize data]]]]
+          [; console log [syntax prettyprint ast]]
+          [def js [jsBackend toJS ast]]
+          [def sourceCode
+            [[[[[macros reverse ast] slice 1] map
+                  [syntax get 'prettyprint]]
+                join
+                '\n\n]
+              +
+              '\n]]
+          [fs writeFile [dest + '.yl] sourceCode]
+          [fs writeFile [dest + '.js.raw] sourceCode]
+          [; reformat js]
+          [def uglify [require call null 'uglify-js]]
+          [def jsp [uglify get 'parser]]
+          [def pro [uglify get 'uglify]]
+          [try-catch e
+            [def ast [jsp parse js]]
+            [do [console log dest] [console log e]]]
+          [set js [pro gen_code ast [new object ['beautify true]]]]
+          [return
+            [fs writeFile
+              [dest + '.js]
+              js
+              [function [err data] [if err [return err]] [return true]]]]]]]]]

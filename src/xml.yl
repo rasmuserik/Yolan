@@ -4,7 +4,7 @@
 
 [exports set
   'fromYl
-  [fn [xml]
+  [function [xml]
     [if [[xml jsType] == 'string] [return xml]]
     [set xml [xml slice 0]]
     [def tagname [xml shift]]
@@ -16,7 +16,8 @@
     [def content [[xml map [exports get 'fromYl]] join '\ ]]
     [def attrStr
       [[attr map
-          [fn [attr] ['\  + [attr get 0] '=" [[attr slice 1] join '\ ] '"]]]
+          [function [attr]
+            [return ['\  + [attr get 0] '=" [[attr slice 1] join '\ ] '"]]]]
         join ""]]
     [if content [return ['< + tagname attrStr '> content '</ tagname '>]]]
-    ['< + tagname attrStr '/>]]]
+    [return ['< + tagname attrStr '/>]]]]

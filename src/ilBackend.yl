@@ -1,24 +1,25 @@
 [exports set
   'binaryEncode
-  [fn [tree acc]
+  [function [tree acc]
     [def joinResult [acc fails]]
     [set acc [acc or '[]]]
     [acc push [String fromCharCode [tree get 'length]]]
     [if-else [Array isArray tree]
       [do [acc push '{]
-        [tree map [fn [elem] [exports binaryEncode elem acc]]]]
+        [tree map
+          [function [elem] [return [exports binaryEncode elem acc]]]]]
       [do [acc push '"] [acc push tree]]]
-    [joinResult and [acc join ""]]]]
+    [return [joinResult and [acc join ""]]]]]
 
-[def hasValue [fn [val] [[this.indexOf(val) == -1] fails]]]
+[def hasValue [function [val] [return [[this.indexOf(val) == -1] fails]]]]
 
 [exports set
   'toIL
-  [fn [ast]
+  [function [ast]
     [def functions '[]]
     [def fnid 0]
     [def compileFunction
-      [fn [name args ast]
+      [function [name args ast]
         [def nextid 0]
         [args set 'hasValue hasValue]
         [def locals '[]]
@@ -27,7 +28,7 @@
         [globals set 'hasValue hasValue]
         [def currentFunction '[]]
         [def compileExpression
-          [fn [expr withArg]
+          [function [expr withArg]
             [def code '[]]
             [if [Array isArray expr]
               [def first [expr get 0]]
@@ -105,7 +106,7 @@
                 [def method [expr get 1]]
                 [set expr [expr slice 1]]
                 [expr set 0 first]
-                [def types [expr map [fn [] 'var]]]
+                [def types [expr map [function [] [return 'var]]]]
                 [while [0 < [expr get 'length]]
                   [set code
                     [code concat
@@ -127,7 +128,7 @@
                 [code push [new array 'getLocal name]]
                 [do [code push [new array 'getGlobal name]]
                   [if [[globals hasValue name] fails] [globals push name]]]]]
-            code]]
+            [return code]]]
         [def code [compileExpression call null [ast slice 0] true]]
         [code push '[return]]
         [currentFunction push name]
@@ -135,6 +136,6 @@
         [currentFunction push locals]
         [currentFunction push globals]
         [currentFunction push code]
-        currentFunction]]
+        [return currentFunction]]]
     [functions push [compileFunction call null 'entry '[] ast]]
-    functions]]
+    [return functions]]]

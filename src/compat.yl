@@ -2,7 +2,8 @@
 
 [if [[console jsType] fails] [set console [new object]]]
 
-[if [[console get 'log] fails] [console set 'log [fn [] true]]]
+[if [[console get 'log] fails]
+  [console set 'log [function [] [return true]]]]
 
 [if [[console get 'error] fails] [console set 'error [console get 'log]]]
 

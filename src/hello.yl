@@ -2,8 +2,9 @@
 
 [exports set
   'run
-  [fn [args]
+  [function [args]
     [console log 'hello]
-    [[module require './yolan] readTextFile
-      'src/hello.yl
-      [fn [err result] [console log result]]]]]
+    [return
+      [[module require './yolan] readTextFile
+        'src/hello.yl
+        [function [err result] [return [console log result]]]]]]]

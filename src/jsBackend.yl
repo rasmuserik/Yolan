@@ -1,11 +1,16 @@
 [def compileJS
   [new object
-    ['builtin: [fn [syn] [exports toJS [syn slice 1]]]]
-    ['do [fn [syn] [[[syn slice 1] map [exports get 'toJS]] join ';]]]
-    ['def [fn [syn syn1] ['var\  + syn1 '= [exports toJS [syn get 2]]]]]
-    ['set [fn [syn syn1] [syn1 + '= [exports toJS [syn get 2]]]]]
+    ['builtin: [function [syn] [return [exports toJS [syn slice 1]]]]]
+    ['do
+      [function [syn]
+        [return [[[syn slice 1] map [exports get 'toJS]] join ';]]]]
+    ['def
+      [function [syn syn1]
+        [return ['var\  + syn1 '= [exports toJS [syn get 2]]]]]]
+    ['set
+      [function [syn syn1] [return [syn1 + '= [exports toJS [syn get 2]]]]]]
     ['new-object
-      [fn [syn]
+      [function [syn]
         [def result '[]]
         [def i 1]
         [while [i < [syn get 'length]]
@@ -14,72 +19,79 @@
               ':
               [exports toJS [syn get [i + 1]]]]]
           [set i [i + 2]]]
-        ['{ + [result join ","] '}]]]
+        [return ['{ + [result join ","] '}]]]]
     ['new
-      [fn [syn syn1]
+      [function [syn syn1]
         [if [syn1 == 'object]
           [return
             ['{ +
               [[[syn slice 2] map
-                  [fn [pair]
-                    [[exports toJS [pair get 0]] +
-                      ':
-                      [exports toJS [pair get 1]]]]]
+                  [function [pair]
+                    [return
+                      [[exports toJS [pair get 0]] +
+                        ':
+                        [exports toJS [pair get 1]]]]]]
                 join
                 ',]
               '}]]]
         [if [syn1 == 'array]
           [return
             ['\[ + [[[syn slice 2] map [exports get 'toJS]] join ',] '\]]]]
-        ['new\  + syn1 '()]]]
+        [return ['new\  + syn1 '()]]]]
     ['function
-      [fn [syn syn1]
-        ['function( +
-          [syn1 join ',]
-          '){
-          [[[syn slice 2] map [exports get 'toJS]] join ';]
-          '}]]]
+      [function [syn syn1]
+        [return
+          ['function( +
+            [syn1 join ',]
+            '){
+            [[[syn slice 2] map [exports get 'toJS]] join ';]
+            '}]]]]
     ['fn
-      [fn [syn syn1]
-        ['function( +
-          [syn1 join ',]
-          '){
-          [[[syn slice 2 -1] map [exports get 'toJS]] join ';]
-          ';return\ 
-          [exports toJS [syn get [[syn get 'length] - 1]]]
-          '}]]]
+      [function [syn syn1]
+        [return
+          ['function( +
+            [syn1 join ',]
+            '){
+            [[[syn slice 2 -1] map [exports get 'toJS]] join ';]
+            ';return\ 
+            [exports toJS [syn get [[syn get 'length] - 1]]]
+            '}]]]]
     ['try-catch
-      [fn [syn syn1]
-        ['try{ +
-          [exports toJS [syn get 2]]
-          '}catch(
-          [syn get 1]
-          '){
-          [exports toJS [syn get 3]]
-          '}]]]
+      [function [syn syn1]
+        [return
+          ['try{ +
+            [exports toJS [syn get 2]]
+            '}catch(
+            [syn get 1]
+            '){
+            [exports toJS [syn get 3]]
+            '}]]]]
     ['while
-      [fn [syn syn1]
-        ['while( +
-          [exports toJS syn1]
-          '){
-          [[[syn slice 2] map [exports get 'toJS]] join ';]
-          '}]]]
+      [function [syn syn1]
+        [return
+          ['while( +
+            [exports toJS syn1]
+            '){
+            [[[syn slice 2] map [exports get 'toJS]] join ';]
+            '}]]]]
     ['if-else
-      [fn [syn syn1]
-        ['if( +
-          [exports toJS syn1]
-          '){
-          [exports toJS [syn get 2]]
-          '}else{
-          [exports toJS [syn get 3]]
-          '}]]]
-    ['Annotation: [fn [syn] [exports toJS [syn get 2]]]]
-    ['return [fn [syn syn1] ['return\  + [exports toJS syn1]]]]
-    ['quote [fn [syn syn1] [JSON stringify syn1]]]]]
+      [function [syn syn1]
+        [return
+          ['if( +
+            [exports toJS syn1]
+            '){
+            [exports toJS [syn get 2]]
+            '}else{
+            [exports toJS [syn get 3]]
+            '}]]]]
+    ['Annotation: [function [syn] [return [exports toJS [syn get 2]]]]]
+    ['return
+      [function [syn syn1] [return ['return\  + [exports toJS syn1]]]]]
+    ['quote [function [syn syn1] [return [JSON stringify syn1]]]]]]
 
 [exports set
   'toJS
-  [fn [syn]
+  [function [syn]
     [if [syn fails] [return ""]]
     [def syn0 [syn get 0]]
     [def syn1 [syn get 1]]
@@ -142,9 +154,10 @@
           '(
           [[[syn slice 2] map [exports get 'toJS]] join ',]
           ')]]]
-    [[exports toJS syn0] +
-      '.
-      syn1
-      '(
-      [[[syn slice 2] map [exports get 'toJS]] join ',]
-      ')]]]
+    [return
+      [[exports toJS syn0] +
+        '.
+        syn1
+        '(
+        [[[syn slice 2] map [exports get 'toJS]] join ',]
+        ')]]]]
