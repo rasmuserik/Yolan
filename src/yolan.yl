@@ -101,9 +101,9 @@
               [if [[[req get 'status] == 200] fails]
                 [return
                   [callback call null
-                    [new object
-                      ['err 'Request\ error:\ status\ not\ 200\ OK]
-                      ['req req]]]]]
+                    [new-object
+                      'err 'Request\ error:\ status\ not\ 200\ OK
+                      'req req]]]]
               [callback call null null [req get 'responseText]]]
             [return undefined]]]
         [req open 'GET ['/readTextFile/ + fname] true]
@@ -127,9 +127,9 @@
               [if [[[req get 'status] == 200] fails]
                 [return
                   [callback call null
-                    [new object
-                      ['err 'Request\ error:\ status\ not\ 200\ OK]
-                      ['req req]]]]]
+                    [new-object
+                      'err 'Request\ error:\ status\ not\ 200\ OK
+                      'req req]]]]
               [callback call null null]]
             [return undefined]]]
         [req open 'POST ['/writeTextFile/ + fname] true]

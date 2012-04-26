@@ -10,7 +10,7 @@
 
 [Section: Macro system
   [exports set
-    'transform
+  'transform
     [fn [node]
       [if [[node jsType] == 'string] [return node]]
       [Section: macro transform
@@ -45,12 +45,26 @@
     [fn [list] [return [list map [exports get 'reverse]]]]]]
 
 [def builtins '[return fn do def set new-object try-catch while if-else Annotation: return quote]]
-[Section: Builtin
-    [reverseTransforms push [fn [node]
-        [if [yolan arrayHasMember builtins [node get 0]]
-            [return ['[builtin] concat node]]]
-        [return node]]]
-]
+
+[Section: shorthand for get
+    [forwardTransforms push [fn [node]
+        [if [[[node get 'length] < 2] or [[[[node get 1] get 0] == 'quote] fails] [yolan arrayHasMember builtins [node get 0]]]
+            [return node]]
+          [console log 'here node]
+          [while
+            [[2 < [node get ' length]] and
+              [[[node get 1] get ' length] == 2]
+              [[[node get 1] get 0] == ' quote]]
+            [set node
+              [[new array [new array [node get 0] ' get [node get 1]]]
+                concat
+                [node slice 2]]]]
+          [if
+            [[1 < [node get ' length]] and
+              [[[node get 1] get 0] == ' quote]]
+            [set node [new array [node get 0] ' get [node get 1]]]]
+          [return node]]]]
+
 [Section: Quoting
   [forwardTransforms push
     [fn [node finish]
@@ -158,3 +172,6 @@
           [[[node get 2] get 0] == 'do]]
         [return [[node get 1] concat [[node get 2] slice 1]]]]
       [return node]]]]
+
+[def x [new object ['a 1]]]
+[; console log 'here x [x 'a]]

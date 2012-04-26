@@ -58,9 +58,16 @@ exports["reverseList"] = function(list) {
 
 var builtins = [ "return", "fn", "do", "def", "set", "new-object", "try-catch", "while", "if-else", "Annotation:", "return", "quote" ];
 
-reverseTransforms.push(function(node) {
-    if (yolan.arrayHasMember(builtins, node[0])) {
-        return [ "builtin" ].concat(node);
+forwardTransforms.push(function(node) {
+    if (node["length"] < 2 || !(node[1][0] === "quote") || yolan.arrayHasMember(builtins, node[0])) {
+        return node;
+    } else {}
+    console.log("here", node);
+    while (2 < node["length"] && node[1]["length"] === 2 && node[1][0] === "quote") {
+        node = [ [ node[0], "get", node[1] ] ].concat(node.slice(2));
+    }
+    if (1 < node["length"] && node[1][0] === "quote") {
+        node = [ node[0], "get", node[1] ];
     } else {}
     return node;
 });
@@ -158,3 +165,7 @@ reverseTransforms.push(function(node) {
     } else {}
     return node;
 });
+
+var x = {
+    a: 1
+};
