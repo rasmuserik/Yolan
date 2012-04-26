@@ -10,7 +10,7 @@
 
 [Section: Macro system
   [exports set
-    'transform
+  'transform
     [fn [node]
       [if [[node jsType] == 'string] [return node]]
       [Section: macro transform
@@ -44,29 +44,35 @@
     'reverseList
     [fn [list] [return [list map [exports get 'reverse]]]]]]
 
-[def builtins
-  '[return fn do def set new-object try-catch while if-else Annotation:
-    return quote]]
+[def builtins '[return fn do def set new-object try-catch while if-else Annotation: return quote]]
 
 [Section: shorthand for get
-  [forwardTransforms push
-    [fn [node]
-      [if
-        [[[node get 'length] < 2] or
-          [[[[node get 1] get 0] == 'quote] fails]
-          [yolan arrayHasMember builtins [node get 0]]]
-        [return node]]
-      [console log 'here node]
-      [while
-        [[2 < [node get 'length]] and
-          [[[node get 1] get 'length] == 2]
-          [[[node get 1] get 0] == 'quote]]
-        [set node
-          [[new array [new array [node get 0] 'get [node get 1]]] concat
-            [node slice 2]]]]
-      [if [[1 < [node get 'length]] and [[[node get 1] get 0] == 'quote]]
-        [set node [new array [node get 0] 'get [node get 1]]]]
-      [return node]]]]
+    [forwardTransforms push [fn [node]
+        [if [[[node get 'length] < 2] or [[[[node get 1] get 0] == 'quote] fails] [yolan arrayHasMember builtins [node get 0]]]
+            [return node]]
+          [console log 'here node]
+          [while
+            [[2 < [node get ' length]] and
+              [[[node get 1] get ' length] == 2]
+              [[[node get 1] get 0] == ' quote]]
+            [set node
+              [[new array [new array [node get 0] ' get [node get 1]]]
+                concat
+                [node slice 2]]]]
+          [if
+            [[1 < [node get ' length]] and
+              [[[node get 1] get 0] == ' quote]]
+            [set node [new array [node get 0] ' get [node get 1]]]]
+          [return node]]]
+    [reverseTransforms push [fn [node]
+        [if [yolan arrayHasMember builtins [node get 0]] [return node]]
+        [if [[[node get 'length] == 3] and [[node get 1] == 'get] [[[node get 2] get 0] == 'quote]]
+            [set node [node slice 0]]
+            [node set 1 [node get 2]]
+            [node pop]]
+        [return node]]]]
+
+          
 
 [Section: Quoting
   [forwardTransforms push
@@ -92,28 +98,6 @@
     [fn [node finish]
       [if [[node get 0] == 'quote] [finish call]]
       [return node]]]]
-
-[; Section: shorthand for get
-  [# Commented out because \[...\'... \] actually may happen, ie:
-    \[return\[\'...\]\] and \[new object \[...\'...\]]
-  [onEach push
-    [new object
-      [' transform
-        [fn [node]
-          [while
-            [[2 < [node get ' length]] and
-              [[[node get 1] get ' length] == 2]
-              [[[node get 1] get 0] == ' quote]]
-            [set node
-              [[new array [new array [node get 0] ' get [node get 1]]]
-                concat
-                [node slice 2]]]]
-          [if
-            [[1 < [node get ' length]] and
-              [[[node get 1] get 0] == ' quote]]
-            [set node [new array [node get 0] ' get [node get 1]]]]
-          node]]
-      [' reverse [fn [node] node]]]]]
 
 [Section: Conditionals
   [forwardTransforms push
@@ -177,5 +161,4 @@
       [return node]]]]
 
 [def x [new object ['a 1]]]
-
-[; console log ' here x [x ' a]]
+[console log 'here x [x get 'a]]
