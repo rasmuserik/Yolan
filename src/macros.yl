@@ -40,6 +40,16 @@
       node]]
   [exports set 'reverseList [fn [list] [list map [exports get 'reverse]]]]]
 
+[Section: transform fn to function with explicit return
+   [reverseTransforms push
+    [fn [node] [if [[node get 0] == 'fn]
+        [set node [node slice 0]]
+        [node set 0 'function]
+        [def last [[node get 'length] - 1]]
+        [node set last [new array 'return [node get last]]]
+        [return node]]
+    node]]]
+
 [Section: Quoting
   [forwardTransforms push
     [fn [node finish]

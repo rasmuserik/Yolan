@@ -54,6 +54,17 @@ exports["reverseList"] = function(list) {
     return list.map(exports["reverse"]);
 };
 
+reverseTransforms.push(function(node) {
+    if (node[0] === "fn") {
+        node = node.slice(0);
+        node[0] = "function";
+        var last = node["length"] - 1;
+        node[last] = [ "return", node[last] ];
+        return node;
+    } else {}
+    return node;
+});
+
 forwardTransforms.push(function(node, finish) {
     if (node[0] === "'" && node["length"] === 2) {
         finish.call();
