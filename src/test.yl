@@ -4,11 +4,11 @@
   [def proto
     [new object
       ['fail
-        [function [message]
+        [fn [message]
           [console log 'Test\ failure: [this get 'name] message]
           [return this]]]
       ['assertEqual
-        [function [a b]
+        [fn [a b]
           [console log 'AssertEqual a b '( [this get 'name] ')]
           [try-catch e
             [if [[[JSON stringify a] == [JSON stringify b]] fails]
@@ -22,12 +22,10 @@
               e]]
           [return this]]]
       ['done
-        [function []
-          [console log 'Test\ done [this get 'name]]
-          [return this]]]]]
+        [fn [] [console log 'Test\ done [this get 'name]] [return this]]]]]
   [test set
     'case
-    [function [name]
+    [fn [name]
       [console log 'Starting\ testcase: name]
       [def result [Object create proto]]
       [result set 'name name]
@@ -37,18 +35,18 @@
 
 [test set
   'run
-  [function [args]
+  [fn [args]
     [Section: yolan test
       [def testcase [test case 'yolanIO]]
       [yolan writeTextFile
         'test-tmp/yolanIOtest
         'testvalue
-        [function [err]
+        [fn [err]
           [if err [testcase fail 'writeError]]
           [return
             [yolan readTextFile
               'test-tmp/yolanIOtest
-              [function [err data]
+              [fn [err data]
                 [if err [testcase fail 'readError]]
                 [testcase assertEqual data 'testvalue]
                 [return [testcase done]]]]]]]]

@@ -7,7 +7,7 @@
 [def engine [[module require './yolan] get 'engine]]
 
 [def run
-  [function [args]
+  [fn [args]
     [def moduleName [[args get 0] or [engine + 'main]]]
     [return
       [[[module require ['./ + moduleName]] get 'run] apply null

@@ -1,7 +1,7 @@
 [console log 123]
 
 [def fib
-  [function [n]
+  [fn [n]
     [def result 1]
     [if [1 < n]
       [set result [[fib call null [n - 1]] + [fib call null [n - 2]]]]]

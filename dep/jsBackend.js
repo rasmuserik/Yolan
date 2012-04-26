@@ -31,11 +31,8 @@ var compileJS = {
         } else {}
         return "new " + syn1 + "()";
     },
-    "function": function(syn, syn1) {
-        return "function(" + syn1.join(",") + "){" + syn.slice(2).map(exports["toJS"]).join(";") + "}";
-    },
     fn: function(syn, syn1) {
-        return "function(" + syn1.join(",") + "){" + syn.slice(2, -1).map(exports["toJS"]).join(";") + ";return " + exports.toJS(syn[syn["length"] - 1]) + "}";
+        return "function(" + syn1.join(",") + "){" + syn.slice(2).map(exports["toJS"]).join(";") + "}";
     },
     "try-catch": function(syn, syn1) {
         return "try{" + exports.toJS(syn[2]) + "}catch(" + syn[1] + "){" + exports.toJS(syn[3]) + "}";

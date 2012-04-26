@@ -1,6 +1,6 @@
 [exports set
   'run
-  [function []
+  [fn []
     [def body [document get 'body]]
     [[module require './webcanvas] init [new object]]
     [def ctx [canvas getContext '2d]]
@@ -11,7 +11,7 @@
     [return
       [body set
         'onkeypress
-        [function [ev]
+        [fn [ev]
           [ctx fillText [ev get 'keyCode] x y]
           [set x [x + 30]]
           [if [[window get 'innerWidth] < x] [set x 0] [set y [y + 20]]]

@@ -19,7 +19,7 @@
   [if [[require jsType] == 'undefined]
     [def modules [new object ['./yolan yolan]]]
     [set require
-      [function [name]
+      [fn [name]
         [if [[modules get name] fails]
           [console log 'loading\ module name]
           [def prevModule module]
@@ -38,7 +38,7 @@
     [set console [new object]]
     [console set
       'log
-      [function []
+      [fn []
         [return
           [print call null
             [[[[Array get 'prototype] get 'slice] call arguments 0] join
@@ -54,7 +54,7 @@
   [if [[window get 'require] fails]
     [def modules [new object]]
     [def require
-      [function [name]
+      [fn [name]
         [if [[loadedModules get name] fails]
           [console log 'initialising name]
           [def module [new object]]
@@ -66,7 +66,7 @@
         [return [loadedModules get name]]]]
     [window set
       'define
-      [function [name dep f] [modules set name f] [return undefined]]]
+      [fn [name dep f] [modules set name f] [return undefined]]]
     [console log 'def 'require]
     [window set 'require require]]]
 
@@ -78,7 +78,7 @@
 
 [if [[console jsType] == 'undefined]
   [set console [new object]]
-  [console set 'log [function [] [return undefined]]]
+  [console set 'log [fn [] [return undefined]]]
   [if [[[print jsType] == 'undefined] fails] [console set 'log print]]]
 
 [if [[yolan get 'engine] fails] [console log 'Error\ detecting\ engine:]]
@@ -87,16 +87,16 @@
   [if [engine == 'node]
     [yolan set
       'readTextFile
-      [function [fname callback]
+      [fn [fname callback]
         [return [[module require 'fs] readFile fname 'utf8 callback]]]]]
   [if [engine == 'web]
     [yolan set
       'readTextFile
-      [function [fname callback]
+      [fn [fname callback]
         [def req [new XMLHttpRequest]]
         [req set
           'onreadystatechange
-          [function [event]
+          [fn [event]
             [if [[req get 'readyState] == 4]
               [if [[[req get 'status] == 200] fails]
                 [return
@@ -111,17 +111,17 @@
   [if [engine == 'node]
     [yolan set
       'writeTextFile
-      [function [fname content callback]
+      [fn [fname content callback]
         [return
           [[module require 'fs] writeFile fname content 'utf8 callback]]]]]
   [if [engine == 'web]
     [yolan set
       'writeTextFile
-      [function [fname data callback]
+      [fn [fname data callback]
         [def req [new XMLHttpRequest]]
         [req set
           'onreadystatechange
-          [function [event]
+          [fn [event]
             [if [callback fails] return]
             [if [[req get 'readyState] == 4]
               [if [[[req get 'status] == 200] fails]

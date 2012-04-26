@@ -1,25 +1,24 @@
 [exports set
   'binaryEncode
-  [function [tree acc]
+  [fn [tree acc]
     [def joinResult [acc fails]]
     [set acc [acc or '[]]]
     [acc push [String fromCharCode [tree get 'length]]]
     [if-else [Array isArray tree]
       [do [acc push '{]
-        [tree map
-          [function [elem] [return [exports binaryEncode elem acc]]]]]
+        [tree map [fn [elem] [return [exports binaryEncode elem acc]]]]]
       [do [acc push '"] [acc push tree]]]
     [return [joinResult and [acc join ""]]]]]
 
-[def hasValue [function [val] [return [[this.indexOf(val) == -1] fails]]]]
+[def hasValue [fn [val] [return [[this.indexOf(val) == -1] fails]]]]
 
 [exports set
   'toIL
-  [function [ast]
+  [fn [ast]
     [def functions '[]]
     [def fnid 0]
     [def compileFunction
-      [function [name args ast]
+      [fn [name args ast]
         [def nextid 0]
         [args set 'hasValue hasValue]
         [def locals '[]]
@@ -28,7 +27,7 @@
         [globals set 'hasValue hasValue]
         [def currentFunction '[]]
         [def compileExpression
-          [function [expr withArg]
+          [fn [expr withArg]
             [def code '[]]
             [if [Array isArray expr]
               [def first [expr get 0]]
@@ -106,7 +105,7 @@
                 [def method [expr get 1]]
                 [set expr [expr slice 1]]
                 [expr set 0 first]
-                [def types [expr map [function [] [return 'var]]]]
+                [def types [expr map [fn [] [return 'var]]]]
                 [while [0 < [expr get 'length]]
                   [set code
                     [code concat

@@ -13,10 +13,10 @@
 [exports set
   'sourceFiles
   [[fs readdirSync 'src] filter
-    [function [name] [return [[name slice -3] == '.yl]]]]]
+    [fn [name] [return [[name slice -3] == '.yl]]]]]
 
 [def mtime
-  [function [fname]
+  [fn [fname]
     [try-catch e
       [return [[[fs statSync fname] get 'mtime] getTime]]
       [return 0]]
@@ -24,10 +24,10 @@
 
 [exports set
   'run
-  [function []
+  [fn []
     [return
       [[exports get 'sourceFiles] forEach
-        [function [f]
+        [fn [f]
           [def src ['src/ + f]]
           [def dest ['build/ + [f slice 0 -3]]]
           [if [[mtime call null [dest + '.js]] < [mtime call null src]]
@@ -36,17 +36,17 @@
 
 [exports set
   'yl2js
-  [function [src]
+  [fn [src]
     [return
       [jsBackend toJS
         [macros transform [syntax parse [syntax tokenize src]]]]]]]
 
 [def compile
-  [function [src dest]
+  [fn [src dest]
     [return
       [fs readFile src
         'utf8
-        [function [err data]
+        [fn [err data]
           [console log src '-> dest]
           [if err [return err]]
           [; compile exports to js]
@@ -75,4 +75,4 @@
             [fs writeFile
               [dest + '.js]
               js
-              [function [err data] [if err [return err]] [return true]]]]]]]]]
+              [fn [err data] [if err [return err]] [return true]]]]]]]]]

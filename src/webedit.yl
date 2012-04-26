@@ -2,7 +2,7 @@
 
 [exports set
   'run
-  [function [fname]
+  [fn [fname]
     [def body [document get 'body]]
     [console log fname]
     [body set
@@ -19,7 +19,7 @@
             save]]]]
     [Section: Load content into textarea
       [yolan readTextFile fname
-        [function [err data]
+        [fn [err data]
           [if err [set data [err toString]]]
           [[document getElementById 'editarea] set 'value data]
           [return [console log 'readfile fname data err]]]]]
@@ -27,7 +27,7 @@
       [Section: Save button
         [[document getElementById 'savebutton] set
           'onclick
-          [function [ev]
+          [fn [ev]
             [yolan writeTextFile fname
               [[document getElementById 'editarea] get 'value]]
             [return undefined]]]]]]]

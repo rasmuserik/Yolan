@@ -1,19 +1,17 @@
 [Section: Tokenization
   [exports set
     'tokenize
-    [function [str]
+    [fn [str]
       [def result [new array]]
       [def i 0]
       [def tokeniser [new object]]
       [def c [str get 0]]
-      [def nextc
-        [function [] [set i [i + 1]] [set c [str get i]] [return c]]]
+      [def nextc [fn [] [set i [i + 1]] [set c [str get i]] [return c]]]
       [def isWs
-        [function []
-          [return [[c == '\ ] or [c == '\n] [c == '\r] [c == '\t]]]]]
+        [fn [] [return [[c == '\ ] or [c == '\n] [c == '\r] [c == '\t]]]]]
       [def isPrefix
-        [function [] [return [[c == ''] or [c == ''] [c == ''] [c == '']]]]]
-      [def isBracket [function [] [return [[c == '\[] or [c == '\]]]]]]
+        [fn [] [return [[c == ''] or [c == ''] [c == ''] [c == '']]]]]
+      [def isBracket [fn [] [return [[c == '\[] or [c == '\]]]]]]
       [while c
         [while [isWs call] [nextc call]]
         [if-else [c == '\[]
@@ -45,7 +43,7 @@
 
 [Section: Parsing
   [def addQuotes
-    [function [list]
+    [fn [list]
       [def i 0]
       [def result [new array]]
       [while [i < [list get 'length]]
@@ -58,7 +56,7 @@
       [return result]]]
   [exports set
     'parse
-    [function [tokens]
+    [fn [tokens]
       [set tokens [tokens reverse]]
       [def stack [new array]]
       [def current [new array 'do]]
@@ -78,7 +76,7 @@
   [Section: Utility for creating line-prepended whitespace
     [exports set
       'nspace
-      [function [n]
+      [fn [n]
         [def result [new array]]
         [while [0 < n] [set n [n - 1]] [result push '\ ]]
         [return [result join ""]]]]]
@@ -87,13 +85,13 @@
   [def escapeRegEx2 [RegExp call RegExp '\\\\" 'g]]
   [exports set
     'prettyprint
-    [function [ast]
+    [fn [ast]
       [Section: Handle strings, empty lists and quotes
         [if [[ast jsType] == 'string]
           [if [ast == ''] [return '']]
           [return
             [[[[JSON stringify ast] slice 1 -1] replace escapeRegEx
-                [function [s] [return ['\\ + s]]]]
+                [fn [s] [return ['\\ + s]]]]
               replace escapeRegEx2
               '"]]]
         [if [0 == [ast get 'length]] [return '\[\]]]

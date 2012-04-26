@@ -9,12 +9,12 @@
 [Section: Macro system
   [exports set
     'transform
-    [function [node]
+    [fn [node]
       [if [[node jsType] == 'string] [return node]]
       [Section: macro transform
         [def i [forwardTransforms get 'length]]
         [def done false]
-        [def finish [function [] [return [set done true]]]]
+        [def finish [fn [] [return [set done true]]]]
         [while [0 < i]
           [set i [i - 1]]
           [set node [[forwardTransforms get i] call null node finish]]
@@ -23,15 +23,15 @@
       [return node]]]
   [exports set
     'transformList
-    [function [list] [return [list map [exports get 'transform]]]]]
+    [fn [list] [return [list map [exports get 'transform]]]]]
   [exports set
     'reverse
-    [function [node]
+    [fn [node]
       [if [[node jsType] == 'string] [return node]]
       [Section: macro transform
         [def i 0]
         [def done false]
-        [def finish [function [] [return [set done true]]]]
+        [def finish [fn [] [return [set done true]]]]
         [while [i < [reverseTransforms get 'length]]
           [set node [[reverseTransforms get i] call null node finish]]
           [if done [return node]]
@@ -40,22 +40,11 @@
       [return node]]]
   [exports set
     'reverseList
-    [function [list] [return [list map [exports get 'reverse]]]]]]
-
-[Section: transform fn to function with explicit return
-  [reverseTransforms push
-    [function [node]
-      [if [[node get 0] == 'fn]
-        [set node [node slice 0]]
-        [node set 0 'function]
-        [def last [[node get 'length] - 1]]
-        [node set last [new array 'return [node get last]]]
-        [return node]]
-      [return node]]]]
+    [fn [list] [return [list map [exports get 'reverse]]]]]]
 
 [Section: Quoting
   [forwardTransforms push
-    [function [node finish]
+    [fn [node finish]
       [if [[[node get 0] == ''] and [[node get 'length] == 2]]
         [finish call]
         [return ['[quote] concat [node get 1]]]]
@@ -69,12 +58,12 @@
         [set i [i + 1]]]
       [return result]]]
   [reverseTransforms push
-    [function [node]
+    [fn [node]
       [if [[[node get 'length] == 2] and [[node get 0] == 'quote]]
         [return [new array '' [node get 1]]]]
       [return node]]]
   [forwardTransforms push
-    [function [node finish]
+    [fn [node finish]
       [if [[node get 0] == 'quote] [finish call]]
       [return node]]]]
 
@@ -102,7 +91,7 @@
 
 [Section: Conditionals
   [forwardTransforms push
-    [function [node]
+    [fn [node]
       [if [[node get 0] == 'if]
         [return
           [new array
@@ -111,7 +100,7 @@
             ['[do] concat [exports transformList [node slice 2]]]]]]
       [return node]]]
   [reverseTransforms push
-    [function [node]
+    [fn [node]
       [if [[[node get 0] == 'if-else] and [[node get 'length] == 3]]
         [if-else [[[node get 2] get 0] == 'do]
           [return
@@ -121,13 +110,13 @@
 
 [Section: comments
   [forwardTransforms push
-    [function [node finish]
+    [fn [node finish]
       [if [[node get 0] == ';]
         [finish call]
         [return [new array 'Annotation: node]]]
       [return node]]]
   [reverseTransforms push
-    [function [node finish]
+    [fn [node finish]
       [if
         [[[node get 0] == 'Annotation:] and
           [[node get 'length] == 2]
@@ -136,7 +125,7 @@
         [return [node get 1]]]
       [return node]]]
   [forwardTransforms push
-    [function [node finish]
+    [fn [node finish]
       [if [[node get 0] == 'Section:]
         [finish call]
         [def doc '[]]
@@ -152,7 +141,7 @@
         [return [new array 'Annotation: doc code]]]
       [return node]]]
   [reverseTransforms push
-    [function [node]
+    [fn [node]
       [if
         [[[node get 0] == 'Annotation:] and
           [[node get 'length] == 3]

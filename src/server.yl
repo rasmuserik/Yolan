@@ -11,9 +11,9 @@
 [def scriptList
   ['[yolan] concat
     [[[fs readdirSync 'src] filter
-        [function [name] [return [[name slice -3] == '.yl]]]]
+        [fn [name] [return [[name slice -3] == '.yl]]]]
       map
-      [function [name] [return [name slice 0 -3]]]]]]
+      [fn [name] [return [name slice 0 -3]]]]]]
 
 [def head
   ['<!DOCTYPE\ html><html> + [xml fromYl [module require './htmlheader]]]]
@@ -21,16 +21,15 @@
 [def body
   ['<body><script>function\ define(_,_,f){f()};</script> +
     [[scriptList map
-        [function [name]
-          [return ['<script\ src="/ + name '.js"></script>]]]]
+        [fn [name] [return ['<script\ src="/ + name '.js"></script>]]]]
       join ""]
     '<script>require("./main").run(location.hash.slice(1).split("\ "));</script></body></html>]]
 
 [exports set
   'run
-  [function []
+  [fn []
     [[http createServer
-        [function [request result]
+        [fn [request result]
           [def url [request get 'url]]
           [console log [request get 'url]]
           [if [[url slice -3] == '.js]
@@ -40,7 +39,7 @@
             [fs readFile
               ['./src/ + name '.yl]
               'utf8
-              [function [err data]
+              [fn [err data]
                 [if err [result end [err toString]] [return false]]
                 [return
                   [result end
@@ -54,7 +53,7 @@
             [result writeHead 200 [new object ['Content-Type 'text/plain]]]
             [yolan readTextFile
               [url slice 14]
-              [function [err data]
+              [fn [err data]
                 [if err [result end [JSON stringify err]] [return false]]
                 [return [result end data]]]]
             [return true]]
@@ -62,15 +61,15 @@
             [def buf ""]
             [request on
               'data
-              [function [data] [return [set buf [buf + [data toString]]]]]]
+              [fn [data] [return [set buf [buf + [data toString]]]]]]
             [request on
               'end
-              [function [data]
+              [fn [data]
                 [return
                   [fs writeFile
                     [url slice 15]
                     buf
-                    [function [err data]
+                    [fn [err data]
                       [if err
                         [result writeHead 500
                           [new object ['Content-Type 'text/plain]]]
@@ -85,7 +84,7 @@
             [fs readFile
               ['./src/ + [url slice 5] '.yl]
               'utf8
-              [function [err data]
+              [fn [err data]
                 [if err [result end [err toString]] [return false]]
                 [return [result end data]]]]
             [return true]]
@@ -94,15 +93,15 @@
             [result writeHead 200 [new object ['Content-Type 'text/plain]]]
             [request on
               'data
-              [function [data] [return [set buf [buf + [data toString]]]]]]
+              [fn [data] [return [set buf [buf + [data toString]]]]]]
             [request on
               'end
-              [function [data]
+              [fn [data]
                 [return
                   [fs writeFile
                     ['./src/ + [url slice 5] '.yl]
                     buf
-                    [function [err data]
+                    [fn [err data]
                       [if err [result end [err toString]] [return false]]
                       [return [result end ""]]]]]]]
             [return true]]
