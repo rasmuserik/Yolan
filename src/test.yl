@@ -5,8 +5,11 @@
     [new object
       ['fail
         [fn [message]
-          [console log 'Test\ failure: [this get 'name] message]
-          [return this]]]
+          [console log 'Test\ failure: [this get 'name] message]]]
+      ['assert
+        [fn [a message]
+            [if [a fails]
+            [console log 'assert a 'fails\ in: message]]]]
       ['assertEqual
         [fn [a b]
           [console log 'AssertEqual a b '( [this get 'name] ')]
@@ -19,10 +22,9 @@
               'in
               [test get 'name]
               'error:
-              e]]
-          [return this]]]
+              e]]]]
       ['done
-        [fn [] [console log 'Test\ done [this get 'name]] [return this]]]]]
+        [fn [] [console log 'Test\ done [this get 'name]] ]]]]
   [test set
     'case
     [fn [name]
@@ -36,18 +38,23 @@
 [test set
   'run
   [fn [args]
-    [Section: yolan test
+    [Section: yolan file i/o
       [def testcase [test case 'yolanIO]]
       [yolan writeTextFile
         'test-tmp/yolanIOtest
         'testvalue
         [fn [err]
           [if err [testcase fail 'writeError]]
-          [return
             [yolan readTextFile
               'test-tmp/yolanIOtest
               [fn [err data]
                 [if err [testcase fail 'readError]]
                 [testcase assertEqual data 'testvalue]
-                [return [testcase done]]]]]]]]
-    [return undefined]]]
+                [testcase done]]]]]]
+    [Section: yolan utility
+        [def testcase [test case 'yolanUtility]]
+        [testcase assert [yolan arrayHasMember '[1 2 3 4] 3] 'arrayHasMember1]
+        [testcase assert [[yolan arrayHasMember '[1 2 3 4] 7] fails] 'arrayHasMember2]
+        [testcase done]
+    ]]]
+    

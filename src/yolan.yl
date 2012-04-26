@@ -134,3 +134,6 @@
             [return undefined]]]
         [req open 'POST ['/writeTextFile/ + fname] true]
         [return [req send data]]]]]]
+[Section: Utilities
+    [yolan set 'arrayHasMember [fn [array member]
+        [if-else [[array indexOf member] == -1] [return false] [return true]]]]]

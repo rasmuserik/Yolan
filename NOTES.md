@@ -2,9 +2,6 @@
 
 # NEXT
 
-- change function syntax, - no implicit return
-- list-model-object-class
-
 # List editor tasks
 
 - layout
