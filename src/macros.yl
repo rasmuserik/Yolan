@@ -1,3 +1,5 @@
+[def yolan [module require './yolan]]
+
 [def macros [new object]]
 
 [def onEach [new array]]
@@ -42,6 +44,13 @@
     'reverseList
     [fn [list] [return [list map [exports get 'reverse]]]]]]
 
+[def builtins '[return fn do def set new-object try-catch while if-else Annotation: return quote]]
+[Section: Builtin
+    [reverseTransforms push [fn [node]
+        [if [yolan arrayHasMember builtins [node get 0]]
+            [return ['[builtin] concat node]]]
+        [return node]]]
+]
 [Section: Quoting
   [forwardTransforms push
     [fn [node finish]

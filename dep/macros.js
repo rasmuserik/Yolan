@@ -1,3 +1,5 @@
+var yolan = module.require("./yolan");
+
 var macros = {};
 
 var onEach = [];
@@ -53,6 +55,15 @@ exports["reverse"] = function(node) {
 exports["reverseList"] = function(list) {
     return list.map(exports["reverse"]);
 };
+
+var builtins = [ "return", "fn", "do", "def", "set", "new-object", "try-catch", "while", "if-else", "Annotation:", "return", "quote" ];
+
+reverseTransforms.push(function(node) {
+    if (yolan.arrayHasMember(builtins, node[0])) {
+        return [ "builtin" ].concat(node);
+    } else {}
+    return node;
+});
 
 forwardTransforms.push(function(node, finish) {
     if (node[0] === "'" && node["length"] === 2) {

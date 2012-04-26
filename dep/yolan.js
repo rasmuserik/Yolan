@@ -143,3 +143,11 @@ if (engine === "web") {
         return req.send(data);
     };
 } else {}
+
+yolan["arrayHasMember"] = function(array, member) {
+    if (array.indexOf(member) === -1) {
+        return false;
+    } else {
+        return true;
+    }
+};
