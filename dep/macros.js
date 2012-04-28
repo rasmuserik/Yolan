@@ -83,7 +83,7 @@ reverseTransforms.push(function(node) {
     return node;
 });
 
-forwardTransforms.push(function(node, finish) {
+var quoteTransform = function(node, finish) {
     if (node[0] === "'" && node["length"] === 2) {
         finish.call();
         return [ "quote" ].concat(node[1]);
@@ -100,7 +100,9 @@ forwardTransforms.push(function(node, finish) {
         i = i + 1;
     }
     return result;
-});
+};
+
+forwardTransforms.push(quoteTransform);
 
 reverseTransforms.push(function(node, finish) {
     if (node["length"] === 2 && node[0] === "quote") {
@@ -196,6 +198,7 @@ forwardTransforms.push(function(node) {
     if (node[0] === "#") {
         var result = [ "new-object" ];
         node.slice(1).forEach(function(elem) {
+            elem = quoteTransform.call(null, elem, function() {});
             result.push(elem[0]);
             result.push(elem[1]);
         });
@@ -206,13 +209,13 @@ forwardTransforms.push(function(node) {
 
 reverseTransforms.push(function(node, finish) {
     if (node[0] === "new-object") {
-        finish.call();
         var result = [ "#" ];
         var i = 1;
         while (i < node["length"]) {
-            result.push([ node[i], macros.reverse(node[i + 1]) ]);
+            result.push([ node[i], node[i + 1] ]);
             i = i + 2;
         }
+        return result;
     } else {}
     return node;
 });

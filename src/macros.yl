@@ -78,7 +78,7 @@
       [return node]]]]
 
 [Section: Quoting
-  [forwardTransforms push
+  [def quoteTransform
     [fn [node finish]
       [if [[[node get 0] == ''] and [[node 'length] == 2]]
         [finish call]
@@ -91,6 +91,7 @@
           [result push [node get i]]]
         [set i [i + 1]]]
       [return result]]]
+  [forwardTransforms push quoteTransform]
   [reverseTransforms push
     [fn [node finish]
       [if [[[node 'length] == 2] and [[node get 0] == 'quote]]
@@ -177,18 +178,20 @@
       [if [[node get 0] == '#]
         [def result '[new-object]]
         [[node slice 1] forEach
-          [fn [elem] [result push [elem get 0]] [result push [elem get 1]]]]
+          [fn [elem] 
+            [set elem [quoteTransform call null elem [fn []]]]
+            [result push [elem get 0]] [result push [elem get 1]]]]
         [return result]]
       [return node]]]
   [reverseTransforms push
     [fn [node finish]
       [if [[node get 0] == 'new-object]
-        [finish call]
         [def result '[#]]
         [def i 1]
         [while [i < [node 'length]]
-            [result push [@ [node get i] [macros reverse [node get [i + 1]]]]]
+            [result push [@ [node get i] [node get [i + 1]]]]
             [set i [i + 2]]]
+        [return result]
         ]
       [return node]]]]
 
