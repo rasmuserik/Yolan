@@ -83,39 +83,6 @@ reverseTransforms.push(function(node) {
     return node;
 });
 
-forwardTransforms.push(function(node, finish) {
-    if (node[0] === "'" && node["length"] === 2) {
-        finish.call();
-        return [ "quote" ].concat(node[1]);
-    } else {}
-    var result = [];
-    var i = 0;
-    while (i < node["length"]) {
-        if (node[i] === "'" && i + 1 < node["length"]) {
-            i = i + 1;
-            result.push([ "quote", node[i] ]);
-        } else {
-            result.push(node[i]);
-        }
-        i = i + 1;
-    }
-    return result;
-});
-
-reverseTransforms.push(function(node) {
-    if (node["length"] === 2 && node[0] === "quote") {
-        return [ "'", node[1] ];
-    } else {}
-    return node;
-});
-
-forwardTransforms.push(function(node, finish) {
-    if (node[0] === "quote") {
-        finish.call();
-    } else {}
-    return node;
-});
-
 forwardTransforms.push(function(node) {
     if (node[0] === "if") {
         return [ "if-else", exports.transform(node[1]), [ "do" ].concat(exports.transformList(node.slice(2))) ];
@@ -184,6 +151,13 @@ forwardTransforms.push(function(node) {
     return node;
 });
 
+reverseTransforms.push(function(node) {
+    if (node[0] === "new" && node[1] === "array") {
+        return [ "@" ].concat(node.slice(2));
+    } else {}
+    return node;
+});
+
 forwardTransforms.push(function(node) {
     if (node[0] === "#") {
         var result = [ "builtin:", "new-object" ];
@@ -192,6 +166,39 @@ forwardTransforms.push(function(node) {
             result.push(elem[1]);
         });
         return result;
+    } else {}
+    return node;
+});
+
+forwardTransforms.push(function(node, finish) {
+    if (node[0] === "'" && node["length"] === 2) {
+        finish.call();
+        return [ "quote" ].concat(node[1]);
+    } else {}
+    var result = [];
+    var i = 0;
+    while (i < node["length"]) {
+        if (node[i] === "'" && i + 1 < node["length"]) {
+            i = i + 1;
+            result.push([ "quote", node[i] ]);
+        } else {
+            result.push(node[i]);
+        }
+        i = i + 1;
+    }
+    return result;
+});
+
+reverseTransforms.push(function(node) {
+    if (node["length"] === 2 && node[0] === "quote") {
+        return [ "'", node[1] ];
+    } else {}
+    return node;
+});
+
+forwardTransforms.push(function(node, finish) {
+    if (node[0] === "quote") {
+        finish.call();
     } else {}
     return node;
 });
