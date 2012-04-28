@@ -6,7 +6,7 @@
 
 [def xml [module require './xml]]
 
-[; def scriptList ' [yolan webmain]]
+[; def scriptList [quote [yolan webmain]]]
 
 [def scriptList
   ['[yolan] concat
@@ -53,10 +53,13 @@
             [yolan readTextFile
               [url slice 14]
               [fn [err data]
-                [if err 
-                    [result writeHead 404 [new-object 'Content-Type 'text/plain]]
-                    [result end [JSON stringify err]] [return false]]
-                [result writeHead 200 [new-object 'Content-Type 'text/plain]]
+                [if err
+                  [result writeHead 404
+                    [new-object 'Content-Type 'text/plain]]
+                  [result end [JSON stringify err]]
+                  [return false]]
+                [result writeHead 200
+                  [new-object 'Content-Type 'text/plain]]
                 [return [result end data]]]]
             [return true]]
           [if [[url slice 0 15] == '/writeTextFile/]

@@ -2,30 +2,30 @@
 
 [def macros [new object]]
 
-[def onEach [new array]]
+[def onEach [@]]
 
-[def forwardTransforms [new array]]
+[def forwardTransforms [@]]
 
-[def reverseTransforms [new array]]
+[def reverseTransforms [@]]
 
 [Section: Macro system
   [exports set
-  'transform
+    'transform
     [fn [node]
       [if [[node jsType] == 'string] [return node]]
       [Section: macro transform
-        [def i [forwardTransforms get 'length]]
+        [def i [forwardTransforms 'length]]
         [def done false]
         [def finish [fn [] [return [set done true]]]]
         [while [0 < i]
           [set i [i - 1]]
           [set node [[forwardTransforms get i] call null node finish]]
           [if done [return node]]]
-        [set node [node map [exports get 'transform]]]]
+        [set node [node map [exports 'transform]]]]
       [return node]]]
   [exports set
     'transformList
-    [fn [list] [return [list map [exports get 'transform]]]]]
+    [fn [list] [return [list map [exports 'transform]]]]]
   [exports set
     'reverse
     [fn [node]
@@ -34,62 +34,64 @@
         [def i 0]
         [def done false]
         [def finish [fn [] [return [set done true]]]]
-        [while [i < [reverseTransforms get 'length]]
+        [while [i < [reverseTransforms 'length]]
           [set node [[reverseTransforms get i] call null node finish]]
           [if done [return node]]
           [set i [i + 1]]]
-        [set node [node map [exports get 'reverse]]]]
+        [set node [node map [exports 'reverse]]]]
       [return node]]]
   [exports set
     'reverseList
-    [fn [list] [return [list map [exports get 'reverse]]]]]]
+    [fn [list] [return [list map [exports 'reverse]]]]]]
 
-[def builtins '[return fn do def set new-object try-catch while if-else Annotation: return quote]]
+[def builtins
+  '[return fn do def set new-object try-catch while if-else Annotation:
+    return quote]]
 
 [Section: shorthand for get
-    [forwardTransforms push [fn [node]
-        [if [[[node get 'length] < 2] or [[[[node get 1] get 0] == 'quote] fails] [yolan arrayHasMember builtins [node get 0]]]
-            [return node]]
-          [while
-            [[2 < [node get ' length]] and
-              [[[node get 1] get ' length] == 2]
-              [[[node get 1] get 0] == ' quote]]
-            [set node
-              [[new array [new array [node get 0] ' get [node get 1]]]
-                concat
-                [node slice 2]]]]
-          [if
-            [[1 < [node get ' length]] and
-              [[[node get 1] get 0] == ' quote]]
-            [set node [new array [node get 0] ' get [node get 1]]]]
-          [return node]]]
-    [reverseTransforms push [fn [node]
-        [if [yolan arrayHasMember builtins [node get 0]] [return node]]
-        [if [[[node get 'length] == 3] and [[node get 1] == 'get] [[[node get 2] get 0] == 'quote]]
-            [set node [node slice 0]]
-            [node set 1 [node get 2]]
-            [node pop]]
-        [return node]]]]
-
-          
+  [forwardTransforms push
+    [fn [node]
+      [if
+        [[[node 'length] < 2] or
+          [[[[node get 1] get 0] == 'quote] fails]
+          [yolan arrayHasMember builtins [node get 0]]]
+        [return node]]
+      [while
+        [[2 < [node 'length]] and
+          [[[node get 1] 'length] == 2]
+          [[[node get 1] get 0] == 'quote]]
+        [set node
+          [[@ [@ [node get 0] 'get [node get 1]]] concat [node slice 2]]]]
+      [if [[1 < [node 'length]] and [[[node get 1] get 0] == 'quote]]
+        [set node [@ [node get 0] 'get [node get 1]]]]
+      [return node]]]
+  [reverseTransforms push
+    [fn [node]
+      [if [yolan arrayHasMember builtins [node get 0]] [return node]]
+      [if
+        [[[node 'length] == 3] and
+          [[node get 1] == 'get]
+          [[[node get 2] get 0] == 'quote]]
+        [set node [node slice 0]]
+        [node set 1 [node get 2]]
+        [node pop]]
+      [return node]]]]
 
 [Section: Conditionals
   [forwardTransforms push
     [fn [node]
       [if [[node get 0] == 'if]
         [return
-          [new array
-            'if-else
+          [@ 'if-else
             [exports transform [node get 1]]
             ['[do] concat [exports transformList [node slice 2]]]]]]
       [return node]]]
   [reverseTransforms push
     [fn [node]
-      [if [[[node get 0] == 'if-else] and [[node get 'length] == 3]]
+      [if [[[node get 0] == 'if-else] and [[node 'length] == 3]]
         [if-else [[[node get 2] get 0] == 'do]
-          [return
-            [[new array 'if [node get 1]] concat [[node get 2] slice 1]]]
-          [return [new array 'if [node get 1] [node get 2]]]]]
+          [return [[@ 'if [node get 1]] concat [[node get 2] slice 1]]]
+          [return [@ 'if [node get 1] [node get 2]]]]]
       [return node]]]]
 
 [Section: comments
@@ -97,13 +99,13 @@
     [fn [node finish]
       [if [[node get 0] == ';]
         [finish call]
-        [return [new array 'Annotation: node]]]
+        [return [@ 'Annotation: node]]]
       [return node]]]
   [reverseTransforms push
     [fn [node finish]
       [if
         [[[node get 0] == 'Annotation:] and
-          [[node get 'length] == 2]
+          [[node 'length] == 2]
           [[[node get 1] get 0] == ';]]
         [finish call]
         [return [node get 1]]]
@@ -118,17 +120,17 @@
         [while [[[node get i] jsType] == 'string]
           [doc push [node get i]]
           [set i [i + 1]]]
-        [while [i < [node get 'length]]
+        [while [i < [node 'length]]
           [code push [node get i]]
           [set i [i + 1]]]
         [set code [exports transform code]]
-        [return [new array 'Annotation: doc code]]]
+        [return [@ 'Annotation: doc code]]]
       [return node]]]
   [reverseTransforms push
     [fn [node]
       [if
         [[[node get 0] == 'Annotation:] and
-          [[node get 'length] == 3]
+          [[node 'length] == 3]
           [[[node get 1] get 0] == 'Section:]
           [[[node get 2] get 0] == 'do]]
         [return [[node get 1] concat [[node get 2] slice 1]]]]
@@ -137,51 +139,50 @@
 [Section: Array/object literals
   [forwardTransforms push
     [fn [node]
-        [if [[node get 0] == '@]
-            [return ['[new array] concat [node slice 1]]]]
-        [return node]]]
+      [if [[node get 0] == '@]
+        [return ['[new array] concat [node slice 1]]]]
+      [return node]]]
   [reverseTransforms push
     [fn [node]
-        [if [[[node get 0] == 'new] and [[node get 1] == 'array]]
-            [return ['[@] concat [node slice 2]]]]
-        [return node]]]
+      [if [[[node get 0] == 'new] and [[node get 1] == 'array]]
+        [return ['[@] concat [node slice 2]]]]
+      [return node]]]
   [forwardTransforms push
     [fn [node]
-        [if [[node get 0] == '#]
-            [def result '[builtin: new-object]]
-            [[node slice 1] forEach [fn [elem]
-                [result push [elem get 0]]
-                [result push [elem get 1]]]]
-            [return result]]
-        [return node]]]
-        
-        ]
+      [if [[node get 0] == '#]
+        [def result '[builtin: new-object]]
+        [[node slice 1] forEach
+          [fn [elem] [result push [elem get 0]] [result push [elem get 1]]]]
+        [return result]]
+      [return node]]]]
 
 [Section: Quoting
   [forwardTransforms push
     [fn [node finish]
-      [if [[[node get 0] == ''] and [[node get 'length] == 2]]
+      [if [[[node get 0] == ''] and [[node 'length] == 2]]
         [finish call]
         [return ['[quote] concat [node get 1]]]]
-      [def result [new array]]
+      [def result [@]]
       [def i 0]
-      [while [i < [node get 'length]]
-        [if-else [[[node get i] == ''] and [[i + 1] < [node get 'length]]]
-          [do [set i [i + 1]]
-            [result push [new array 'quote [node get i]]]]
+      [while [i < [node 'length]]
+        [if-else [[[node get i] == ''] and [[i + 1] < [node 'length]]]
+          [do [set i [i + 1]] [result push [@ 'quote [node get i]]]]
           [result push [node get i]]]
         [set i [i + 1]]]
       [return result]]]
   [reverseTransforms push
-    [fn [node]
-      [if [[[node get 'length] == 2] and [[node get 0] == 'quote]]
-        [return [new array '' [node get 1]]]]
+    [fn [node finish]
+      [if [[[node 'length] == 2] and [[node get 0] == 'quote]]
+        [finish call]
+        [return [@ '' [node get 1]]]]
       [return node]]]
   [forwardTransforms push
     [fn [node finish]
       [if [[node get 0] == 'quote] [finish call]]
       [return node]]]]
 
-[; console log [@ 1 2 3 4 5]]
-[; console log [new array 1 2 3 4 5]]
+[console log [@ 1 2 3 4 5]]
+
+[console log [@ 1 2 3 4 5]]
+
 [; console log [# [1 2] [3 4]]]

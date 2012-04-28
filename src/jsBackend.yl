@@ -94,7 +94,7 @@
     [if [syn1 == '+]
       [return
         ['( +
-          [[[new array [exports toJS syn0]] concat
+          [[[@ [exports toJS syn0]] concat
               [[syn slice 2] map [exports 'toJS]]]
             join
             '+]
@@ -102,7 +102,7 @@
     [if [syn1 == '-]
       [return
         ['( +
-          [[[new array [exports toJS syn0]] concat
+          [[[@ [exports toJS syn0]] concat
               [[syn slice 2] map [exports 'toJS]]]
             join
             '-]
@@ -110,7 +110,7 @@
     [if [syn1 == 'and]
       [return
         ['( +
-          [[[new array [exports toJS syn0]] concat
+          [[[@ [exports toJS syn0]] concat
               [[syn slice 2] map [exports 'toJS]]]
             join
             '&&]
@@ -118,7 +118,7 @@
     [if [syn1 == 'or]
       [return
         ['( +
-          [[[new array [exports toJS syn0]] concat
+          [[[@ [exports toJS syn0]] concat
               [[syn slice 2] map [exports 'toJS]]]
             join
             '||]

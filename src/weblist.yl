@@ -1,14 +1,18 @@
 [def yolan [module require './yolan]]
+
 [def syntax [module require './syntax]]
+
 [def listobject [module require './listobject]]
 
-[exports set 'run [fn [filename]
+[exports set
+  'run
+  [fn [filename]
     [if [filename fails]
-        [document 'body set 'innerHTML 'Usage:\ weblist\ filename]
-        [return undefined]]
-    [yolan readTextFile filename [fn [err data]
+      [[document 'body] set 'innerHTML 'Usage:\ weblist\ filename]
+      [return undefined]]
+    [yolan readTextFile filename
+      [fn [err data]
         [if err [console log 'Error: err] [return undefined]]
         [def list [syntax parse [syntax tokenize data]]]
         [def obj [listobject create list]]
-        [console log obj]
-    ]]]]
+        [console log obj]]]]]

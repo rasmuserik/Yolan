@@ -189,8 +189,9 @@ forwardTransforms.push(function(node, finish) {
     return result;
 });
 
-reverseTransforms.push(function(node) {
+reverseTransforms.push(function(node, finish) {
     if (node["length"] === 2 && node[0] === "quote") {
+        finish.call();
         return [ "'", node[1] ];
     } else {}
     return node;
@@ -202,3 +203,7 @@ forwardTransforms.push(function(node, finish) {
     } else {}
     return node;
 });
+
+console.log([ 1, 2, 3, 4, 5 ]);
+
+console.log([ 1, 2, 3, 4, 5 ]);

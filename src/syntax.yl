@@ -2,7 +2,7 @@
   [exports set
     'tokenize
     [fn [str]
-      [def result [new array]]
+      [def result [@]]
       [def i 0]
       [def tokeniser [new object]]
       [def c [str get 0]]
@@ -45,12 +45,12 @@
   [def addQuotes
     [fn [list]
       [def i 0]
-      [def result [new array]]
+      [def result [@]]
       [while [i < [list 'length]]
         [def elem [list get i]]
         [if [elem == quote]
           [set i [i + 1]]
-          [set elem [new array 'quote [list get i]]]]
+          [set elem [@ 'quote [list get i]]]]
         [result push elem]
         [set i [i + 1]]]
       [return result]]]
@@ -58,12 +58,12 @@
     'parse
     [fn [tokens]
       [set tokens [tokens reverse]]
-      [def stack [new array]]
-      [def current [new array 'do]]
+      [def stack [@]]
+      [def current [@ 'do]]
       [while [tokens 'length]
         [def token [tokens pop]]
         [if-else [token == lbracket]
-          [do [stack push current] [set current [new array]]]
+          [do [stack push current] [set current [@]]]
           [if-else [token == rbracket]
             [do [def t current] [set current [stack pop]] [current push t]]
             [current push [JSON parse ['" + token '"]]]]]]
@@ -77,7 +77,7 @@
     [exports set
       'nspace
       [fn [n]
-        [def result [new array]]
+        [def result [@]]
         [while [0 < n] [set n [n - 1]] [result push '\ ]]
         [return [result join ""]]]]]
   [def indent 0]
@@ -107,7 +107,7 @@
           [set indent [indent - indentStep]]
           [return [lineStart + [strs join '\ ] lineEnd]]]]
       [def space ['\n + [exports nspace indent]]]
-      [def result [new array]]
+      [def result [@]]
       [result push lineStart]
       [result push [strs get 0]]
       [set pos [pos + [[strs get 0] 'length] 1]]
