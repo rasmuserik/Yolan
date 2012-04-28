@@ -50,11 +50,13 @@
             [return true]]
           [console log [url slice 0 5]]
           [if [[url slice 0 14] == '/readTextFile/]
-            [result writeHead 200 [new-object 'Content-Type 'text/plain]]
             [yolan readTextFile
               [url slice 14]
               [fn [err data]
-                [if err [result end [JSON stringify err]] [return false]]
+                [if err 
+                    [result writeHead 404 [new-object 'Content-Type 'text/plain]]
+                    [result end [JSON stringify err]] [return false]]
+                [result writeHead 200 [new-object 'Content-Type 'text/plain]]
                 [return [result end data]]]]
             [return true]]
           [if [[url slice 0 15] == '/writeTextFile/]
