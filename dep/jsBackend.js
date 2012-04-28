@@ -70,6 +70,12 @@ exports["toJS"] = function(syn) {
     if (syn1 === "set") {
         return exports.toJS(syn0) + "[" + exports.toJS(syn2) + "]=" + exports.toJS(syn[3]);
     } else {}
+    if (syn1 === "/") {
+        return "(" + [ exports.toJS(syn0) ].concat(syn.slice(2).map(exports["toJS"])).join("/") + ")";
+    } else {}
+    if (syn1 === "*") {
+        return "(" + [ exports.toJS(syn0) ].concat(syn.slice(2).map(exports["toJS"])).join("*") + ")";
+    } else {}
     if (syn1 === "|") {
         return "(" + [ exports.toJS(syn0) ].concat(syn.slice(2).map(exports["toJS"])).join("|") + ")";
     } else {}
