@@ -33,8 +33,7 @@
           [def url [request 'url]]
           [console log [request 'url]]
           [if [[url slice -3] == '.js]
-            [result writeHead 200
-              [new-object 'Content-Type 'text/javascript]]
+            [result writeHead 200 [# ['Content-Type 'text/javascript]]]
             [def name ['. + [url slice 0 -3]]]
             [fs readFile
               ['./src/ + name '.yl]
@@ -54,12 +53,10 @@
               [url slice 14]
               [fn [err data]
                 [if err
-                  [result writeHead 404
-                    [new-object 'Content-Type 'text/plain]]
+                  [result writeHead 404 [# ['Content-Type 'text/plain]]]
                   [result end [JSON stringify err]]
                   [return false]]
-                [result writeHead 200
-                  [new-object 'Content-Type 'text/plain]]
+                [result writeHead 200 [# ['Content-Type 'text/plain]]]
                 [return [result end data]]]]
             [return true]]
           [if [[url slice 0 15] == '/writeTextFile/]
@@ -77,15 +74,15 @@
                     [fn [err data]
                       [if err
                         [result writeHead 500
-                          [new-object 'Content-Type 'text/plain]]
+                          [# ['Content-Type 'text/plain]]]
                         [result end [err toString]]
                         [return false]]
                       [result writeHead 200
-                        [new-object 'Content-Type 'text/plain]]
+                        [# ['Content-Type 'text/plain]]]
                       [return [result end "OK"]]]]]]]
             [return true]]
           [if [[url slice 0 5] == '/get/]
-            [result writeHead 200 [new-object 'Content-Type 'text/plain]]
+            [result writeHead 200 [# ['Content-Type 'text/plain]]]
             [fs readFile
               ['./src/ + [url slice 5] '.yl]
               'utf8
@@ -95,7 +92,7 @@
             [return true]]
           [if [[url slice 0 5] == '/put/]
             [def buf ""]
-            [result writeHead 200 [new-object 'Content-Type 'text/plain]]
+            [result writeHead 200 [# ['Content-Type 'text/plain]]]
             [request on
               'data
               [fn [data] [return [set buf [buf + [data toString]]]]]]
@@ -110,7 +107,7 @@
                       [if err [result end [err toString]] [return false]]
                       [return [result end ""]]]]]]]
             [return true]]
-          [result writeHead 200 [new-object 'Content-Type 'text/html]]
+          [result writeHead 200 [# ['Content-Type 'text/html]]]
           [result end [head + body]]
           [return true]]]
       listen 1234

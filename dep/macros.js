@@ -219,3 +219,8 @@ reverseTransforms.push(function(node, finish) {
     } else {}
     return node;
 });
+
+console.log({
+    a: "b",
+    3: 4
+});
