@@ -39,7 +39,7 @@
   [fn []
     [return
       [exports init
-        [new object
+        [#
           ['update
             [fn [ctx h w]
               [ctx set 'fillStyle '#990]

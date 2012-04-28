@@ -70,7 +70,7 @@
           [try-catch e
             [def ast [jsp parse js]]
             [do [console log dest] [console log e]]]
-          [set js [pro gen_code ast [new object ['beautify true]]]]
+          [set js [pro gen_code ast [# ['beautify true]]]]
           [fs writeFile
             [dest + '.js]
             js

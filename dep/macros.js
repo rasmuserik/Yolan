@@ -207,6 +207,13 @@ forwardTransforms.push(function(node) {
     return node;
 });
 
+reverseTransforms.push(function(node) {
+    if (node[0] === "new" && node[1] === "object") {
+        return [ "#" ].concat(node.slice(2));
+    } else {}
+    return node;
+});
+
 reverseTransforms.push(function(node, finish) {
     if (node[0] === "new-object") {
         var result = [ "#" ];
@@ -218,9 +225,4 @@ reverseTransforms.push(function(node, finish) {
         return result;
     } else {}
     return node;
-});
-
-console.log({
-    a: "b",
-    3: 4
 });

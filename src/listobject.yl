@@ -1,6 +1,6 @@
 [; list model which keeps track of stuff for the ui too]
 
-[def Model [new object]]
+[def Model [#]]
 
 [exports set
   'create

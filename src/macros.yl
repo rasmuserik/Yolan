@@ -185,6 +185,11 @@
         [return result]]
       [return node]]]
   [reverseTransforms push
+    [fn [node]
+      [if [[[node get 0] == 'new] and [[node get 1] == 'object]]
+        [return ['[#] concat [node slice 2]]]]
+      [return node]]]
+  [reverseTransforms push
     [fn [node finish]
       [if [[node get 0] == 'new-object]
         [def result '[#]]
@@ -194,5 +199,3 @@
           [set i [i + 2]]]
         [return result]]
       [return node]]]]
-
-[console log [# ['a 'b] [3 4]]]

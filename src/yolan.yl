@@ -1,4 +1,4 @@
-[set yolan [new object]]
+[set yolan [#]]
 
 [if-else [[exports jsType] == 'undefined]
   [set exports yolan]
@@ -17,15 +17,15 @@
 [if [[[java jsType] == 'undefined] fails]
   [set engine 'rhino]
   [if [[require jsType] == 'undefined]
-    [def modules [new object ['./yolan yolan]]]
+    [def modules [# ['./yolan yolan]]]
     [set require
       [fn [name]
         [if [[modules get name] fails]
           [console log 'loading\ module name]
           [def prevModule module]
           [def prevExports exports]
-          [set module [new object]]
-          [set exports [new object]]
+          [set module [#]]
+          [set exports [#]]
           [module set 'exports exports]
           [module set 'require require]
           [[Function call null [readFile call null ['build/ + name '.js]]]
@@ -35,29 +35,29 @@
             [set module prevModule]
             [set exports prevExports]]]
         [return [modules get name]]]]
-    [set console [new object]]
+    [set console [#]]
     [console set
       'log
       [fn []
         [return
           [print call null
             [[[[Array 'prototype] 'slice] call arguments 0] join '\ ]]]]]
-    [set module [new object]]
+    [set module [#]]
     [module set 'require require]]]
 
 [; Browser]
 
 [if [[[navigator jsType] == 'undefined] fails]
-  [def loadedModules [new object ['yolan yolan]]]
+  [def loadedModules [# ['yolan yolan]]]
   [set engine 'web]
   [if [[window 'require] fails]
-    [def modules [new object]]
+    [def modules [#]]
     [def require
       [fn [name]
         [if [[loadedModules get name] fails]
           [console log 'initialising name]
-          [def module [new object]]
-          [def exports [new object]]
+          [def module [#]]
+          [def exports [#]]
           [module set 'exports exports]
           [module set 'require require]
           [[modules get name] call null require exports module]
@@ -76,7 +76,7 @@
 [; Shims]
 
 [if [[console jsType] == 'undefined]
-  [set console [new object]]
+  [set console [#]]
   [console set 'log [fn [] [return undefined]]]
   [if [[[print jsType] == 'undefined] fails] [console set 'log print]]]
 

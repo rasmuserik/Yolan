@@ -1,6 +1,5 @@
 [def compileJS
-  [new object
-    ['builtin: [fn [syn] [return [exports toJS [syn slice 1]]]]]
+  [# ['builtin: [fn [syn] [return [exports toJS [syn slice 1]]]]]
     ['do [fn [syn] [return [[[syn slice 1] map [exports 'toJS]] join ';\n]]]]
     ['def
       [fn [syn syn1]

@@ -2,7 +2,7 @@
   'run
   [fn []
     [def body [document 'body]]
-    [[module require './webcanvas] init [new object]]
+    [[module require './webcanvas] init [#]]
     [def ctx [canvas getContext '2d]]
     [def x 0]
     [def y 20]

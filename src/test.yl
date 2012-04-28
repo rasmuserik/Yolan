@@ -2,7 +2,7 @@
 
 [Section: testing library
   [def proto
-    [new object
+    [#
       ['fail
         [fn [message] [console log 'Test\ failure: [this 'name] message]]]
       ['assert
