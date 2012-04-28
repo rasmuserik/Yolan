@@ -3,7 +3,7 @@ var compileJS = {
         return exports.toJS(syn.slice(1));
     },
     "do": function(syn) {
-        return syn.slice(1).map(exports["toJS"]).join(";");
+        return syn.slice(1).map(exports["toJS"]).join(";\n");
     },
     def: function(syn, syn1) {
         return "var " + syn1 + "=" + exports.toJS(syn[2]);
@@ -32,13 +32,13 @@ var compileJS = {
         return "new " + syn1 + "()";
     },
     fn: function(syn, syn1) {
-        return "function(" + syn1.join(",") + "){" + syn.slice(2).map(exports["toJS"]).join(";") + "}";
+        return "function(" + syn1.join(",") + "){" + syn.slice(2).map(exports["toJS"]).join(";\n") + "}";
     },
     "try-catch": function(syn, syn1) {
         return "try{" + exports.toJS(syn[2]) + "}catch(" + syn[1] + "){" + exports.toJS(syn[3]) + "}";
     },
     "while": function(syn, syn1) {
-        return "while(" + exports.toJS(syn1) + "){" + syn.slice(2).map(exports["toJS"]).join(";") + "}";
+        return "while(" + exports.toJS(syn1) + "){" + syn.slice(2).map(exports["toJS"]).join(";\n") + "}";
     },
     "if-else": function(syn, syn1) {
         return "if(" + exports.toJS(syn1) + "){" + exports.toJS(syn[2]) + "}else{" + exports.toJS(syn[3]) + "}";
