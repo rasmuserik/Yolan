@@ -1,6 +1,6 @@
 var yolan = module.require("./yolan");
 
-var macros = {};
+var macros = exports;
 
 var onEach = [];
 
@@ -8,7 +8,7 @@ var forwardTransforms = [];
 
 var reverseTransforms = [];
 
-exports["transform"] = function(node) {
+macros["transform"] = function(node) {
     if (typeof node === "string") {
         return node;
     } else {}
@@ -24,15 +24,15 @@ exports["transform"] = function(node) {
             return node;
         } else {}
     }
-    node = node.map(exports["transform"]);
+    node = node.map(macros["transform"]);
     return node;
 };
 
-exports["transformList"] = function(list) {
-    return list.map(exports["transform"]);
+macros["transformList"] = function(list) {
+    return list.map(macros["transform"]);
 };
 
-exports["reverse"] = function(node) {
+macros["reverse"] = function(node) {
     if (typeof node === "string") {
         return node;
     } else {}
@@ -48,12 +48,12 @@ exports["reverse"] = function(node) {
         } else {}
         i = i + 1;
     }
-    node = node.map(exports["reverse"]);
+    node = node.map(macros["reverse"]);
     return node;
 };
 
-exports["reverseList"] = function(list) {
-    return list.map(exports["reverse"]);
+macros["reverseList"] = function(list) {
+    return list.map(macros["reverse"]);
 };
 
 var builtins = [ "return", "fn", "do", "def", "set", "new-object", "try-catch", "while", "if-else", "Annotation:", "return", "quote" ];
@@ -83,9 +83,43 @@ reverseTransforms.push(function(node) {
     return node;
 });
 
+forwardTransforms.push(function(node, finish) {
+    if (node[0] === "'" && node["length"] === 2) {
+        finish.call();
+        return [ "quote" ].concat(node[1]);
+    } else {}
+    var result = [];
+    var i = 0;
+    while (i < node["length"]) {
+        if (node[i] === "'" && i + 1 < node["length"]) {
+            i = i + 1;
+            result.push([ "quote", node[i] ]);
+        } else {
+            result.push(node[i]);
+        }
+        i = i + 1;
+    }
+    return result;
+});
+
+reverseTransforms.push(function(node, finish) {
+    if (node["length"] === 2 && node[0] === "quote") {
+        finish.call();
+        return [ "'", node[1] ];
+    } else {}
+    return node;
+});
+
+forwardTransforms.push(function(node, finish) {
+    if (node[0] === "quote") {
+        finish.call();
+    } else {}
+    return node;
+});
+
 forwardTransforms.push(function(node) {
     if (node[0] === "if") {
-        return [ "if-else", exports.transform(node[1]), [ "do" ].concat(exports.transformList(node.slice(2))) ];
+        return [ "if-else", macros.transform(node[1]), [ "do" ].concat(macros.transformList(node.slice(2))) ];
     } else {}
     return node;
 });
@@ -131,7 +165,7 @@ forwardTransforms.push(function(node, finish) {
             code.push(node[i]);
             i = i + 1;
         }
-        code = exports.transform(code);
+        code = macros.transform(code);
         return [ "Annotation:", doc, code ];
     } else {}
     return node;
@@ -160,7 +194,7 @@ reverseTransforms.push(function(node) {
 
 forwardTransforms.push(function(node) {
     if (node[0] === "#") {
-        var result = [ "builtin:", "new-object" ];
+        var result = [ "new-object" ];
         node.slice(1).forEach(function(elem) {
             result.push(elem[0]);
             result.push(elem[1]);
@@ -170,40 +204,15 @@ forwardTransforms.push(function(node) {
     return node;
 });
 
-forwardTransforms.push(function(node, finish) {
-    if (node[0] === "'" && node["length"] === 2) {
-        finish.call();
-        return [ "quote" ].concat(node[1]);
-    } else {}
-    var result = [];
-    var i = 0;
-    while (i < node["length"]) {
-        if (node[i] === "'" && i + 1 < node["length"]) {
-            i = i + 1;
-            result.push([ "quote", node[i] ]);
-        } else {
-            result.push(node[i]);
-        }
-        i = i + 1;
-    }
-    return result;
-});
-
 reverseTransforms.push(function(node, finish) {
-    if (node["length"] === 2 && node[0] === "quote") {
+    if (node[0] === "new-object") {
         finish.call();
-        return [ "'", node[1] ];
+        var result = [ "#" ];
+        var i = 1;
+        while (i < node["length"]) {
+            result.push([ node[i], macros.reverse(node[i + 1]) ]);
+            i = i + 2;
+        }
     } else {}
     return node;
 });
-
-forwardTransforms.push(function(node, finish) {
-    if (node[0] === "quote") {
-        finish.call();
-    } else {}
-    return node;
-});
-
-console.log([ 1, 2, 3, 4, 5 ]);
-
-console.log([ 1, 2, 3, 4, 5 ]);

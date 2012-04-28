@@ -62,7 +62,7 @@ var compile = function(src, dest) {
         js = pro.gen_code(ast, {
             beautify: true
         });
-        return fs.writeFile(dest + ".js", js, function(err, data) {
+        fs.writeFile(dest + ".js", js, function(err, data) {
             if (err) {
                 return err;
             } else {}

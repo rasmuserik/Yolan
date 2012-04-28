@@ -1,6 +1,6 @@
 [def yolan [module require './yolan]]
 
-[def macros [new object]]
+[def macros exports]
 
 [def onEach [@]]
 
@@ -9,7 +9,7 @@
 [def reverseTransforms [@]]
 
 [Section: Macro system
-  [exports set
+  [macros set
     'transform
     [fn [node]
       [if [[node jsType] == 'string] [return node]]
@@ -21,12 +21,12 @@
           [set i [i - 1]]
           [set node [[forwardTransforms get i] call null node finish]]
           [if done [return node]]]
-        [set node [node map [exports 'transform]]]]
+        [set node [node map [macros 'transform]]]]
       [return node]]]
-  [exports set
+  [macros set
     'transformList
-    [fn [list] [return [list map [exports 'transform]]]]]
-  [exports set
+    [fn [list] [return [list map [macros 'transform]]]]]
+  [macros set
     'reverse
     [fn [node]
       [if [[node jsType] == 'string] [return node]]
@@ -38,11 +38,11 @@
           [set node [[reverseTransforms get i] call null node finish]]
           [if done [return node]]
           [set i [i + 1]]]
-        [set node [node map [exports 'reverse]]]]
+        [set node [node map [macros 'reverse]]]]
       [return node]]]
-  [exports set
+  [macros set
     'reverseList
-    [fn [list] [return [list map [exports 'reverse]]]]]]
+    [fn [list] [return [list map [macros 'reverse]]]]]]
 
 [def builtins
   '[return fn do def set new-object try-catch while if-else Annotation:
@@ -77,14 +77,39 @@
         [node pop]]
       [return node]]]]
 
+[Section: Quoting
+  [forwardTransforms push
+    [fn [node finish]
+      [if [[[node get 0] == ''] and [[node 'length] == 2]]
+        [finish call]
+        [return ['[quote] concat [node get 1]]]]
+      [def result [@]]
+      [def i 0]
+      [while [i < [node 'length]]
+        [if-else [[[node get i] == ''] and [[i + 1] < [node 'length]]]
+          [do [set i [i + 1]] [result push [@ 'quote [node get i]]]]
+          [result push [node get i]]]
+        [set i [i + 1]]]
+      [return result]]]
+  [reverseTransforms push
+    [fn [node finish]
+      [if [[[node 'length] == 2] and [[node get 0] == 'quote]]
+        [finish call]
+        [return [@ '' [node get 1]]]]
+      [return node]]]
+  [forwardTransforms push
+    [fn [node finish]
+      [if [[node get 0] == 'quote] [finish call]]
+      [return node]]]]
+
 [Section: Conditionals
   [forwardTransforms push
     [fn [node]
       [if [[node get 0] == 'if]
         [return
           [@ 'if-else
-            [exports transform [node get 1]]
-            ['[do] concat [exports transformList [node slice 2]]]]]]
+            [macros transform [node get 1]]
+            ['[do] concat [macros transformList [node slice 2]]]]]]
       [return node]]]
   [reverseTransforms push
     [fn [node]
@@ -123,7 +148,7 @@
         [while [i < [node 'length]]
           [code push [node get i]]
           [set i [i + 1]]]
-        [set code [exports transform code]]
+        [set code [macros transform code]]
         [return [@ 'Annotation: doc code]]]
       [return node]]]
   [reverseTransforms push
@@ -150,39 +175,21 @@
   [forwardTransforms push
     [fn [node]
       [if [[node get 0] == '#]
-        [def result '[builtin: new-object]]
+        [def result '[new-object]]
         [[node slice 1] forEach
           [fn [elem] [result push [elem get 0]] [result push [elem get 1]]]]
         [return result]]
-      [return node]]]]
-
-[Section: Quoting
-  [forwardTransforms push
-    [fn [node finish]
-      [if [[[node get 0] == ''] and [[node 'length] == 2]]
-        [finish call]
-        [return ['[quote] concat [node get 1]]]]
-      [def result [@]]
-      [def i 0]
-      [while [i < [node 'length]]
-        [if-else [[[node get i] == ''] and [[i + 1] < [node 'length]]]
-          [do [set i [i + 1]] [result push [@ 'quote [node get i]]]]
-          [result push [node get i]]]
-        [set i [i + 1]]]
-      [return result]]]
+      [return node]]]
   [reverseTransforms push
     [fn [node finish]
-      [if [[[node 'length] == 2] and [[node get 0] == 'quote]]
+      [if [[node get 0] == 'new-object]
         [finish call]
-        [return [@ '' [node get 1]]]]
-      [return node]]]
-  [forwardTransforms push
-    [fn [node finish]
-      [if [[node get 0] == 'quote] [finish call]]
+        [def result '[#]]
+        [def i 1]
+        [while [i < [node 'length]]
+            [result push [@ [node get i] [macros reverse [node get [i + 1]]]]]
+            [set i [i + 2]]]
+        ]
       [return node]]]]
 
-[console log [@ 1 2 3 4 5]]
-
-[console log [@ 1 2 3 4 5]]
-
-[; console log [# [1 2] [3 4]]]
+[; console log [# ['a 'b] [3 4]]]
