@@ -4,6 +4,23 @@
 
 [def listobject [module require './listobject]]
 
+[def obj2html [fn [obj]
+    [if [obj 'value]
+        [def span [document createElement 'span]]
+        [span 'style set 'margin '0em\ .2em\ 0em\ .2em]
+        [span 'style set 'backgroundColor '#fff]
+        [span 'style set 'whiteSpace 'pre-wrap]
+        [span appendChild [document createTextNode [[JSON stringify [obj 'value]] slice 1 -1]]]
+        [return span]]
+    [def div [document createElement 'div]]
+    [div 'style set 'padding '.1em\ .1em\ .1em\ .2em]
+    [div 'style set 'margin '1px\ 1px\ 1px\ 1px]
+    [div 'style set 'display 'inline-block]
+    [div 'style set 'border '.1em\ solid\ black ]
+    [[obj 'children] forEach [fn [child]
+        [div appendChild [obj2html call null child]]]]
+    [return div]]]
+
 [exports set
   'run
   [fn [filename]
@@ -13,6 +30,10 @@
     [yolan readTextFile filename
       [fn [err data]
         [if err [console log 'Error: err] [return undefined]]
+        [document 'body 'style set 'margin '0px]
+        [document 'body 'style set 'background '#f8f8f8]
         [def list [syntax parse [syntax tokenize data]]]
         [def obj [listobject create list]]
-        [console log obj]]]]]
+        [console log obj]
+        [document 'body appendChild [obj2html call null obj]]
+        ]]]]
