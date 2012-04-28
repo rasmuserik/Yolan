@@ -165,6 +165,11 @@
         [if [[node get 0] == '@]
             [return ['[new array] concat [node slice 1]]]]
         [return node]]]
+  [reverseTransforms push
+    [fn [node]
+        [if [[[node get 0] == 'new] and [[node get 1] == 'array]]
+            [return ['[@] concat [node slice 2]]]]
+        [return node]]]
   [forwardTransforms push
     [fn [node]
         [if [[node get 0] == '#]
@@ -173,7 +178,10 @@
                 [result push [elem get 0]]
                 [result push [elem get 1]]]]
             [return result]]
-        [return node]]]]
+        [return node]]]
+        
+        ]
 
-[; console log [@ 1 2 3 4 5]]
+[console log [@ 1 2 3 4 5]]
+[console log [new array 1 2 3 4 5]]
 [; console log [# [1 2] [3 4]]]
