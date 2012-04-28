@@ -90,6 +90,22 @@
           [exports toJS syn2]
           '\]=
           [exports toJS [syn get 3]]]]]
+    [if [syn1 == '|]
+      [return
+        ['( +
+          [[[@ [exports toJS syn0]] concat
+              [[syn slice 2] map [exports 'toJS]]]
+            join
+            '|]
+          ')]]]
+    [if [syn1 == '&]
+      [return
+        ['( +
+          [[[@ [exports toJS syn0]] concat
+              [[syn slice 2] map [exports 'toJS]]]
+            join
+            '&]
+          ')]]]
     [if [syn1 == '+]
       [return
         ['( +
