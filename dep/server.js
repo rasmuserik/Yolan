@@ -38,14 +38,17 @@ exports["run"] = function() {
         } else {}
         console.log(url.slice(0, 5));
         if (url.slice(0, 14) === "/readTextFile/") {
-            result.writeHead(200, {
-                "Content-Type": "text/plain"
-            });
             yolan.readTextFile(url.slice(14), function(err, data) {
                 if (err) {
+                    result.writeHead(404, {
+                        "Content-Type": "text/plain"
+                    });
                     result.end(JSON.stringify(err));
                     return false;
                 } else {}
+                result.writeHead(200, {
+                    "Content-Type": "text/plain"
+                });
                 return result.end(data);
             });
             return true;

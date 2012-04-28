@@ -18,13 +18,13 @@ var compileJS = {
             result.push(exports.toJS(syn[i]) + ":" + exports.toJS(syn[i + 1]));
             i = i + 2;
         }
-        return "{" + result.join(",") + "}";
+        return "{\n" + result.join(",") + "\n}";
     },
     "new": function(syn, syn1) {
         if (syn1 === "object") {
-            return "{" + syn.slice(2).map(function(pair) {
+            return "{\n" + syn.slice(2).map(function(pair) {
                 return exports.toJS(pair[0]) + ":" + exports.toJS(pair[1]);
-            }).join(",") + "}";
+            }).join(",") + "\n}";
         } else {}
         if (syn1 === "array") {
             return "[" + syn.slice(2).map(exports["toJS"]).join(",") + "]";
@@ -32,16 +32,16 @@ var compileJS = {
         return "new " + syn1 + "()";
     },
     fn: function(syn, syn1) {
-        return "function(" + syn1.join(",") + "){" + syn.slice(2).map(exports["toJS"]).join(";\n") + "}";
+        return "function(" + syn1.join(",") + "){\n" + syn.slice(2).map(exports["toJS"]).join(";\n") + "\n}";
     },
     "try-catch": function(syn, syn1) {
-        return "try{" + exports.toJS(syn[2]) + "}catch(" + syn[1] + "){" + exports.toJS(syn[3]) + "}";
+        return "try{\n" + exports.toJS(syn[2]) + "\n}catch(" + syn[1] + "){\n" + exports.toJS(syn[3]) + "\n}";
     },
     "while": function(syn, syn1) {
-        return "while(" + exports.toJS(syn1) + "){" + syn.slice(2).map(exports["toJS"]).join(";\n") + "}";
+        return "while(" + exports.toJS(syn1) + "){\n" + syn.slice(2).map(exports["toJS"]).join(";\n") + "\n}";
     },
     "if-else": function(syn, syn1) {
-        return "if(" + exports.toJS(syn1) + "){" + exports.toJS(syn[2]) + "}else{" + exports.toJS(syn[3]) + "}";
+        return "if(" + exports.toJS(syn1) + "){\n" + exports.toJS(syn[2]) + "\n}else{\n" + exports.toJS(syn[3]) + "\n}";
     },
     "Annotation:": function(syn) {
         return exports.toJS(syn[2]);

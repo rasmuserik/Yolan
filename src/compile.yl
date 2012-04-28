@@ -60,6 +60,7 @@
                 '\n\n]
               +
               '\n]]
+          [fs writeFile [dest + '.ast] [syntax prettyprint ast]]
           [fs writeFile [dest + '.yl] sourceCode]
           [fs writeFile [dest + '.js.raw] sourceCode]
           [; reformat js]

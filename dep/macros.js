@@ -176,3 +176,22 @@ reverseTransforms.push(function(node) {
     } else {}
     return node;
 });
+
+forwardTransforms.push(function(node) {
+    if (node[0] === "@") {
+        return [ "new", "array" ].concat(node.slice(1));
+    } else {}
+    return node;
+});
+
+forwardTransforms.push(function(node) {
+    if (node[0] === "#") {
+        var result = [ "builtin:", "new-object" ];
+        node.slice(1).forEach(function(elem) {
+            result.push(elem[0]);
+            result.push(elem[1]);
+        });
+        return result;
+    } else {}
+    return node;
+});

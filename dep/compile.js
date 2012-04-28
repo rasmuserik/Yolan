@@ -47,6 +47,7 @@ var compile = function(src, dest) {
         var ast = macros.transform(syntax.parse(syntax.tokenize(data)));
         var js = jsBackend.toJS(ast);
         var sourceCode = macros.reverse(ast).slice(1).map(syntax["prettyprint"]).join("\n\n") + "\n";
+        fs.writeFile(dest + ".ast", syntax.prettyprint(ast));
         fs.writeFile(dest + ".yl", sourceCode);
         fs.writeFile(dest + ".js.raw", sourceCode);
         var uglify = require.call(null, "uglify-js");

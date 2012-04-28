@@ -158,3 +158,22 @@
           [[[node get 2] get 0] == 'do]]
         [return [[node get 1] concat [[node get 2] slice 1]]]]
       [return node]]]]
+
+[Section: Array/object literals
+  [forwardTransforms push
+    [fn [node]
+        [if [[node get 0] == '@]
+            [return ['[new array] concat [node slice 1]]]]
+        [return node]]]
+  [forwardTransforms push
+    [fn [node]
+        [if [[node get 0] == '#]
+            [def result '[builtin: new-object]]
+            [[node slice 1] forEach [fn [elem]
+                [result push [elem get 0]]
+                [result push [elem get 1]]]]
+            [return result]]
+        [return node]]]]
+
+[; console log [@ 1 2 3 4 5]]
+[; console log [# [1 2] [3 4]]]
