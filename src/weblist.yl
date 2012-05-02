@@ -35,11 +35,24 @@
       'style
       [#
         ['listAtom
-          '[[margin 0em .2em 0em .2em]
-            [backgroundColor rgba(255,255,255,0.5)]
-            [borderRadius .3em]
-            [whiteSpace pre-wrap]
-            [fontFamily sans-serif]]]]]]
+          '[[margin 0em .0em 0em .0em]
+            [background-color rgba(255,255,255,0.5)]
+            [border-radius .3em]
+            [white-space pre-wrap]
+            [font-family sans-serif]]]
+        ['list
+            '[[padding .1em .1em .1em .2em]
+            [margin .1em .1em .1em .1em]
+            [display inline-block]
+            [border-radius .3em]
+            [border .1em solid]
+            [box-shadow .2em .2em .6em rgba(0,0,0,.4)]
+            ]]]]]
+  [Section: set the style in the head-tag
+  [def styleTag [document createElement 'style]]
+  [styleTag appendChild [document createTextNode [exports style2css [exports 'style]]]]
+  [[[document getElementsByTagName 'head] get 0] appendChild styleTag]
+  ]
   [Section: Experimental / test code
     [console log [[document getElementsByTagName 'head] get 0]]
     [console log [exports style2css [exports 'style]]]]]
@@ -48,23 +61,19 @@
   [fn [obj]
     [if [obj 'value]
       [def span [document createElement 'span]]
-      [span set 'class 'listAtom]
+      [span set 'className 'listAtom]
       [span appendChild
         [document createTextNode
           [[JSON stringify [obj 'value]] slice 1 -1]]]
       [return span]]
     [def div [document createElement 'div]]
     [def color [[[Math random] * 0x1000000] & 0xffffff]]
+    [div set 'className 'list]
     [def style [div 'style]]
-    [style set 'padding '.1em\ .1em\ .1em\ .2em]
-    [style set 'margin '.1em\ .1em\ .1em\ .1em]
-    [style set 'display 'inline-block]
     [style set
       'backgroundColor
       [webcolor intToColor [0xe0e0e0 | [color / 8]]]]
-    [style set 'border ['.1em\ solid\  + [webcolor intToColor color]]]
-    [style set 'borderRadius '.3em]
-    [style set 'boxShadow '.2em\ .2em\ .6em\ rgba(0,0,0,.4)]
+    [style set 'borderColor  [webcolor intToColor color]]
     [def first true]
     [[obj 'children] forEach
       [fn [child]
