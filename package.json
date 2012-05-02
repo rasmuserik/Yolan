@@ -5,7 +5,8 @@
   "homepage": "http://solsort.com",
   "description": "Yocto Language",
   "dependencies": {
-    "uglify-js": "*"
+    "uglify-js": "*",
+    "express": "3.0"
   },
   "engines": {"node": "*"}
 }
