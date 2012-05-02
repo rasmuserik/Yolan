@@ -6,6 +6,8 @@ var yolan = module.require("./yolan");
 
 var xml = module.require("./xml");
 
+var app = module.require("express").createServer();
+
 var scriptList = [ "yolan" ].concat(fs.readdirSync("src").filter(function(name) {
     return name.slice(-3) === ".yl";
 }).map(function(name) {
