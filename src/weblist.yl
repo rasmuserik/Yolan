@@ -9,10 +9,11 @@
 [def test [module require './test]]
 
 [Section: utility function for creating a html element
-    [exports set 'newElem [fn [elemType text]
+  [exports set
+    'newElem
+    [fn [elemType text]
       [def elem [document createElement elemType]]
-      [elem appendChild
-        [document createTextNode text]]
+      [elem appendChild [document createTextNode text]]
       [return elem]]]]
 
 [Section: add style to head
@@ -48,36 +49,33 @@
             [white-space pre-wrap]
             [font-family sans-serif]]]
         ['list
-            '[[padding .1em .1em .1em .2em]
-            [margin .1em .1em .1em .1em]
+          '[[padding .1em .1em .1em .2em] [margin .1em .1em .1em .1em]
             [display inline-block]
             [border-radius .3em]
             [border .1em solid]
-            [box-shadow .2em .2em .6em rgba(0,0,0,.4)]
-            ]]]]]
+            [box-shadow .2em .2em .6em rgba(0,0,0,.4)]]]]]]
   [Section: set the style in the head-tag
-  [[[document getElementsByTagName 'head] get 0] appendChild [exports newElem 'style [exports style2css [exports 'style]]]]
-  ]
+    [[[document getElementsByTagName 'head] get 0] appendChild
+      [exports newElem 'style [exports style2css [exports 'style]]]]]
   [Section: utility for setting random color
-  [exports set 'randomColor [fn [elem]
-    [def color [[[Math random] * 0x1000000] & 0xffffff]]
-    [def style [elem 'style]]
-    [style set
-      'backgroundColor
-      [webcolor intToColor [0xe0e0e0 | [color / 8]]]]
-    [style set 'borderColor  [webcolor intToColor color]]
-  ]]
-  ]
-
+    [exports set
+      'randomColor
+      [fn [elem]
+        [def color [[[Math random] * 0x1000000] & 0xffffff]]
+        [def style [elem 'style]]
+        [style set
+          'backgroundColor
+          [webcolor intToColor [0xe0e0e0 | [color / 8]]]]
+        [style set 'borderColor [webcolor intToColor color]]]]]
   [Section: Experimental / test code
     [console log [[document getElementsByTagName 'head] get 0]]
-    [console log [exports style2css [exports 'style]]]]
-]
+    [console log [exports style2css [exports 'style]]]]]
 
 [def obj2html
   [fn [obj]
     [if [obj 'value]
-      [def span [exports newElem 'span [[JSON stringify [obj 'value]] slice 1 -1]]]
+      [def span
+        [exports newElem 'span [[JSON stringify [obj 'value]] slice 1 -1]]]
       [span set 'className 'listAtom]
       [obj set 'elem span]
       [return span]]
