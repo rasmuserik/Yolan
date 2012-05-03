@@ -52,7 +52,7 @@
           '[[padding .1em .1em .1em .2em] [margin .1em .1em .1em .1em]
             [display inline-block]
             [border-radius .3em]
-            [border .1em solid]
+            [border .2em solid]
             [box-shadow .2em .2em .6em rgba(0,0,0,.4)]]]]]]
   [Section: set the style in the head-tag
     [[[document getElementsByTagName 'head] get 0] appendChild
@@ -60,36 +60,46 @@
   [Section: utility for setting random color
     [exports set
       'randomColor
-      [fn [elem]
+      [fn [elem str]
         [def color [[[Math random] * 0x1000000] & 0xffffff]]
         [def style [elem 'style]]
-        [style set
-          'backgroundColor
-          [webcolor intToColor [0xe0e0e0 | [color / 8]]]]
-        [style set 'borderColor [webcolor intToColor color]]]]]
-  [Section: Experimental / test code
-    [console log [[document getElementsByTagName 'head] get 0]]
-    [console log [exports style2css [exports 'style]]]]]
+        [style set 'backgroundColor [webcolor hashLightColor str]]
+        [style set 'borderColor [webcolor hashColor str]]]]]]
 
-[def obj2html
-  [fn [obj]
-    [if [obj 'value]
-      [def span
-        [exports newElem 'span [[JSON stringify [obj 'value]] slice 1 -1]]]
-      [span set 'className 'listAtom]
-      [obj set 'elem span]
-      [return span]]
-    [def div [document createElement 'div]]
-    [obj set 'elem div]
-    [exports randomColor div]
-    [div set 'className 'list]
-    [def first true]
-    [[obj 'children] forEach
-      [fn [child]
-        [if [first fails] [div appendChild [document createTextNode '\ ]]]
-        [div appendChild [obj2html call null child]]
-        [set first false]]]
-    [return div]]]
+[def htmlView [#
+    ['update [fn [obj]
+        [def elem [obj 'elem]]
+        [if [elem fails]
+            [set elem [document createElement 'span]]
+            [obj set 'elem elem]]
+        [; if-else [obj 'parent]
+            [htmlView update [obj 'parent]]
+            [document 'body appendChild elem]]
+        [if-else [obj 'value] [do
+                [elem set 'className 'listAtom]
+                [while [elem hasChildNodes] [elem removeChild [elem 'lastChild]]]
+                [elem appendChild [document createTextNode [[JSON stringify [obj 'value]] slice 1 -1]]]]
+            [do 
+               [elem set 'className 'list]
+               [while [elem hasChildNodes] [elem removeChild [elem 'lastChild]]]
+               [Section: Assign a random color based on the text of the first child
+               [def text "undefined"]
+                    [if [[obj 'children] and [[obj 'children] get 0] [[[obj 'children] get 0] 'value]]
+                    [set text [[[obj 'children] get 0] 'value]]]
+               [exports randomColor elem text]]
+               [def i 0]
+               [def len [obj 'children 'length]]
+               [while [i < len]
+                  [Section: whitespace between children
+                    [if i
+                        [elem appendChild [document createTextNode '\ ]]]]
+                  [if [[[obj 'children get i] 'elem] fails]
+                    [htmlView update [obj 'children get i]]]
+                  [elem appendChild [[obj 'children get i] 'elem]]
+                  [set i [i + 1]]]
+            ]]
+        [return obj]
+        ]]]]
 
 [exports set
   'run
@@ -105,4 +115,6 @@
         [def list [syntax parse [syntax tokenize data]]]
         [def obj [listobject create list]]
         [console log obj]
-        [[document 'body] appendChild [obj2html call null obj]]]]]]
+        [htmlView update obj]
+        [[document 'body] appendChild [obj 'elem]]
+        ]]]]

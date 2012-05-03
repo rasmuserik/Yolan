@@ -22,3 +22,9 @@
       [set seed [localSeed or seed]]
       [set seed [0 | [[seed * 1664525] + 1013904223]]]
       [return seed]]]]
+
+[exports set 'hashColor [fn [str]
+    [return [exports intToColor [exports random [exports djb2hash str]]]]]]
+
+[exports set 'hashLightColor [fn [str]
+    [return [exports intToColor [0xe0e0e0 | [[exports random [exports djb2hash str]] / 32]]]]]]
