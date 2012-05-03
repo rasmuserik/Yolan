@@ -67,6 +67,12 @@ exports["toJS"] = function(syn) {
     if (compileJS[syn0]) {
         return compileJS[syn0].call(null, syn, syn1);
     } else {}
+    if (syn1 === "<<") {
+        return "(" + exports.toJS(syn0) + "<<" + exports.toJS(syn2) + ")";
+    } else {}
+    if (syn1 === ">>") {
+        return "(" + exports.toJS(syn0) + ">>" + exports.toJS(syn2) + ")";
+    } else {}
     if (syn1 === "set") {
         return exports.toJS(syn0) + "[" + exports.toJS(syn2) + "]=" + exports.toJS(syn[3]);
     } else {}
