@@ -2,3 +2,18 @@
   'intToColor
   [fn [i]
     [return ['# + [[[0x1000000 + [i & 0xffffff]] toString 16] slice 1]]]]]
+[exports set 'djb2hash [fn [str]
+    [def hash 5381]
+    [def i 0]
+    [def len [str 'length]]
+    [while [i < len]
+        [set hash [0 | [[hash * 31] + [str charCodeAt i]]]]
+        [set i [i + 1]]]
+    [return hash]]]
+[Section: Linear congruential pseudorandom generator
+[def seed [Date now]]
+[exports set 'random [fn [localSeed]
+    [set seed [localSeed or seed]]
+    [set seed [0 |[[seed * 1664525] + 1013904223]]]
+    [return seed]]]]
+
