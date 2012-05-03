@@ -91,7 +91,6 @@
     [#
       ['update
         [fn [obj]
-          [if 
           [def elem [obj 'elem]]
           [if [elem fails]
             [set elem [document createElement 'span]]
