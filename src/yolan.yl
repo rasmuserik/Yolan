@@ -14,7 +14,7 @@
 
 [; Rhino]
 
-[if [[[java jsType] == 'undefined] fails]
+[if [[java jsType] == 'object]
   [set engine 'rhino]
   [if [[require jsType] == 'undefined]
     [def modules [# ['./yolan yolan]]]

@@ -1,3 +1,4 @@
+[Section: foo bar baz quuz [console log 'hello]]
 [def yolan [module require './yolan]]
 
 [def syntax [module require './syntax]]
@@ -6,8 +7,8 @@
 
 [def test [module require './test]]
 
-[Section: list model which keeps track of stuff for the ui too
-  [def listPrototype [#]]
+[Section: Model
+  [def listPrototype [# ['update [fn [] [htmlView update this]]] ['getLength [fn [] [if-else [this 'children] [return [this 'children 'length]] [return [this 'value 'length]]]]]]]
   [def listModel [#]]
   [listModel set
     'create
@@ -68,9 +69,9 @@
           ['list
             '[[padding .1em .1em .1em .2em] [margin .1em .1em .1em .1em]
               [display inline-block]
-              [border-radius .3em]
-              [border .1em solid]
-              [box-shadow .2em .2em .6em rgba(0,0,0,.4)]]]]]]
+              [xborder-radius .3em]
+              [border 2px solid]
+              [xbox-shadow .2em .2em .6em rgba(0,0,0,.4)]]]]]]
     [Section: set the style in the head-tag
       [[[document getElementsByTagName 'head] get 0] appendChild
         [exports newElem 'style [exports style2css [exports 'style]]]]]
@@ -85,19 +86,16 @@
   [Section: predefined cursor dom node
     [def cursorNode [document createElement 'span]]
     [cursorNode set 'className 'cursor]
-    [cursorNode appendChild [document createTextNode '\ ]]]
+    [cursorNode appendChild [document createTextNode '•]]]
   [def htmlView
     [#
       ['update
         [fn [obj]
+          [if 
           [def elem [obj 'elem]]
           [if [elem fails]
             [set elem [document createElement 'span]]
             [obj set 'elem elem]]
-          [; if-else
-            [obj ' parent]
-            [htmlView update [obj ' parent]]
-            [document ' body appendChild elem]]
           [if-else [obj 'value]
             [do [elem set 'className 'listAtom]
               [while [elem hasChildNodes]
@@ -142,7 +140,14 @@
                 [if [[[[obj 'children] get i] 'elem] fails]
                   [htmlView update [[obj 'children] get i]]]
                 [elem appendChild [[[obj 'children] get i] 'elem]]
-                [set i [i + 1]]]]]
+                [set i [i + 1]]]
+                [if
+                  [[[[obj 'cursor] == undefined] fails] and
+                    [[obj 'cursor] == i]]
+                  [elem appendChild cursorNode]
+                  [elem appendChild [document createTextNode '\ ]]]
+                
+                ]]
           [return obj]]]]]]
 
 [def cursorRef undefined]
@@ -153,14 +158,65 @@
       [fn [obj pos]
         [if cursorRef
           [cursorRef set 'cursor undefined]
-          [htmlView update cursorRef]]
+          [cursorRef update]]
         [set cursorRef obj]
         [cursorRef set 'cursor pos]
-        [htmlView update cursorRef]]]
-    ['moveLeft
+        [cursorRef update]]]
+    ['moveUp
+      [fn []
+        [cursorRef set 'cursor [[cursorRef 'cursor] - 1]]
+        [if [[[cursorRef 'cursor] < 0] and [cursorRef 'parent]]
+            [console log [cursorRef 'parent]]
+            [cursor moveTo [cursorRef 'parent] [cursorRef 'parent 'children indexOf cursorRef]] [return]]
+        [if [cursorRef 'cursor < 0] [cursorRef set 'cursor 0]]
+        [cursorRef update]
+        ]]
+    ['moveDown
       [fn []
         [cursorRef set 'cursor [[cursorRef 'cursor] + 1]]
-        [htmlView update cursorRef]]]]]
+        [if [[[cursorRef getLength] < [cursorRef 'cursor]] and [cursorRef 'parent]]
+            [cursor moveTo [cursorRef 'parent] [[cursorRef 'parent 'children indexOf cursorRef] + 1]] [return]]
+        [cursorRef update]]]
+    ['movePrev
+      [fn []
+        [if [[cursorRef 'children] and [0 < [cursorRef 'cursor]]]
+            [def child [cursorRef 'children get [[cursorRef 'cursor] - 1]]]
+            [cursor moveTo child [child getLength]] [return]]
+        [cursorRef set 'cursor [[cursorRef 'cursor] - 1]]
+        [if [[[cursorRef 'cursor] < 0] and [cursorRef 'parent]]
+            [console log [cursorRef 'parent]]
+            [cursor moveTo [cursorRef 'parent] [cursorRef 'parent 'children indexOf cursorRef]] [return]]
+        [if [cursorRef 'cursor < 0] [cursorRef set 'cursor 0]]
+        [cursorRef update]
+        ]]
+    ['moveNext
+      [fn []
+        [if [[cursorRef 'children] and [cursorRef 'cursor < [cursorRef 'children 'length]]]
+            [cursor moveTo [cursorRef 'children get [cursorRef 'cursor]] 0] [return]]
+        [cursorRef set 'cursor [[cursorRef 'cursor] + 1]]
+        [if [[[cursorRef getLength] < [cursorRef 'cursor]] and [cursorRef 'parent]]
+            [cursor moveTo [cursorRef 'parent] [[cursorRef 'parent 'children indexOf cursorRef] + 1]] [return]]
+        [cursorRef update]]]
+        ]
+        ]
+        
+[Section: Controller
+   [def keyController [#]]
+   [def handleKeyEvent [fn [ev] 
+        [if [Section: "L" [ev 'keyCode == 76]]
+            [cursor moveNext] [return]]
+        [if [Section: "H" [ev 'keyCode == 72]]
+            [cursor movePrev] [return]]
+        [if [Section: "K" [ev 'keyCode == 75]]
+            [cursor moveUp] [return]]
+        [if [Section: "K" [ev 'keyCode == 74]]
+            [cursor moveDown] [return]]
+        [console log ev]
+        ]]
+   [keyController set 'start [fn [] 
+    [document 'body set 'onkeydown handleKeyEvent]
+   ]]]
+
 
 [exports set
   'run
@@ -176,7 +232,7 @@
         [def list [syntax parse [syntax tokenize data]]]
         [def obj [listModel create list]]
         [console log obj]
-        [htmlView update obj]
+        [obj update]
         [cursor moveTo [[obj 'children] get 0] 0]
-        [window setInterval [fn [] [cursor moveLeft]] 2000]
+        [keyController start]
         [[document 'body] appendChild [obj 'elem]]]]]]
