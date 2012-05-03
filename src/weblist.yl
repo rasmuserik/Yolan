@@ -42,6 +42,10 @@
     [exports set
       'style
       [#
+        ['cursor
+           '[[border .3em solid red]
+            [border-radius .9em]
+           ]]
         ['listAtom
           '[[margin 0em .0em 0em .0em]
             [background-color rgba(255,255,255,0.5)]
@@ -65,6 +69,11 @@
         [def style [elem 'style]]
         [style set 'backgroundColor [webcolor hashLightColor str]]
         [style set 'borderColor [webcolor hashColor str]]]]]]
+
+[Section: predefined cursor dom node
+[def cursorNode [document createElement 'span]]
+[cursorNode set 'className 'cursor]
+[cursorNode appendChild [document createTextNode '•]]]
 
 [def htmlView [#
     ['update [fn [obj]
@@ -93,6 +102,9 @@
                   [Section: whitespace between children
                     [if i
                         [elem appendChild [document createTextNode '\ ]]]]
+                  [if [[[obj 'cursor == undefined]fails] and [obj 'cursor == i]]
+                    [elem appendChild cursorNode]
+                        [elem appendChild [document createTextNode '\ ]]]
                   [if [[[obj 'children get i] 'elem] fails]
                     [htmlView update [obj 'children get i]]]
                   [elem appendChild [[obj 'children get i] 'elem]]
@@ -115,6 +127,7 @@
         [def list [syntax parse [syntax tokenize data]]]
         [def obj [listobject create list]]
         [console log obj]
+        [obj set 'cursor 1]
         [htmlView update obj]
         [[document 'body] appendChild [obj 'elem]]
         ]]]]
