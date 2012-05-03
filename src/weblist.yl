@@ -4,134 +4,163 @@
 
 [def webcolor [module require './webcolor]]
 
-[def listobject [module require './listobject]]
-
 [def test [module require './test]]
 
+[Section: list model which keeps track of stuff for the ui too
+  [def listPrototype [#]]
+  [def listModel [#]]
+  [listModel set
+    'create
+    [fn [list]
+      [def result [Object create listPrototype]]
+      [if [[Array isArray list] fails]
+        [result set 'value list]
+        [return result]]
+      [result set
+        'children
+        [list map
+          [fn [elem]
+            [def t [listModel create elem]]
+            [t set 'parent result]
+            [return t]]]]
+      [return result]]]]
+
 [Section: View
-[Section: utility function for creating a html element
-  [exports set
-    'newElem
-    [fn [elemType text]
-      [def elem [document createElement elemType]]
-      [elem appendChild [document createTextNode text]]
-      [return elem]]]]
-
-[Section: add style to head
-  [Section: Utility function for converting yolan style to css
+  [Section: utility function for creating a html element
     [exports set
-      'style2css
-      [fn [style]
-        [def keys [Object keys style]]
-        [def result [@]]
-        [def i 0]
-        [while [i < [keys 'length]]
-          [def key [keys get i]]
-          [result push '.]
-          [result push key]
-          [result push '{]
-          [result push
-            [[[style get key] map
-                [fn [elem]
-                  [return [[elem get 0] + ': [[elem slice 1] join '\ ]]]]]
-              join
-              ';]]
-          [result push '}\n]
-          [set i [i + 1]]]
-        [return [result join ""]]]]]
-  [Section: The desired style in list format
-    [exports set
-      'style
-      [# ['cursor '[[border .3em solid red] [border-radius .9em]]]
-        ['listAtom
-          '[[margin 0em .0em 0em .0em]
-            [background-color rgba(255,255,255,0.5)]
-            [border-radius .3em]
-            [white-space pre-wrap]
-            [font-family sans-serif]]]
-        ['list
-          '[[padding .1em .1em .1em .2em] [margin .1em .1em .1em .1em]
-            [display inline-block]
-            [border-radius .3em]
-            [border .1em solid]
-            [box-shadow .2em .2em .6em rgba(0,0,0,.4)]]]]]]
-  [Section: set the style in the head-tag
-    [[[document getElementsByTagName 'head] get 0] appendChild
-      [exports newElem 'style [exports style2css [exports 'style]]]]]
-  [Section: utility for setting random color
-    [exports set
-      'randomColor
-      [fn [elem str]
-        [def color [[[Math random] * 0x1000000] & 0xffffff]]
-        [def style [elem 'style]]
-        [style set 'backgroundColor [webcolor hashLightColor str]]
-        [style set 'borderColor [webcolor hashColor str]]]]]]
-
-[Section: predefined cursor dom node
-  [def cursorNode [document createElement 'span]]
-  [cursorNode set 'className 'cursor]
-  [cursorNode appendChild [document createTextNode '•]]]
-
-[def htmlView
-  [#
-    ['update
-      [fn [obj]
-        [def elem [obj 'elem]]
-        [if [elem fails]
-          [set elem [document createElement 'span]]
-          [obj set 'elem elem]]
-        [; if-else
-          [obj ' parent]
-          [htmlView update [obj ' parent]]
-          [document ' body appendChild elem]]
-        [if-else [obj 'value]
-          [do [elem set 'className 'listAtom]
-            [while [elem hasChildNodes]
-              [elem removeChild [elem 'lastChild]]]
-            [elem appendChild
-              [document createTextNode
-                [[JSON stringify [obj 'value]] slice 1 -1]]]]
-          [do [elem set 'className 'list]
-            [while [elem hasChildNodes]
-              [elem removeChild [elem 'lastChild]]]
-            [Section: Assign a random color based on the text of the first
-              child
-              [def text "undefined"]
-              [if
-                [[obj 'children] and
-                  [[obj 'children] get 0]
-                  [[[obj 'children] get 0] 'value]]
-                [set text [[[obj 'children] get 0] 'value]]]
-              [exports randomColor elem text]]
-            [def i 0]
-            [def len [[obj 'children] 'length]]
-            [while [i < len]
-              [Section: whitespace between children
-                [if i [elem appendChild [document createTextNode '\ ]]]]
-              [if
-                [[[[obj 'cursor] == undefined] fails] and
-                  [[obj 'cursor] == i]]
-                [elem appendChild cursorNode]
-                [elem appendChild [document createTextNode '\ ]]]
-              [if [[[[obj 'children] get i] 'elem] fails]
-                [htmlView update [[obj 'children] get i]]]
-              [elem appendChild [[[obj 'children] get i] 'elem]]
-              [set i [i + 1]]]]]
-        [return obj]]]]]]
-
+      'newElem
+      [fn [elemType text]
+        [def elem [document createElement elemType]]
+        [elem appendChild [document createTextNode text]]
+        [return elem]]]]
+  [Section: add style to head
+    [Section: Utility function for converting yolan style to css
+      [exports set
+        'style2css
+        [fn [style]
+          [def keys [Object keys style]]
+          [def result [@]]
+          [def i 0]
+          [while [i < [keys 'length]]
+            [def key [keys get i]]
+            [result push '.]
+            [result push key]
+            [result push '{]
+            [result push
+              [[[style get key] map
+                  [fn [elem]
+                    [return [[elem get 0] + ': [[elem slice 1] join '\ ]]]]]
+                join
+                ';]]
+            [result push '}\n]
+            [set i [i + 1]]]
+          [return [result join ""]]]]]
+    [Section: The desired style in list format
+      [exports set
+        'style
+        [# ['cursor '[[border .3em solid red] [border-radius .9em]]]
+          ['listAtom
+            '[[margin 0em .0em 0em .0em]
+              [background-color rgba(255,255,255,0.5)]
+              [border-radius .3em]
+              [white-space pre-wrap]
+              [font-family sans-serif]]]
+          ['list
+            '[[padding .1em .1em .1em .2em] [margin .1em .1em .1em .1em]
+              [display inline-block]
+              [border-radius .3em]
+              [border .1em solid]
+              [box-shadow .2em .2em .6em rgba(0,0,0,.4)]]]]]]
+    [Section: set the style in the head-tag
+      [[[document getElementsByTagName 'head] get 0] appendChild
+        [exports newElem 'style [exports style2css [exports 'style]]]]]
+    [Section: utility for setting random color
+      [exports set
+        'randomColor
+        [fn [elem str]
+          [def color [[[Math random] * 0x1000000] & 0xffffff]]
+          [def style [elem 'style]]
+          [style set 'backgroundColor [webcolor hashLightColor str]]
+          [style set 'borderColor [webcolor hashColor str]]]]]]
+  [Section: predefined cursor dom node
+    [def cursorNode [document createElement 'span]]
+    [cursorNode set 'className 'cursor]
+    [cursorNode appendChild [document createTextNode '\ ]]]
+  [def htmlView
+    [#
+      ['update
+        [fn [obj]
+          [def elem [obj 'elem]]
+          [if [elem fails]
+            [set elem [document createElement 'span]]
+            [obj set 'elem elem]]
+          [; if-else
+            [obj ' parent]
+            [htmlView update [obj ' parent]]
+            [document ' body appendChild elem]]
+          [if-else [obj 'value]
+            [do [elem set 'className 'listAtom]
+              [while [elem hasChildNodes]
+                [elem removeChild [elem 'lastChild]]]
+              [if-else [[[obj 'cursor] == undefined] fails]
+                [do
+                  [elem appendChild
+                    [document createTextNode
+                      [[JSON stringify
+                          [[obj 'value] slice 0 [obj 'cursor]]]
+                        slice 1 -1]]]
+                  [elem appendChild cursorNode]
+                  [elem appendChild
+                    [document createTextNode
+                      [[JSON stringify [[obj 'value] slice [obj 'cursor]]]
+                        slice 1 -1]]]]
+                [elem appendChild
+                  [document createTextNode
+                    [[JSON stringify [obj 'value]] slice 1 -1]]]]]
+            [do [elem set 'className 'list]
+              [while [elem hasChildNodes]
+                [elem removeChild [elem 'lastChild]]]
+              [Section: Assign a random color based on the text of the first
+                child
+                [def text "undefined"]
+                [if
+                  [[obj 'children] and
+                    [[obj 'children] get 0]
+                    [[[obj 'children] get 0] 'value]]
+                  [set text [[[obj 'children] get 0] 'value]]]
+                [exports randomColor elem text]]
+              [def i 0]
+              [def len [[obj 'children] 'length]]
+              [while [i < len]
+                [Section: whitespace between children
+                  [if i [elem appendChild [document createTextNode '\ ]]]]
+                [if
+                  [[[[obj 'cursor] == undefined] fails] and
+                    [[obj 'cursor] == i]]
+                  [elem appendChild cursorNode]
+                  [elem appendChild [document createTextNode '\ ]]]
+                [if [[[[obj 'children] get i] 'elem] fails]
+                  [htmlView update [[obj 'children] get i]]]
+                [elem appendChild [[[obj 'children] get i] 'elem]]
+                [set i [i + 1]]]]]
+          [return obj]]]]]]
 
 [def cursorRef undefined]
-[def cursor [#
-    ['moveTo [fn [obj pos]
-        [if cursorRef [cursorRef set 'cursor undefined]
-        [htmlView update cursorRef]]
+
+[def cursor
+  [#
+    ['moveTo
+      [fn [obj pos]
+        [if cursorRef
+          [cursorRef set 'cursor undefined]
+          [htmlView update cursorRef]]
         [set cursorRef obj]
         [cursorRef set 'cursor pos]
         [htmlView update cursorRef]]]
-    ['moveLeft [fn []
-        [cursorRef set 'cursor [[cursorRef get 'cursor] + 1]]
+    ['moveLeft
+      [fn []
+        [cursorRef set 'cursor [[cursorRef 'cursor] + 1]]
         [htmlView update cursorRef]]]]]
-
 
 [exports set
   'run
@@ -145,9 +174,9 @@
         [[[document 'body] 'style] set 'margin '0px]
         [[[document 'body] 'style] set 'background '#f8f8f8]
         [def list [syntax parse [syntax tokenize data]]]
-        [def obj [listobject create list]]
+        [def obj [listModel create list]]
         [console log obj]
         [htmlView update obj]
-        [cursor moveTo obj 1]
+        [cursor moveTo [[obj 'children] get 0] 0]
         [window setInterval [fn [] [cursor moveLeft]] 2000]
         [[document 'body] appendChild [obj 'elem]]]]]]
