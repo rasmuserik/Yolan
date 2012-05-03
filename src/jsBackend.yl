@@ -84,11 +84,9 @@
     [if [compileJS get syn0]
       [return [[compileJS get syn0] call null syn syn1]]]
     [if [syn1 == '<<]
-      [return
-        ['( + [exports toJS syn0] '<< [exports toJS syn2] ')]]]
+      [return ['( + [exports toJS syn0] '<< [exports toJS syn2] ')]]]
     [if [syn1 == '>>]
-      [return
-        ['( + [exports toJS syn0] '>> [exports toJS syn2] ')]]]
+      [return ['( + [exports toJS syn0] '>> [exports toJS syn2] ')]]]
     [if [syn1 == 'set]
       [return
         [[exports toJS syn0] +
