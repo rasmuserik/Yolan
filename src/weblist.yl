@@ -41,11 +41,7 @@
   [Section: The desired style in list format
     [exports set
       'style
-      [#
-        ['cursor
-           '[[border .3em solid red]
-            [border-radius .9em]
-           ]]
+      [# ['cursor '[[border .3em solid red] [border-radius .9em]]]
         ['listAtom
           '[[margin 0em .0em 0em .0em]
             [background-color rgba(255,255,255,0.5)]
@@ -71,47 +67,56 @@
         [style set 'borderColor [webcolor hashColor str]]]]]]
 
 [Section: predefined cursor dom node
-[def cursorNode [document createElement 'span]]
-[cursorNode set 'className 'cursor]
-[cursorNode appendChild [document createTextNode '•]]]
+  [def cursorNode [document createElement 'span]]
+  [cursorNode set 'className 'cursor]
+  [cursorNode appendChild [document createTextNode '•]]]
 
-[def htmlView [#
-    ['update [fn [obj]
+[def htmlView
+  [#
+    ['update
+      [fn [obj]
         [def elem [obj 'elem]]
         [if [elem fails]
-            [set elem [document createElement 'span]]
-            [obj set 'elem elem]]
-        [; if-else [obj 'parent]
-            [htmlView update [obj 'parent]]
-            [document 'body appendChild elem]]
-        [if-else [obj 'value] [do
-                [elem set 'className 'listAtom]
-                [while [elem hasChildNodes] [elem removeChild [elem 'lastChild]]]
-                [elem appendChild [document createTextNode [[JSON stringify [obj 'value]] slice 1 -1]]]]
-            [do 
-               [elem set 'className 'list]
-               [while [elem hasChildNodes] [elem removeChild [elem 'lastChild]]]
-               [Section: Assign a random color based on the text of the first child
-               [def text "undefined"]
-                    [if [[obj 'children] and [[obj 'children] get 0] [[[obj 'children] get 0] 'value]]
-                    [set text [[[obj 'children] get 0] 'value]]]
-               [exports randomColor elem text]]
-               [def i 0]
-               [def len [obj 'children 'length]]
-               [while [i < len]
-                  [Section: whitespace between children
-                    [if i
-                        [elem appendChild [document createTextNode '\ ]]]]
-                  [if [[[obj 'cursor == undefined]fails] and [obj 'cursor == i]]
-                    [elem appendChild cursorNode]
-                        [elem appendChild [document createTextNode '\ ]]]
-                  [if [[[obj 'children get i] 'elem] fails]
-                    [htmlView update [obj 'children get i]]]
-                  [elem appendChild [[obj 'children get i] 'elem]]
-                  [set i [i + 1]]]
-            ]]
-        [return obj]
-        ]]]]
+          [set elem [document createElement 'span]]
+          [obj set 'elem elem]]
+        [; if-else
+          [obj ' parent]
+          [htmlView update [obj ' parent]]
+          [document ' body appendChild elem]]
+        [if-else [obj 'value]
+          [do [elem set 'className 'listAtom]
+            [while [elem hasChildNodes]
+              [elem removeChild [elem 'lastChild]]]
+            [elem appendChild
+              [document createTextNode
+                [[JSON stringify [obj 'value]] slice 1 -1]]]]
+          [do [elem set 'className 'list]
+            [while [elem hasChildNodes]
+              [elem removeChild [elem 'lastChild]]]
+            [Section: Assign a random color based on the text of the first
+              child
+              [def text "undefined"]
+              [if
+                [[obj 'children] and
+                  [[obj 'children] get 0]
+                  [[[obj 'children] get 0] 'value]]
+                [set text [[[obj 'children] get 0] 'value]]]
+              [exports randomColor elem text]]
+            [def i 0]
+            [def len [[obj 'children] 'length]]
+            [while [i < len]
+              [Section: whitespace between children
+                [if i [elem appendChild [document createTextNode '\ ]]]]
+              [if
+                [[[[obj 'cursor] == undefined] fails] and
+                  [[obj 'cursor] == i]]
+                [elem appendChild cursorNode]
+                [elem appendChild [document createTextNode '\ ]]]
+              [if [[[[obj 'children] get i] 'elem] fails]
+                [htmlView update [[obj 'children] get i]]]
+              [elem appendChild [[[obj 'children] get i] 'elem]]
+              [set i [i + 1]]]]]
+        [return obj]]]]]
 
 [exports set
   'run
@@ -129,5 +134,4 @@
         [console log obj]
         [obj set 'cursor 1]
         [htmlView update obj]
-        [[document 'body] appendChild [obj 'elem]]
-        ]]]]
+        [[document 'body] appendChild [obj 'elem]]]]]]

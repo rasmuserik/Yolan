@@ -33,43 +33,68 @@ exports["style2css"] = function(style) {
 };
 
 exports["style"] = {
+    cursor: [ [ "border", ".3em", "solid", "red" ], [ "border-radius", ".9em" ] ],
     listAtom: [ [ "margin", "0em", ".0em", "0em", ".0em" ], [ "background-color", "rgba(255,255,255,0.5)" ], [ "border-radius", ".3em" ], [ "white-space", "pre-wrap" ], [ "font-family", "sans-serif" ] ],
     list: [ [ "padding", ".1em", ".1em", ".1em", ".2em" ], [ "margin", ".1em", ".1em", ".1em", ".1em" ], [ "display", "inline-block" ], [ "border-radius", ".3em" ], [ "border", ".1em", "solid" ], [ "box-shadow", ".2em", ".2em", ".6em", "rgba(0,0,0,.4)" ] ]
 };
 
 document.getElementsByTagName("head")[0].appendChild(exports.newElem("style", exports.style2css(exports["style"])));
 
-exports["randomColor"] = function(elem) {
+exports["randomColor"] = function(elem, str) {
     var color = Math.random() * 16777216 & 16777215;
     var style = elem["style"];
-    style["backgroundColor"] = webcolor.intToColor(14737632 | color / 8);
-    style["borderColor"] = webcolor.intToColor(color);
+    style["backgroundColor"] = webcolor.hashLightColor(str);
+    style["borderColor"] = webcolor.hashColor(str);
 };
 
-console.log(document.getElementsByTagName("head")[0]);
+var cursorNode = document.createElement("span");
 
-console.log(exports.style2css(exports["style"]));
+cursorNode["className"] = "cursor";
 
-var obj2html = function(obj) {
-    if (obj["value"]) {
-        var span = exports.newElem("span", JSON.stringify(obj["value"]).slice(1, -1));
-        span["className"] = "listAtom";
-        obj["elem"] = span;
-        return span;
-    } else {}
-    var div = document.createElement("div");
-    obj["elem"] = div;
-    exports.randomColor(div);
-    div["className"] = "list";
-    var first = true;
-    obj["children"].forEach(function(child) {
-        if (!first) {
-            div.appendChild(document.createTextNode(" "));
+cursorNode.appendChild(document.createTextNode("•"));
+
+var htmlView = {
+    update: function(obj) {
+        var elem = obj["elem"];
+        if (!elem) {
+            elem = document.createElement("span");
+            obj["elem"] = elem;
         } else {}
-        div.appendChild(obj2html.call(null, child));
-        first = false;
-    });
-    return div;
+        if (obj["value"]) {
+            elem["className"] = "listAtom";
+            while (elem.hasChildNodes()) {
+                elem.removeChild(elem["lastChild"]);
+            }
+            elem.appendChild(document.createTextNode(JSON.stringify(obj["value"]).slice(1, -1)));
+        } else {
+            elem["className"] = "list";
+            while (elem.hasChildNodes()) {
+                elem.removeChild(elem["lastChild"]);
+            }
+            var text = "undefined";
+            if (obj["children"] && obj["children"][0] && obj["children"][0]["value"]) {
+                text = obj["children"][0]["value"];
+            } else {}
+            exports.randomColor(elem, text);
+            var i = 0;
+            var len = obj["children"]["length"];
+            while (i < len) {
+                if (i) {
+                    elem.appendChild(document.createTextNode(" "));
+                } else {}
+                if (!(obj["cursor"] === undefined) && obj["cursor"] === i) {
+                    elem.appendChild(cursorNode);
+                    elem.appendChild(document.createTextNode(" "));
+                } else {}
+                if (!obj["children"][i]["elem"]) {
+                    htmlView.update(obj["children"][i]);
+                } else {}
+                elem.appendChild(obj["children"][i]["elem"]);
+                i = i + 1;
+            }
+        }
+        return obj;
+    }
 };
 
 exports["run"] = function(filename) {
@@ -87,6 +112,8 @@ exports["run"] = function(filename) {
         var list = syntax.parse(syntax.tokenize(data));
         var obj = listobject.create(list);
         console.log(obj);
-        document["body"].appendChild(obj2html.call(null, obj));
+        obj["cursor"] = 1;
+        htmlView.update(obj);
+        document["body"].appendChild(obj["elem"]);
     });
 };
