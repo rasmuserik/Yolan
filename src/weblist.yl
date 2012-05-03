@@ -8,6 +8,13 @@
 
 [def test [module require './test]]
 
+[Section: utility function for creating a html element
+    [exports set 'newElem [fn [elemType text]
+      [def elem [document createElement elemType]]
+      [elem appendChild
+        [document createTextNode text]]
+      [return elem]]]]
+
 [Section: add style to head
   [Section: Utility function for converting yolan style to css
     [exports set
@@ -49,31 +56,35 @@
             [box-shadow .2em .2em .6em rgba(0,0,0,.4)]
             ]]]]]
   [Section: set the style in the head-tag
-  [def styleTag [document createElement 'style]]
-  [styleTag appendChild [document createTextNode [exports style2css [exports 'style]]]]
-  [[[document getElementsByTagName 'head] get 0] appendChild styleTag]
+  [[[document getElementsByTagName 'head] get 0] appendChild [exports newElem 'style [exports style2css [exports 'style]]]]
   ]
-  [Section: Experimental / test code
-    [console log [[document getElementsByTagName 'head] get 0]]
-    [console log [exports style2css [exports 'style]]]]]
-
-[def obj2html
-  [fn [obj]
-    [if [obj 'value]
-      [def span [document createElement 'span]]
-      [span set 'className 'listAtom]
-      [span appendChild
-        [document createTextNode
-          [[JSON stringify [obj 'value]] slice 1 -1]]]
-      [return span]]
-    [def div [document createElement 'div]]
+  [Section: utility for setting random color
+  [exports set 'randomColor [fn [elem]
     [def color [[[Math random] * 0x1000000] & 0xffffff]]
-    [div set 'className 'list]
-    [def style [div 'style]]
+    [def style [elem 'style]]
     [style set
       'backgroundColor
       [webcolor intToColor [0xe0e0e0 | [color / 8]]]]
     [style set 'borderColor  [webcolor intToColor color]]
+  ]]
+  ]
+
+  [Section: Experimental / test code
+    [console log [[document getElementsByTagName 'head] get 0]]
+    [console log [exports style2css [exports 'style]]]]
+]
+
+[def obj2html
+  [fn [obj]
+    [if [obj 'value]
+      [def span [exports newElem 'span [[JSON stringify [obj 'value]] slice 1 -1]]]
+      [span set 'className 'listAtom]
+      [obj set 'elem span]
+      [return span]]
+    [def div [document createElement 'div]]
+    [obj set 'elem div]
+    [exports randomColor div]
+    [div set 'className 'list]
     [def first true]
     [[obj 'children] forEach
       [fn [child]
