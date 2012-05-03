@@ -16,7 +16,7 @@ if (!(typeof process === "undefined")) {
     engine = "node";
 } else {}
 
-if (!(typeof java === "undefined")) {
+if (typeof java === "object") {
     engine = "rhino";
     if (typeof require === "undefined") {
         var modules = {

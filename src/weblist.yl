@@ -1,4 +1,5 @@
 [Section: foo bar baz quuz [console log 'hello]]
+
 [def yolan [module require './yolan]]
 
 [def syntax [module require './syntax]]
@@ -8,7 +9,13 @@
 [def test [module require './test]]
 
 [Section: Model
-  [def listPrototype [# ['update [fn [] [htmlView update this]]] ['getLength [fn [] [if-else [this 'children] [return [this 'children 'length]] [return [this 'value 'length]]]]]]]
+  [def listPrototype
+    [# ['update [fn [] [htmlView update this]]]
+      ['getLength
+        [fn []
+          [if-else [this 'children]
+            [return [[this 'children] 'length]]
+            [return [[this 'value] 'length]]]]]]]
   [def listModel [#]]
   [listModel set
     'create
@@ -140,13 +147,11 @@
                   [htmlView update [[obj 'children] get i]]]
                 [elem appendChild [[[obj 'children] get i] 'elem]]
                 [set i [i + 1]]]
-                [if
-                  [[[[obj 'cursor] == undefined] fails] and
-                    [[obj 'cursor] == i]]
-                  [elem appendChild cursorNode]
-                  [elem appendChild [document createTextNode '\ ]]]
-                
-                ]]
+              [if
+                [[[[obj 'cursor] == undefined] fails] and
+                  [[obj 'cursor] == i]]
+                [elem appendChild cursorNode]
+                [elem appendChild [document createTextNode '\ ]]]]]
           [return obj]]]]]]
 
 [def cursorRef undefined]
@@ -155,9 +160,7 @@
   [#
     ['moveTo
       [fn [obj pos]
-        [if cursorRef
-          [cursorRef set 'cursor undefined]
-          [cursorRef update]]
+        [if cursorRef [cursorRef set 'cursor undefined] [cursorRef update]]
         [set cursorRef obj]
         [cursorRef set 'cursor pos]
         [cursorRef update]]]
@@ -165,57 +168,76 @@
       [fn []
         [cursorRef set 'cursor [[cursorRef 'cursor] - 1]]
         [if [[[cursorRef 'cursor] < 0] and [cursorRef 'parent]]
-            [console log [cursorRef 'parent]]
-            [cursor moveTo [cursorRef 'parent] [cursorRef 'parent 'children indexOf cursorRef]] [return]]
-        [if [cursorRef 'cursor < 0] [cursorRef set 'cursor 0]]
-        [cursorRef update]
-        ]]
+          [console log [cursorRef 'parent]]
+          [cursor moveTo
+            [cursorRef 'parent]
+            [[[cursorRef 'parent] 'children] indexOf cursorRef]]
+          [return]]
+        [if [[cursorRef 'cursor] < 0] [cursorRef set 'cursor 0]]
+        [cursorRef update]]]
     ['moveDown
       [fn []
         [cursorRef set 'cursor [[cursorRef 'cursor] + 1]]
-        [if [[[cursorRef getLength] < [cursorRef 'cursor]] and [cursorRef 'parent]]
-            [cursor moveTo [cursorRef 'parent] [[cursorRef 'parent 'children indexOf cursorRef] + 1]] [return]]
+        [if
+          [[[cursorRef getLength] < [cursorRef 'cursor]] and
+            [cursorRef 'parent]]
+          [cursor moveTo
+            [cursorRef 'parent]
+            [[[[cursorRef 'parent] 'children] indexOf cursorRef] + 1]]
+          [return]]
         [cursorRef update]]]
     ['movePrev
       [fn []
         [if [[cursorRef 'children] and [0 < [cursorRef 'cursor]]]
-            [def child [cursorRef 'children get [[cursorRef 'cursor] - 1]]]
-            [cursor moveTo child [child getLength]] [return]]
+          [def child [[cursorRef 'children] get [[cursorRef 'cursor] - 1]]]
+          [cursor moveTo child [child getLength]]
+          [return]]
         [cursorRef set 'cursor [[cursorRef 'cursor] - 1]]
         [if [[[cursorRef 'cursor] < 0] and [cursorRef 'parent]]
-            [console log [cursorRef 'parent]]
-            [cursor moveTo [cursorRef 'parent] [cursorRef 'parent 'children indexOf cursorRef]] [return]]
-        [if [cursorRef 'cursor < 0] [cursorRef set 'cursor 0]]
-        [cursorRef update]
-        ]]
+          [console log [cursorRef 'parent]]
+          [cursor moveTo
+            [cursorRef 'parent]
+            [[[cursorRef 'parent] 'children] indexOf cursorRef]]
+          [return]]
+        [if [[cursorRef 'cursor] < 0] [cursorRef set 'cursor 0]]
+        [cursorRef update]]]
     ['moveNext
       [fn []
-        [if [[cursorRef 'children] and [cursorRef 'cursor < [cursorRef 'children 'length]]]
-            [cursor moveTo [cursorRef 'children get [cursorRef 'cursor]] 0] [return]]
+        [if
+          [[cursorRef 'children] and
+            [[cursorRef 'cursor] < [[cursorRef 'children] 'length]]]
+          [cursor moveTo [[cursorRef 'children] get [cursorRef 'cursor]] 0]
+          [return]]
         [cursorRef set 'cursor [[cursorRef 'cursor] + 1]]
-        [if [[[cursorRef getLength] < [cursorRef 'cursor]] and [cursorRef 'parent]]
-            [cursor moveTo [cursorRef 'parent] [[cursorRef 'parent 'children indexOf cursorRef] + 1]] [return]]
-        [cursorRef update]]]
-        ]
-        ]
-        
-[Section: Controller
-   [def keyController [#]]
-   [def handleKeyEvent [fn [ev] 
-        [if [Section: "L" [ev 'keyCode == 76]]
-            [cursor moveNext] [return]]
-        [if [Section: "H" [ev 'keyCode == 72]]
-            [cursor movePrev] [return]]
-        [if [Section: "K" [ev 'keyCode == 75]]
-            [cursor moveUp] [return]]
-        [if [Section: "K" [ev 'keyCode == 74]]
-            [cursor moveDown] [return]]
-        [console log ev]
-        ]]
-   [keyController set 'start [fn [] 
-    [document 'body set 'onkeydown handleKeyEvent]
-   ]]]
+        [if
+          [[[cursorRef getLength] < [cursorRef 'cursor]] and
+            [cursorRef 'parent]]
+          [cursor moveTo
+            [cursorRef 'parent]
+            [[[[cursorRef 'parent] 'children] indexOf cursorRef] + 1]]
+          [return]]
+        [cursorRef update]]]]]
 
+[Section: Controller
+  [def keyController [#]]
+  [def handleKeyEvent
+    [fn [ev]
+      [if [Annotation: [Section: "L"] [do [[ev 'keyCode] == 76]]]
+        [cursor moveNext]
+        [return]]
+      [if [Annotation: [Section: "H"] [do [[ev 'keyCode] == 72]]]
+        [cursor movePrev]
+        [return]]
+      [if [Annotation: [Section: "K"] [do [[ev 'keyCode] == 75]]]
+        [cursor moveUp]
+        [return]]
+      [if [Annotation: [Section: "K"] [do [[ev 'keyCode] == 74]]]
+        [cursor moveDown]
+        [return]]
+      [console log ev]]]
+  [keyController set
+    'start
+    [fn [] [[document 'body] set 'onkeydown handleKeyEvent]]]]
 
 [exports set
   'run
