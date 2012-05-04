@@ -80,9 +80,31 @@ var cursorNode = document.createElement("span");
 
 cursorNode["className"] = "cursor";
 
-cursorNode.appendChild(document.createTextNode("•"));
+cursorNode.appendChild(document.createTextNode("|"));
 
 var htmlView = {
+    scrollToCursor: function() {
+        var running = false;
+        return function() {
+            console.log(window["pageYOffset"]);
+            if (running) {
+                return;
+            } else {}
+            var pos = cursorNode.getBoundingClientRect();
+            console.log(window["pageYOffset"]);
+            var cursorMargin = window["innerHeight"] / 5;
+            if (pos["top"] < 0 + cursorMargin || window["innerHeight"] - cursorMargin < pos["bottom"]) {
+                var desiredPos = window["pageYOffset"] + (pos["top"] - window["innerHeight"] / 2);
+                console.log(window["pageYOffset"], desiredPos, window["pageYOffset"] * .95 + desiredPos * .05);
+                window.setTimeout(function() {
+                    window.scrollTo(0, window["pageYOffset"] * .95 + desiredPos * .05);
+                }, 0);
+                window.setTimeout(htmlView["scrollToCursor"], 20);
+                running = true;
+            } else {}
+            running = false;
+        };
+    }.call(),
     update: function(obj) {
         var elem = obj["elem"];
         if (!elem) {
@@ -97,6 +119,7 @@ var htmlView = {
             if (!(obj["cursor"] === undefined)) {
                 elem.appendChild(document.createTextNode(JSON.stringify(obj["value"].slice(0, obj["cursor"])).slice(1, -1)));
                 elem.appendChild(cursorNode);
+                htmlView.scrollToCursor();
                 elem.appendChild(document.createTextNode(JSON.stringify(obj["value"].slice(obj["cursor"])).slice(1, -1)));
             } else {
                 elem.appendChild(document.createTextNode(JSON.stringify(obj["value"]).slice(1, -1)));
@@ -119,6 +142,7 @@ var htmlView = {
                 } else {}
                 if (!(obj["cursor"] === undefined) && obj["cursor"] === i) {
                     elem.appendChild(cursorNode);
+                    htmlView.scrollToCursor();
                     elem.appendChild(document.createTextNode(" "));
                 } else {}
                 if (!obj["children"][i]["elem"]) {
@@ -129,6 +153,7 @@ var htmlView = {
             }
             if (!(obj["cursor"] === undefined) && obj["cursor"] === i) {
                 elem.appendChild(cursorNode);
+                htmlView.scrollToCursor();
                 elem.appendChild(document.createTextNode(" "));
             } else {}
         }
