@@ -1,5 +1,36 @@
 [def diff exports]
 
+[diff set 'edit [fn [arr0 arr1]
+    [def start 0]
+    [def result [@]]
+    [while [[[arr0 get start] == [arr1 get start]] and [start < [arr0 'length]]]
+        [result push 'skip]
+        [set start [start + 1]]]
+    [def i [arr0 'length - 1]]
+    [def j [arr1 'length - 1]]
+    [def end 0]
+    [while [[[arr0 get i] == [arr1 get j]] and [start <= i]]
+        [set i [i - 1]]
+        [set j [j - 1]]
+        [set end [end + 1]]]
+    [while [start <= i]
+        [result push 'del]
+        [set i [i - 1]]]
+    [while [start <= j]
+        [result push 'ins]
+        [set j [j - 1]]]
+    [while [0 < end]
+        [result push 'skip]
+        [set end [end - 1]]]
+    [return result]
+]]
+
+[diff set
+  'run
+  [fn []
+    [console log [diff edit '[a b c d e f] '[ a b h d e f]]]
+  ]]
+
 [diff set
   'levenshtein
   [fn [arr0 arr1]
@@ -50,7 +81,7 @@
     [return [result reverse]]]]
 
 [diff set
-  'run
+  'run2
   [fn []
     [console log '\n\n]
     [console log [diff levenshtein '[] '[1]] '\n]
