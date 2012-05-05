@@ -28,7 +28,7 @@
     [body set 'onkeydown [fn [ev] [return [console log ev]]]]
     [canvas focus]
     [def ctx [canvas getContext '2d]]
-    [return [update call null ctx width height]]]]
+    [return [update call null ctx width height canvas]]]]
 
 [exports set
   'run

@@ -5,7 +5,7 @@
   [fn [x y]
     [def result [Object create v2d]]
     [result set 'x x]
-    [result set 'x y]
+    [result set 'y y]
     [return result]]]
 
 [v2d set
@@ -33,5 +33,3 @@
     [def a [this length]]
     [set a [a and [1 / a]]]
     [return [v2d create [[this 'x] * a] [[this 'y] * a]]]]]
-
-[v2d set 'create [fn [x y] [return [# ['x x] ['y y]]]]]
