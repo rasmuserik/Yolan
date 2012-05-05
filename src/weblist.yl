@@ -59,7 +59,7 @@
                 join
                 ';]]
             [result push '}\n]
-            [set i [i + 1]]]
+            [inc i]]
           [return [result join ""]]]]]
     [Section: The desired style in list format
       [exports set
@@ -171,7 +171,7 @@
                 [if [[[[obj 'children] get i] 'elem] fails]
                   [htmlView update [[obj 'children] get i]]]
                 [elem appendChild [[[obj 'children] get i] 'elem]]
-                [set i [i + 1]]]
+                [inc i]]
               [if
                 [[[[obj 'cursor] == undefined] fails] and
                   [[obj 'cursor] == i]]
@@ -247,19 +247,19 @@
   [def handleKeyEvent
     [fn [ev]
       [if [[ev 'keyCode] == 76]
-        [Annotation: [; l]]
+        [Annotation: [Annotation: [; l]]]
         [cursor moveNext]
         [return]]
       [if [[ev 'keyCode] == 72]
-        [Annotation: [; h]]
+        [Annotation: [Annotation: [; h]]]
         [cursor movePrev]
         [return]]
       [if [[ev 'keyCode] == 75]
-        [Annotation: [; k]]
+        [Annotation: [Annotation: [; k]]]
         [cursor moveUp]
         [return]]
       [if [[ev 'keyCode] == 74]
-        [Annotation: [; j]]
+        [Annotation: [Annotation: [; j]]]
         [cursor moveDown]
         [return]]]]
   [keyController set

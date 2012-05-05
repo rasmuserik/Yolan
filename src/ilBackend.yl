@@ -57,9 +57,9 @@
                 [return code]]
               [if [first == 'if-else]
                 [def label1 [nextid toString]]
-                [set nextid [nextid + 1]]
+                [inc nextid]
                 [def label2 [nextid toString]]
-                [set nextid [nextid + 1]]
+                [inc nextid]
                 [set code
                   [code concat
                     [compileExpression call null [expr get 1] true]]]
@@ -76,7 +76,7 @@
                 [return code]]
               [if [first == 'fn]
                 [def id ['_ + fnid]]
-                [set fnid [fnid + 1]]
+                [inc fnid]
                 [def createdFunction
                   [compileFunction call null id
                     [expr get 1]
@@ -88,7 +88,7 @@
                   [def globName [fnGlobals get i]]
                   [if [[globals hasValue globName] fails]
                     [globals push globName]]
-                  [set i [i + 1]]]
+                  [inc i]]
                 [return [@ [@ 'fn id]]]]
               [if [first == 'do]
                 [def i 1]
@@ -99,7 +99,7 @@
                       [compileExpression call null
                         [expr get i]
                         [[i == [length - 1]] and withArg]]]]
-                  [set i [i + 1]]]
+                  [inc i]]
                 [return code]]
               [if true
                 [def method [expr get 1]]

@@ -237,6 +237,14 @@ forwardTransforms.push(function(node) {
     return node;
 });
 
+reverseTransforms.push(function(node) {
+    var capt = match.pattern([ "set", "?a", [ "?a", "+", "1" ] ], node);
+    if (capt) {
+        return [ "inc", capt["a"] ];
+    } else {}
+    return node;
+});
+
 var x = 1;
 
 x = x + 1;

@@ -6,7 +6,7 @@
       [def i 0]
       [def tokeniser [#]]
       [def c [str get 0]]
-      [def nextc [fn [] [set i [i + 1]] [set c [str get i]] [return c]]]
+      [def nextc [fn [] [inc i] [set c [str get i]] [return c]]]
       [def isWs
         [fn [] [return [[c == '\ ] or [c == '\n] [c == '\r] [c == '\t]]]]]
       [def isPrefix
@@ -48,11 +48,9 @@
       [def result [@]]
       [while [i < [list 'length]]
         [def elem [list get i]]
-        [if [elem == quote]
-          [set i [i + 1]]
-          [set elem [@ 'quote [list get i]]]]
+        [if [elem == quote] [inc i] [set elem [@ 'quote [list get i]]]]
         [result push elem]
-        [set i [i + 1]]]
+        [inc i]]
       [return result]]]
   [exports set
     'parse
@@ -129,7 +127,7 @@
           [set pos indent]]
         [result push [strs get i]]
         [set pos [pos + [[strs get i] 'length] 1]]
-        [set i [i + 1]]]
+        [inc i]]
       [result push lineEnd]
       [set indent [indent - indentStep]]
       [return [result join ""]]]]]

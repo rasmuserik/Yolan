@@ -39,7 +39,7 @@
         [while [i < [reverseTransforms 'length]]
           [set node [[reverseTransforms get i] call null node finish]]
           [if done [return node]]
-          [set i [i + 1]]]
+          [inc i]]
         [set node [node map [macros 'reverse]]]]
       [return node]]]
   [macros set
@@ -89,9 +89,9 @@
       [def i 0]
       [while [i < [node 'length]]
         [if-else [[[node get i] == ''] and [[i + 1] < [node 'length]]]
-          [do [set i [i + 1]] [result push [@ 'quote [node get i]]]]
+          [do [inc i] [result push [@ 'quote [node get i]]]]
           [result push [node get i]]]
-        [set i [i + 1]]]
+        [inc i]]
       [return result]]]
   [forwardTransforms push quoteTransform]
   [reverseTransforms push
@@ -147,10 +147,8 @@
         [def i 0]
         [while [[[node get i] jsType] == 'string]
           [doc push [node get i]]
-          [set i [i + 1]]]
-        [while [i < [node 'length]]
-          [code push [node get i]]
-          [set i [i + 1]]]
+          [inc i]]
+        [while [i < [node 'length]] [code push [node get i]] [inc i]]
         [set code [macros transform code]]
         [return [@ 'Annotation: doc code]]]
       [return node]]]
@@ -203,11 +201,17 @@
       [return node]]]]
 
 [Section: increment/decrement
-    [forwardTransforms push
-        [fn [node]
-            [def capt [match pattern '[inc ?a] node]]
-            [if capt [return [@ 'set [capt 'a] [@ [capt 'a] '+ '1]]]]
-            [return node]]]]
+  [forwardTransforms push
+    [fn [node]
+      [def capt [match pattern '[inc ?a] node]]
+      [if capt [return [@ 'set [capt 'a] [@ [capt 'a] '+ '1]]]]
+      [return node]]]
+  [reverseTransforms push
+    [fn [node]
+      [def capt [match pattern '[set ?a [?a + 1]] node]]
+      [if capt [return [@ 'inc [capt 'a]]]]
+      [return node]]]]
 
 [def x 1]
+
 [inc x]

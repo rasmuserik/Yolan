@@ -22,7 +22,7 @@
     [def i 0]
     [while [i < [a 'length]]
       [if [[match deepEqual [a get i] [b get i]] fails] [return false]]
-      [set i [i + 1]]]
+      [inc i]]
     [return true]]]
 
 [match set
