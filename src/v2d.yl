@@ -1,0 +1,37 @@
+[def v2d exports]
+
+[v2d set
+  'create
+  [fn [x y]
+    [def result [Object create v2d]]
+    [result set 'x x]
+    [result set 'x y]
+    [return result]]]
+
+[v2d set
+  'add
+  [fn [v] [return [v2d create [[this 'x] + [v 'x]] [[this 'y] + [v 'y]]]]]]
+
+[v2d set
+  'sub
+  [fn [v] [return [v2d create [[this 'x] - [v 'x]] [[this 'y] - [v 'y]]]]]]
+
+[v2d set
+  'scale
+  [fn [a] [return [v2d create [[this 'x] * a] [[this 'y] * a]]]]]
+
+[v2d set
+  'length
+  [fn []
+    [def x [this 'x]]
+    [def y [this 'y]]
+    [return [Math sqrt [[x * x] + [y * y]]]]]]
+
+[v2d set
+  'norm
+  [fn []
+    [def a [this length]]
+    [set a [a and [1 / a]]]
+    [return [v2d create [[this 'x] * a] [[this 'y] * a]]]]]
+
+[v2d set 'create [fn [x y] [return [# ['x x] ['y y]]]]]
