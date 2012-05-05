@@ -80,6 +80,8 @@ cursorNode["className"] = "cursor";
 
 cursorNode.appendChild(document.createTextNode("|"));
 
+var curPos = 0;
+
 var htmlView = {
     scrollToCursor: function() {
         var running = false;
@@ -90,11 +92,13 @@ var htmlView = {
             var pos = cursorNode.getBoundingClientRect();
             var cursorMargin = window["innerHeight"] / 5;
             if (pos["top"] < 0 + cursorMargin || window["innerHeight"] - cursorMargin < pos["bottom"]) {
-                var desiredPos = window["pageYOffset"] + (pos["top"] - window["innerHeight"] / 2);
                 window.setTimeout(function() {
-                    window.scrollTo(0, window["pageYOffset"] * .95 + desiredPos * .05);
+                    var desiredPos = curPos + (pos["top"] - window["innerHeight"] / 2);
+                    var nextPos = curPos * .95 + desiredPos * .05;
+                    window.scrollTo(0, nextPos);
+                    curPos = nextPos;
                 }, 0);
-                window.setTimeout(htmlView["scrollToCursor"], 20);
+                window.setTimeout(htmlView["scrollToCursor"], 10);
                 running = true;
             } else {}
             running = false;

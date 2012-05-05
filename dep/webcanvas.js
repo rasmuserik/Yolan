@@ -1,16 +1,7 @@
 var xml = module.require("./xml");
 
 exports["init"] = function(obj) {
-    var update = obj["update"] || function(ctx, h, w, canvas) {
-        return undefined;
-    };
-    var mousedown = obj["mousedown"] || function(x, y) {
-        return undefined;
-    };
-    var mousemove = obj["mousemove"] || function(x0, y0, x1, y1) {
-        return undefined;
-    };
-    var mouseup = obj["mouseup"] || function(x, y) {
+    var update = obj["update"] || function(ctx, w, h, canvas) {
         return undefined;
     };
     var keydown = obj["keydown"] || function(k) {
@@ -35,12 +26,12 @@ exports["init"] = function(obj) {
     };
     canvas.focus();
     var ctx = canvas.getContext("2d");
-    return update.call(null, ctx, height, width);
+    return update.call(null, ctx, width, height, canvas);
 };
 
 exports["run"] = function() {
     return exports.init({
-        update: function(ctx, h, w) {
+        update: function(ctx, w, h) {
             ctx["fillStyle"] = "#990";
             ctx.fillText("Hello canvas", 100, 100);
             return ctx.fillRect(-5, -5, 1e4, 1e3);

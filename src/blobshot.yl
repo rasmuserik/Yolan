@@ -1,55 +1,75 @@
 [def webcanvas [module require './webcanvas]]
+
 [def v2d [module require './v2d]]
 
 [def started false]
 
-
 [def enemies [@]]
 
 [def count 0]
+
 [def bulletSize 0]
 
 [def running true]
 
 [def score 0]
-[def gameOver [fn []
+
+[def gameOver
+  [fn []
     [set running false]
     [ctx set 'fillStyle '#fff]
-    [window setTimeout [fn []
-    [ctx set 'fillStyle '#000]
-    [ctx set 'shadowColor '#fff]
-    [ctx set 'shadowBlur size]
-    [ctx set 'font [[size * 4]+ 'px\ Sans\ Serif]]
-    [ctx set 'textBaseline 'middle]
-    [ctx set 'textAlign 'center]
-    [ctx fillText 'GAME\ OVER [w / 2] [h / 3]]
-    [ctx fillText ['Score:\  + score] [w / 2] [[h * 2] / 3]]
-    [canvas set 'onmousedown [fn [e] [exports run]]]
-    ] 1000]
-]]
+    [window setTimeout
+      [fn []
+        [ctx set 'fillStyle '#000]
+        [ctx set 'shadowColor '#fff]
+        [ctx set 'shadowBlur size]
+        [ctx set 'font [[size * 4] + 'px\ Sans\ Serif]]
+        [ctx set 'textBaseline 'middle]
+        [ctx set 'textAlign 'center]
+        [ctx fillText 'GAME\ OVER [w / 2] [h / 3]]
+        [ctx fillText ['Score:\  + score] [w / 2] [[h * 2] / 3]]
+        [canvas set 'onmousedown [fn [e] [exports run]]]]
+      1000]]]
+
 [def bulletSource undefined]
+
 [; [v2d create [w / 2] [h / 2]]]
+
 [def bullets [@]]
+
 [def newBullet undefined]
+
 [def size 100]
-[def animate [fn [list color]
+
+[def animate
+  [fn [list color]
     [def result [@]]
     [ctx set 'fillStyle color]
-        [ctx beginPath]
-    [list forEach [fn [obj ]
-        [obj set 'pos [obj  'pos add [obj 'v]]]
-        [if-else [[obj 'pos 'x] < [0 - size]]
-            [gameOver call]]
-        [if-else [obj 'dead or [[w + [size * 4]] < [obj 'pos 'x]] [obj 'pos 'y < [0 - size]] [[h + size] < [obj 'pos 'y]]]
-            [do ]
-            [do [result push obj ]]]
-        [ctx arc [obj 'pos 'x] [obj 'pos 'y] [obj 'size] [Math 'PI * 2] 0]
-        ]]
+    [ctx beginPath]
+    [list forEach
+      [fn [obj]
+        [obj set 'pos [[obj 'pos] add [obj 'v]]]
+        [if [[[obj 'pos] 'x] < [0 - size]] [gameOver call]]
+        [if-else
+          [[obj 'dead] or
+            [[w + [size * 4]] < [[obj 'pos] 'x]]
+            [[[obj 'pos] 'y] < [0 - size]]
+            [[h + size] < [[obj 'pos] 'y]]]
+          [do]
+          [do [result push obj]]]
+        [ctx arc
+          [[obj 'pos] 'x]
+          [[obj 'pos] 'y]
+          [obj 'size]
+          [[Math 'PI] * 2]
+          0]]]
     [ctx fill]
-    [return result]
-]]
+    [return result]]]
+
 [set startCount 600]
-[def blobMain [fn[]
+
+[def blobMain
+  [fn []
     [if [running fails] return]
     [def startTime [Date now]]
     [set bulletSize [bulletSize + [size / 40]]]
@@ -59,52 +79,77 @@
     [ctx set 'textBaseline 'top]
     [ctx set 'font [size + 'px\ Sans\ Serif]]
     [ctx fillText ['Score:\  + score] [size * 2] 0]
-    [set count [count + 1]]
-    [if [[enemies 'length < [[count + startCount] / 200]] and [[Math random] < 0.1]]
-        [enemies push [# ['size [size * [[Math random] + .5]]] ['pos [v2d create [w + [size * 2]] [[Math random] * [h - size]]]] ['v [v2d create [[Math random] * size -0.9] 0]]]]]
+    [inc count]
+    [if
+      [[[enemies 'length] < [[count + startCount] / 200]] and
+        [[Math random] < 0.1]]
+      [enemies push
+        [# ['size [size * [[Math random] + .5]]]
+          ['pos [v2d create [w + [size * 2]] [[Math random] * [h - size]]]]
+          ['v [v2d create [[Math random] * size -0.9] 0]]]]]
     [set enemies [animate call null enemies '#f00]]
     [if newBullet
-        [bullets push [# ['size bulletSize] ['pos bulletSource] ['v [[[newBullet sub bulletSource] norm] scale size]]]]
-        [set bulletSize 1]
-        [set score [Math max 0 [score - 1]]]
-        [set newBullet undefined]]
+      [bullets push
+        [# ['size bulletSize]
+          ['pos bulletSource]
+          ['v [[[newBullet sub bulletSource] norm] scale size]]]]
+      [set bulletSize 1]
+      [set score [Math max 0 [score - 1]]]
+      [set newBullet undefined]]
     [set bullets [animate call null bullets '#080]]
-    [bullets forEach [fn [bullet] [enemies forEach [fn  [enemy]
-        [if [[[bullet 'pos sub [enemy 'pos]] length] < [bullet 'size + [enemy 'size]]]
-            [bullet set 'dead true]
-            [enemy set 'dead true]
-            [set score [20 + score]]
-    ]]]]]
-    [window setTimeout blobMain [Math max 0 [50 - [[Date now] - startTime]]]]
-]]
+    [bullets forEach
+      [fn [bullet]
+        [enemies forEach
+          [fn [enemy]
+            [if
+              [[[[bullet 'pos] sub [enemy 'pos]] length] <
+                [[bullet 'size] + [enemy 'size]]]
+              [bullet set 'dead true]
+              [enemy set 'dead true]
+              [set score [20 + score]]]]]]]
+    [window setTimeout blobMain
+      [Math max 0 [50 - [[Date now] - startTime]]]]]]
 
 [def ctx undefined]
+
 [def canvas undefined]
+
 [def w undefined]
+
 [def h undefined]
 
-[exports set 'run [fn []
+[exports set
+  'run
+  [fn []
     [set running true]
-[webcanvas init [# ['update [fn [ctx_ w_ h_ canvas_]
-    [set ctx ctx_]
-    [set canvas canvas_]
-    [set w w_]
-    [set h h_]
-    [set size [h / 30]]
-    [set bulletSource [v2d create 0 h/2]]
-    [def wallcount 30]
-    [def i 0]
-    [set enemies [@]]
-    [set bullets [@]]
-    [set score 0]
-    [while [i <= wallcount]
-        [bullets push [# ['pos [v2d create [[Math random] * size] [[i * h] / wallcount]]] ['v [v2d create 0 0]] [size [h / wallcount]]]]
-        [inc i]]
-    [canvas set 'onmousedown [fn [e]
-        [set newBullet [v2d create [e 'x] [e 'y]]]
-        [console log e]
-    ]]
-    [if [started fails]
-        [blobMain call]]
-]]]]
-]]
+    [webcanvas init
+      [#
+        ['update
+          [fn [ctx_ w_ h_ canvas_]
+            [set ctx ctx_]
+            [set canvas canvas_]
+            [set w w_]
+            [set h h_]
+            [set size [h / 30]]
+            [set bulletSource [v2d create 0 h/2]]
+            [def wallcount 30]
+            [def i 0]
+            [set enemies [@]]
+            [set bullets [@]]
+            [set score 0]
+            [while [i <= wallcount]
+              [bullets push
+                [#
+                  ['pos
+                    [v2d create
+                      [[Math random] * size]
+                      [[i * h] / wallcount]]]
+                  ['v [v2d create 0 0]]
+                  [size [h / wallcount]]]]
+              [inc i]]
+            [canvas set
+              'onmousedown
+              [fn [e]
+                [set newBullet [v2d create [e 'x] [e 'y]]]
+                [console log e]]]
+            [if [started fails] [blobMain call]]]]]]]]
