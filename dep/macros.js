@@ -2,6 +2,8 @@ var yolan = module.require("./yolan");
 
 var macros = exports;
 
+var match = module.require("./match");
+
 var onEach = [];
 
 var forwardTransforms = [];
@@ -226,3 +228,15 @@ reverseTransforms.push(function(node, finish) {
     } else {}
     return node;
 });
+
+forwardTransforms.push(function(node) {
+    var capt = match.pattern([ "inc", "?a" ], node);
+    if (capt) {
+        return [ "set", capt["a"], [ capt["a"], "+", "1" ] ];
+    } else {}
+    return node;
+});
+
+var x = 1;
+
+x = x + 1;
