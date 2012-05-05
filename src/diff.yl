@@ -13,12 +13,12 @@
     [def j [[arr1 'length] - 1]]
     [def end 0]
     [while [[[arr0 get i] == [arr1 get j]] and [start <= i]]
-      [set i [i - 1]]
-      [set j [j - 1]]
+      [dec i]
+      [dec j]
       [inc end]]
-    [while [start <= i] [result push 'del] [set i [i - 1]]]
-    [while [start <= j] [result push 'ins] [set j [j - 1]]]
-    [while [0 < end] [result push 'skip] [set end [end - 1]]]
+    [while [start <= i] [result push 'del] [dec i]]
+    [while [start <= j] [result push 'ins] [dec j]]
+    [while [0 < end] [result push 'skip] [dec end]]
     [return result]]]
 
 [diff set

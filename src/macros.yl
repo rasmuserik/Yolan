@@ -20,7 +20,7 @@
         [def done false]
         [def finish [fn [] [return [set done true]]]]
         [while [0 < i]
-          [set i [i - 1]]
+          [dec i]
           [set node [[forwardTransforms get i] call null node finish]]
           [if done [return node]]]
         [set node [node map [macros 'transform]]]]
@@ -210,8 +210,14 @@
     [fn [node]
       [def capt [match pattern '[set ?a [?a + 1]] node]]
       [if capt [return [@ 'inc [capt 'a]]]]
+      [return node]]]
+  [forwardTransforms push
+    [fn [node]
+      [def capt [match pattern '[dec ?a] node]]
+      [if capt [return [@ 'set [capt 'a] [@ [capt 'a] '- '1]]]]
+      [return node]]]
+  [reverseTransforms push
+    [fn [node]
+      [def capt [match pattern '[set ?a [?a - 1]] node]]
+      [if capt [return [@ 'dec [capt 'a]]]]
       [return node]]]]
-
-[def x 1]
-
-[inc x]

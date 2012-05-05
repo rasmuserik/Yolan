@@ -76,7 +76,7 @@
       'nspace
       [fn [n]
         [def result [@]]
-        [while [0 < n] [set n [n - 1]] [result push '\ ]]
+        [while [0 < n] [dec n] [result push '\ ]]
         [return [result join ""]]]]]
   [def indent 0]
   [def escapeRegEx [RegExp call RegExp '\[\'\ \\\[\\\]\] 'g]]

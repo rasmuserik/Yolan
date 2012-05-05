@@ -245,6 +245,18 @@ reverseTransforms.push(function(node) {
     return node;
 });
 
-var x = 1;
+forwardTransforms.push(function(node) {
+    var capt = match.pattern([ "dec", "?a" ], node);
+    if (capt) {
+        return [ "set", capt["a"], [ capt["a"], "-", "1" ] ];
+    } else {}
+    return node;
+});
 
-x = x + 1;
+reverseTransforms.push(function(node) {
+    var capt = match.pattern([ "set", "?a", [ "?a", "-", "1" ] ], node);
+    if (capt) {
+        return [ "dec", capt["a"] ];
+    } else {}
+    return node;
+});
