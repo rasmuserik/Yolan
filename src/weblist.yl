@@ -246,24 +246,20 @@
   [def keyController [#]]
   [def handleKeyEvent
     [fn [ev]
-      [if
-        [Annotation: [Annotation: [Section: "L"] [do]]
-          [do [[ev 'keyCode] == 76]]]
+      [if [[ev 'keyCode] == 76]
+        [Annotation: [; l]]
         [cursor moveNext]
         [return]]
-      [if
-        [Annotation: [Annotation: [Section: "H"] [do]]
-          [do [[ev 'keyCode] == 72]]]
+      [if [[ev 'keyCode] == 72]
+        [Annotation: [; h]]
         [cursor movePrev]
         [return]]
-      [if
-        [Annotation: [Annotation: [Section: "K"] [do]]
-          [do [[ev 'keyCode] == 75]]]
+      [if [[ev 'keyCode] == 75]
+        [Annotation: [; k]]
         [cursor moveUp]
         [return]]
-      [if
-        [Annotation: [Annotation: [Section: "J"] [do]]
-          [do [[ev 'keyCode] == 74]]]
+      [if [[ev 'keyCode] == 74]
+        [Annotation: [; j]]
         [cursor moveDown]
         [return]]]]
   [keyController set

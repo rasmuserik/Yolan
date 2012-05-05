@@ -1,5 +1,3 @@
-console.log("hello");
-
 var yolan = module.require("./yolan");
 
 var syntax = module.require("./syntax");
@@ -86,16 +84,13 @@ var htmlView = {
     scrollToCursor: function() {
         var running = false;
         return function() {
-            console.log(window["pageYOffset"]);
             if (running) {
                 return;
             } else {}
             var pos = cursorNode.getBoundingClientRect();
-            console.log(window["pageYOffset"]);
             var cursorMargin = window["innerHeight"] / 5;
             if (pos["top"] < 0 + cursorMargin || window["innerHeight"] - cursorMargin < pos["bottom"]) {
                 var desiredPos = window["pageYOffset"] + (pos["top"] - window["innerHeight"] / 2);
-                console.log(window["pageYOffset"], desiredPos, window["pageYOffset"] * .95 + desiredPos * .05);
                 window.setTimeout(function() {
                     window.scrollTo(0, window["pageYOffset"] * .95 + desiredPos * .05);
                 }, 0);
@@ -176,7 +171,6 @@ var cursor = {
     moveUp: function() {
         cursorRef["cursor"] = cursorRef["cursor"] - 1;
         if (cursorRef["cursor"] < 0 && cursorRef["parent"]) {
-            console.log(cursorRef["parent"]);
             cursor.moveTo(cursorRef["parent"], cursorRef["parent"]["children"].indexOf(cursorRef));
             return;
         } else {}
@@ -201,7 +195,6 @@ var cursor = {
         } else {}
         cursorRef["cursor"] = cursorRef["cursor"] - 1;
         if (cursorRef["cursor"] < 0 && cursorRef["parent"]) {
-            console.log(cursorRef["parent"]);
             cursor.moveTo(cursorRef["parent"], cursorRef["parent"]["children"].indexOf(cursorRef));
             return;
         } else {}
@@ -243,7 +236,6 @@ var handleKeyEvent = function(ev) {
         cursor.moveDown();
         return;
     } else {}
-    console.log(ev);
 };
 
 keyController["start"] = function() {
@@ -264,7 +256,6 @@ exports["run"] = function(filename) {
         document["body"]["style"]["background"] = "#f8f8f8";
         var list = syntax.parse(syntax.tokenize(data));
         var obj = listModel.create(list);
-        console.log(obj);
         obj.update();
         cursor.moveTo(obj["children"][0], 0);
         keyController.start();
