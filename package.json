@@ -9,7 +9,7 @@
     "express": "3.0"
   },
   "scripts": {
-    "test": "node dep/main.js compile && ./yolan testrunner"
+    "test": "install -d build; node dep/main.js compile && ./yolan testrunner"
   },
   "engines": {"node": "*"}
 }
