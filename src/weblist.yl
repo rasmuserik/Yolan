@@ -1,3 +1,6 @@
+[exports set
+  'run
+  [fn [filename]
 [def yolan [module require './yolan]]
 
 [def syntax [module require './syntax]]
@@ -255,9 +258,6 @@
     'start
     [fn [] [[document 'body] set 'onkeydown handleKeyEvent]]]]
 
-[exports set
-  'run
-  [fn [filename]
     [if [filename fails]
       [[document 'body] set 'innerHTML 'Usage:\ weblist\ filename]
       [return undefined]]
