@@ -63,8 +63,7 @@
           [obj 'size]
           [[Math 'PI] * 2]
           0]
-        [ctx fill]
-    ]]
+        [ctx fill]]]
     [return result]]]
 
 [def blobMain
@@ -79,8 +78,7 @@
     [ctx set 'font [size + 'px\ Sans\ Serif]]
     [ctx fillText ['Score:\  + score] [size * 2] 0]
     [inc count]
-    [if
-      [[enemies 'length] < [count / 100]] 
+    [if [[enemies 'length] < [count / 100]]
       [enemies push
         [# ['size [size * [[Math random] + .5]]]
           ['pos [v2d create [w + [size * 2]] [[Math random] * [h - size]]]]

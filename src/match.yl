@@ -26,24 +26,22 @@
     [return true]]]
 
 [match set
-  'template [fn [pattern subst]
-    [if [subst fails]
-        [return undefined]]
+  'template
+  [fn [pattern subst]
+    [if [subst fails] [return undefined]]
     [if [[pattern jsType] == 'string]
-        [if [[pattern get 0] == '?]
-            [return [subst get [pattern slice 1]]]]
-        [return pattern]]
+      [if [[pattern get 0] == '?] [return [subst get [pattern slice 1]]]]
+      [return pattern]]
     [def result [@]]
     [def i 0]
     [while [i < [pattern 'length]]
-        [def val [pattern get i]]
-        [if-else [[[val jsType] 'string] and [[val slice 0 3] == '...]]
-            [set result [result concat [subst get [val slice 3]]]]
-            [result push [match template val subst]]]
-         [inc i]]
+      [def val [pattern get i]]
+      [if-else [[[val jsType] 'string] and [[val slice 0 3] == '...]]
+        [set result [result concat [subst get [val slice 3]]]]
+        [result push [match template val subst]]]
+      [inc i]]
     [return result]]]
-            
-            
+
 [match set
   'pattern
   [fn [pattern obj ctx]
@@ -92,5 +90,13 @@
     [console log [match pattern '[?a ?a] '[foo foo]]]
     [console log [match template '?a [# ['a 'foobar]]]]
     [console log [match template '[?a [?a]] [# ['a 'foobar]]]]
-    [console log [JSON stringify [match template '[...a [def ?b ?c] [while [?b < ?d] ...e [inc ?b]] ...f] [# ['a '[]] ['b 'i] ['c 0] ['d 10] ['e '[[console log 'hello i]]] ['f '[]]]]]]
-    ]]
+    [console log
+      [JSON stringify
+        [match template
+          '[...a [def ?b ?c] [while [?b < ?d] ...e [inc ?b]] ...f]
+          [# ['a '[]]
+            ['b 'i]
+            ['c 0]
+            ['d 10]
+            ['e '[[console log ' hello i]]]
+            ['f '[]]]]]]]]
