@@ -1,7 +1,5 @@
 [; yolan-xml data structure to an xml-string]
 
-[console log 'hereInXml]
-
 [exports set
   'fromYl
   [fn [xml]

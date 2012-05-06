@@ -1,5 +1,3 @@
-[console log 'in 'hello]
-
 [exports set
   'run
   [fn [args]

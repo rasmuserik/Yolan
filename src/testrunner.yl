@@ -1,18 +1,19 @@
-[ exports set 'run [fn []
-[def scriptList
-    [[[[module require 'fs] readdirSync 'src] filter
-        [fn [name] [return [[name slice -3] == '.yl]]]]
-      map
-      [fn [name] [return ['./ + [name slice 0 -3]]]]]]
-
-[scriptList forEach [fn [scriptName]
-    [console log scriptName]
-    [def obj [module require scriptName]]
-    [[Object keys obj] forEach [fn [methodName]
-        [def context undefined]
-        [if [[[methodName slice 0 4] == 'test] fails]
-            return]
-        [if [[method jsType] == 'function]
-            [console log scriptName methodName]
-            [; set context [method call obj context]]]]]]]
-]]
+[exports set 'testFoo [fn [] [return true]]]
+[exports set
+  'run
+  [fn []
+    [def scriptList
+      [[[[module require 'fs] readdirSync 'src] filter
+          [fn [name] [return [[name slice -3] == '.yl]]]]
+        map
+        [fn [name] [return ['./ + [name slice 0 -3]]]]]]
+    [scriptList forEach
+      [fn [scriptName]
+        [def obj [module require scriptName]]
+        [[Object keys obj] forEach
+          [fn [methodName]
+            [def method [obj get methodName]]
+            [if [[[methodName slice 0 4] == 'test] fails] return]
+            [if [[method jsType] == 'function]
+              [console log scriptName methodName ]
+              [method call obj ]]]]]]]]

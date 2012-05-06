@@ -148,7 +148,7 @@ if (engine === "node") {
     yolan["nextTick"] = process["nextTick"];
 } else {
     yolan["nextTick"] = function(f) {
-        setTimout.call(null, f, 0);
+        setTimeout.call(null, f, 0);
     };
 }
 
