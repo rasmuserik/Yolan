@@ -26,6 +26,25 @@
     [return true]]]
 
 [match set
+  'template [fn [pattern subst]
+    [if [subst fails]
+        [return undefined]]
+    [if [[pattern jsType] == 'string]
+        [if [[pattern get 0] == '?]
+            [return [subst get [pattern slice 1]]]]
+        [return pattern]]
+    [def result [@]]
+    [def i 0]
+    [while [i < [pattern 'length]]
+        [def val [pattern get i]]
+        [if-else [[[val jsType] 'string] and [[val slice 0 3] == '...]]
+            [set result [result concat [subst get [val slice 3]]]]
+            [result push [match template val subst]]]
+         [inc i]]
+    [return result]]]
+            
+            
+[match set
   'pattern
   [fn [pattern obj ctx]
     [set ctx [ctx or [#]]]

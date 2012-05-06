@@ -45,9 +45,9 @@
   [fn [list color]
     [def result [@]]
     [ctx set 'fillStyle color]
-    [ctx beginPath]
     [list forEach
       [fn [obj]
+        [ctx beginPath]
         [obj set 'pos [[obj 'pos] add [obj 'v]]]
         [if [[[obj 'pos] 'x] < [0 - size]] [gameOver call]]
         [if-else
@@ -62,11 +62,10 @@
           [[obj 'pos] 'y]
           [obj 'size]
           [[Math 'PI] * 2]
-          0]]]
-    [ctx fill]
+          0]
+        [ctx fill]
+    ]]
     [return result]]]
-
-[set startCount 600]
 
 [def blobMain
   [fn []
@@ -75,18 +74,18 @@
     [set bulletSize [bulletSize + [size / 40]]]
     [ctx set 'fillStyle 'rgba(0,0,0,0.3)]
     [ctx fillRect 0 0 w h]
-    [ctx set 'fillStyle 'fff]
+    [ctx set 'fillStyle '#fff]
     [ctx set 'textBaseline 'top]
     [ctx set 'font [size + 'px\ Sans\ Serif]]
     [ctx fillText ['Score:\  + score] [size * 2] 0]
     [inc count]
     [if
-      [[[enemies 'length] < [[count + startCount] / 200]] and
-        [[Math random] < 0.1]]
+      [[enemies 'length] < [count / 100]] 
       [enemies push
         [# ['size [size * [[Math random] + .5]]]
           ['pos [v2d create [w + [size * 2]] [[Math random] * [h - size]]]]
           ['v [v2d create [[Math random] * size -0.9] 0]]]]]
+    [console log [enemies 'length]]
     [set enemies [animate call null enemies '#f00]]
     [if newBullet
       [bullets push
@@ -137,6 +136,7 @@
             [set enemies [@]]
             [set bullets [@]]
             [set score 0]
+            [set count 0]
             [while [i <= wallcount]
               [bullets push
                 [#
@@ -150,6 +150,7 @@
             [canvas set
               'onmousedown
               [fn [e]
-                [set newBullet [v2d create [e 'x] [e 'y]]]
+                [set newBullet [v2d create [e 'clientX] [e 'clientY]]]
+                [set E e]
                 [console log e]]]
             [if [started fails] [blobMain call]]]]]]]]

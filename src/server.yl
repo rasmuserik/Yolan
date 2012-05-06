@@ -23,7 +23,7 @@
 [def body
   ['<body><script>function\ define(_,_,f){f()};</script> +
     [[scriptList map
-        [fn [name] [return ['<script\ src="/ + name '.js"></script>]]]]
+        [fn [name] [return ['<script\ src=" + name '.js"></script>]]]]
       join ""]
     '<script>require("./main").run(location.hash.slice(1).split("\ "));</script></body></html>]]
 
@@ -112,6 +112,5 @@
           [result writeHead 200 [# ['Content-Type 'text/html]]]
           [result end [head + body]]
           [return true]]]
-      listen 1234
-      'localhost]
+      listen 1234]
     [return [console log '[starting server on localhost port 1234]]]]]
