@@ -221,3 +221,14 @@
       [def capt [match pattern '[set ?a [?a - 1]] node]]
       [if capt [return [@ 'dec [capt 'a]]]]
       [return node]]]]
+
+
+[macros set 'createTransform [fn [from to]
+    [return [fn [node]
+        [def capt [match pattern from node]]
+        [return [[match template to capt] or node]]]]]]
+[macros set 'codeTransform [fn [from to]
+    [forwardTransforms push [macros createTransform from to]]
+    [reverseTransforms push [macros createTransform to from]]]]
+
+[macros codeTransform '[countup ?var ?start ?end ...code] '[do [def ?var ?start] [while [?var < ?end] ...code [set ?var [1 + ?var]]]]]

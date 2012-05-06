@@ -17,7 +17,7 @@ var scriptList = [ "yolan" ].concat(fs.readdirSync("src").filter(function(name) 
 var head = "<!DOCTYPE html><html>" + xml.fromYl(module.require("./htmlheader"));
 
 var body = "<body><script>function define(_,_,f){f()};</script>" + scriptList.map(function(name) {
-    return '<script src="/' + name + '.js"></script>';
+    return '<script src="' + name + '.js"></script>';
 }).join("") + '<script>require("./main").run(location.hash.slice(1).split(" "));</script></body></html>';
 
 exports["run"] = function() {
@@ -114,6 +114,6 @@ exports["run"] = function() {
         });
         result.end(head + body);
         return true;
-    }).listen(1234, "localhost");
+    }).listen(1234);
     return console.log([ "starting", "server", "on", "localhost", "port", "1234" ]);
 };

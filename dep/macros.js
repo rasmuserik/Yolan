@@ -260,3 +260,17 @@ reverseTransforms.push(function(node) {
     } else {}
     return node;
 });
+
+macros["createTransform"] = function(from, to) {
+    return function(node) {
+        var capt = match.pattern(from, node);
+        return match.template(to, capt) || node;
+    };
+};
+
+macros["codeTransform"] = function(from, to) {
+    forwardTransforms.push(macros.createTransform(from, to));
+    reverseTransforms.push(macros.createTransform(to, from));
+};
+
+macros.codeTransform([ "countup", "?var", "?start", "?end", "...code" ], [ "do", [ "def", "?var", "?start" ], [ "while", [ "?var", "<", "?end" ], "...code", [ "set", "?var", [ "1", "+", "?var" ] ] ] ]);
