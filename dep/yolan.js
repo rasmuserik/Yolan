@@ -144,6 +144,14 @@ if (engine === "web") {
     };
 } else {}
 
+if (engine === "node") {
+    yolan["nextTick"] = process["nextTick"];
+} else {
+    yolan["nextTick"] = function(f) {
+        setTimout.call(null, f, 0);
+    };
+}
+
 yolan["arrayHasMember"] = function(array, member) {
     if (array.indexOf(member) === -1) {
         return false;

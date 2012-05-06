@@ -1,17 +1,19 @@
 [Annotation: [; Start execution]]
+[def yolan [module require './yolan]]
 
 [if [[[require jsType] == 'undefined] and [[load jsType] == 'function]]
   [load call null 'build/yolan.js]
   [def exports [#]]]
 
-[def engine [[module require './yolan] 'engine]]
+[def engine [yolan 'engine]]
 
 [def run
   [fn [args]
+    [yolan nextTick [fn []
     [def moduleName [[args get 0] or [engine + 'main]]]
     [return
       [[[module require ['./ + moduleName]] 'run] apply null
-        [args slice 1]]]]]
+        [args slice 1]]]]]]]
 
 [exports set 'run run]
 

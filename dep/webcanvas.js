@@ -14,7 +14,7 @@ exports["init"] = function(obj) {
     var canvas = document.getElementById("canvas");
     var style = canvas["style"];
     console.log(canvas, style);
-    style["position"] = "absolute";
+    style["position"] = "fixed";
     style["top"] = "0px";
     style["left"] = "0px";
     style["height"] = height + "px";
