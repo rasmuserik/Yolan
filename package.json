@@ -8,5 +8,8 @@
     "uglify-js": "*",
     "express": "3.0"
   },
+  "scripts": {
+    "test": "node dep/main.js compile && ./yolan testrunner"
+  },
   "engines": {"node": "*"}
 }

@@ -132,6 +132,9 @@
         [req open 'POST ['/writeTextFile/ + fname] true]
         [return [req send data]]]]]]
 
+[if-else [engine == 'node]
+    [yolan set 'nextTick [process 'nextTick]]
+    [yolan set 'nextTick [fn [f] [setTimout call null f 0]]]]
 [Section: Utilities
   [yolan set
     'arrayHasMember

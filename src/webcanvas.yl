@@ -18,7 +18,7 @@
     [def canvas [document getElementById 'canvas]]
     [def style [canvas 'style]]
     [console log canvas style]
-    [style set 'position 'absolute]
+    [style set 'position 'fixed]
     [style set 'top '0px]
     [style set 'left '0px]
     [style set 'height [height + 'px]]

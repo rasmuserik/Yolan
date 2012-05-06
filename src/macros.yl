@@ -200,7 +200,7 @@
         [return result]]
       [return node]]]]
 
-[Section: increment/decrement
+[; Section: increment/decrement
   [forwardTransforms push
     [fn [node]
       [def capt [match pattern '[inc ?a] node]]
@@ -235,6 +235,15 @@
   [fn [from to]
     [forwardTransforms push [macros createTransform from to]]
     [reverseTransforms push [macros createTransform to from]]]]
+
+[macros codeTransform
+  '[inc ?var]
+  '[set ?var [?var + 1]]]
+
+[macros codeTransform
+  '[dec ?var]
+  '[set ?var [?var - 1]]]
+
 
 [macros codeTransform
   '[countup ?var ?start ?end ...code]

@@ -229,38 +229,6 @@ reverseTransforms.push(function(node, finish) {
     return node;
 });
 
-forwardTransforms.push(function(node) {
-    var capt = match.pattern([ "inc", "?a" ], node);
-    if (capt) {
-        return [ "set", capt["a"], [ capt["a"], "+", "1" ] ];
-    } else {}
-    return node;
-});
-
-reverseTransforms.push(function(node) {
-    var capt = match.pattern([ "set", "?a", [ "?a", "+", "1" ] ], node);
-    if (capt) {
-        return [ "inc", capt["a"] ];
-    } else {}
-    return node;
-});
-
-forwardTransforms.push(function(node) {
-    var capt = match.pattern([ "dec", "?a" ], node);
-    if (capt) {
-        return [ "set", capt["a"], [ capt["a"], "-", "1" ] ];
-    } else {}
-    return node;
-});
-
-reverseTransforms.push(function(node) {
-    var capt = match.pattern([ "set", "?a", [ "?a", "-", "1" ] ], node);
-    if (capt) {
-        return [ "dec", capt["a"] ];
-    } else {}
-    return node;
-});
-
 macros["createTransform"] = function(from, to) {
     return function(node) {
         var capt = match.pattern(from, node);
@@ -272,5 +240,9 @@ macros["codeTransform"] = function(from, to) {
     forwardTransforms.push(macros.createTransform(from, to));
     reverseTransforms.push(macros.createTransform(to, from));
 };
+
+macros.codeTransform([ "inc", "?var" ], [ "set", "?var", [ "?var", "+", "1" ] ]);
+
+macros.codeTransform([ "dec", "?var" ], [ "set", "?var", [ "?var", "-", "1" ] ]);
 
 macros.codeTransform([ "countup", "?var", "?start", "?end", "...code" ], [ "do", [ "def", "?var", "?start" ], [ "while", [ "?var", "<", "?end" ], "...code", [ "set", "?var", [ "1", "+", "?var" ] ] ] ]);
