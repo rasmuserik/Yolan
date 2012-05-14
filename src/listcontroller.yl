@@ -1,24 +1,32 @@
 [def yolan [module require './yolan]]
+
 [def syntax [module require './syntax]]
+
 [def webcolor [module require './webcolor]]
+
 [def test [module require './test]]
+
 [def cursor [module require './listcursor]]
+
 [def view [module require './listdomview]]
+
 [def model [module require './listmodel]]
+
 [def keyController [#]]
+
 [def handleKeyEvent
-     [fn [ev]
-        [if [[ev 'keyCode] == 76] [cursor moveNext] [return]]
-        [if [[ev 'keyCode] == 72] [cursor movePrev] [return]]
-        [if [[ev 'keyCode] == 75] [cursor moveUp] [return]]
-        [if [[ev 'keyCode] == 74] [cursor moveDown] [return]]]]
+  [fn [ev]
+    [if [[ev 'keyCode] == 76] [cursor moveNext] [return]]
+    [if [[ev 'keyCode] == 72] [cursor movePrev] [return]]
+    [if [[ev 'keyCode] == 75] [cursor moveUp] [return]]
+    [if [[ev 'keyCode] == 74] [cursor moveDown] [return]]]]
 
 [exports set
   'run
   [fn [filename]
-      [keyController set
-        'start
-        [fn [] [[document 'body] set 'onkeydown handleKeyEvent]]]
+    [keyController set
+      'start
+      [fn [] [[document 'body] set 'onkeydown handleKeyEvent]]]
     [if [filename fails]
       [[document 'body] set 'innerHTML 'Usage:\ weblist\ filename]
       [return undefined]]

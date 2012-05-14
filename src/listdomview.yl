@@ -64,6 +64,7 @@
       [exports newElem 'style [exports style2css style]]]]]
 
 [def curPos 0]
+
 [exports set
   'scrollToCursor
   [[fn []
@@ -91,15 +92,13 @@
 
 [def cursorNode undefined]
 
-
 [exports set
   'update
   [fn [obj]
-  [if [cursorNode fails]
-    [set cursorNode [document createElement ' span]]
-    [cursorNode set ' className ' cursor]
-    [cursorNode appendChild [document createTextNode ' |]]]
-        
+    [if [cursorNode fails]
+      [set cursorNode [document createElement 'span]]
+      [cursorNode set 'className 'cursor]
+      [cursorNode appendChild [document createTextNode '|]]]
     [def elem [obj 'elem]]
     [if [elem fails]
       [set elem [document createElement 'span]]
