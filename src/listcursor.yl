@@ -1,4 +1,5 @@
 [def cursorRef undefined]
+[def cursor exports]
 
 [exports set
   'moveTo

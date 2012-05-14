@@ -39,7 +39,7 @@
         [view setupStyle]
         [model setUpdateFn [view 'update]]
         [def list [syntax parse [syntax tokenize data]]]
-        [def obj [listModel create list]]
+        [def obj [model create list]]
         [obj update]
         [cursor moveTo [[obj 'children] get 0] 0]
         [keyController start]
