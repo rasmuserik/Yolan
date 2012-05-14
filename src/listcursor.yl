@@ -1,0 +1,63 @@
+[def cursorRef undefined]
+[exports set 'moveTo
+          [fn [obj pos]
+            [if cursorRef
+              [cursorRef set 'cursor undefined]
+              [cursorRef update]]
+            [set cursorRef obj]
+            [cursorRef set 'cursor pos]
+            [cursorRef update]]]
+[exports set 'moveUp
+          [fn []
+            [cursorRef set 'cursor [[cursorRef 'cursor] - 1]]
+            [if [[[cursorRef 'cursor] < 0] and [cursorRef 'parent]]
+              [cursor moveTo
+                [cursorRef 'parent]
+                [[[cursorRef 'parent] 'children] indexOf cursorRef]]
+              [return]]
+            [if [[cursorRef 'cursor] < 0] [cursorRef set 'cursor 0]]
+            [cursorRef update]]]
+[exports set 'moveDown
+          [fn []
+            [cursorRef set 'cursor [[cursorRef 'cursor] + 1]]
+            [if
+              [[[cursorRef getLength] < [cursorRef 'cursor]] and
+                [cursorRef 'parent]]
+              [cursor moveTo
+                [cursorRef 'parent]
+                [[[[cursorRef 'parent] 'children] indexOf cursorRef] + 1]]
+              [return]]
+            [cursorRef update]]]
+[exports set 'movePrev
+          [fn []
+            [if [[cursorRef 'children] and [0 < [cursorRef 'cursor]]]
+              [def child
+                [[cursorRef 'children] get [[cursorRef 'cursor] - 1]]]
+              [cursor moveTo child [child getLength]]
+              [return]]
+            [cursorRef set 'cursor [[cursorRef 'cursor] - 1]]
+            [if [[[cursorRef 'cursor] < 0] and [cursorRef 'parent]]
+              [cursor moveTo
+                [cursorRef 'parent]
+                [[[cursorRef 'parent] 'children] indexOf cursorRef]]
+              [return]]
+            [if [[cursorRef 'cursor] < 0] [cursorRef set 'cursor 0]]
+            [cursorRef update]]]
+[exports set 'moveNext
+          [fn []
+            [if
+              [[cursorRef 'children] and
+                [[cursorRef 'cursor] < [[cursorRef 'children] 'length]]]
+              [cursor moveTo
+                [[cursorRef 'children] get [cursorRef 'cursor]]
+                0]
+              [return]]
+            [cursorRef set 'cursor [[cursorRef 'cursor] + 1]]
+            [if
+              [[[cursorRef getLength] < [cursorRef 'cursor]] and
+                [cursorRef 'parent]]
+              [cursor moveTo
+                [cursorRef 'parent]
+                [[[[cursorRef 'parent] 'children] indexOf cursorRef] + 1]]
+              [return]]
+            [cursorRef update]]]
