@@ -6,6 +6,14 @@ if (typeof exports === "undefined") {
     yolan = exports;
 }
 
+if (typeof console === "undefined" || !console["log"]) {
+    yolan["log"] = function() {};
+} else {
+    yolan["log"] = function() {
+        console["log"].apply(console, arguments);
+    };
+}
+
 if (!(typeof module === "undefined")) {
     module["exports"] = yolan;
 } else {}
@@ -24,7 +32,7 @@ if (typeof java === "object") {
         };
         require = function(name) {
             if (!modules[name]) {
-                console.log("loading module", name);
+                yolan.log("loading module", name);
                 var prevModule = module;
                 var prevExports = exports;
                 module = {};
@@ -36,8 +44,7 @@ if (typeof java === "object") {
             } else {}
             return modules[name];
         };
-        console = {};
-        console["log"] = function() {
+        yolan["log"] = function() {
             return print.call(null, Array["prototype"]["slice"].call(arguments, 0).join(" "));
         };
         module = {};
@@ -54,7 +61,7 @@ if (!(typeof navigator === "undefined")) {
         var modules = {};
         var require = function(name) {
             if (!loadedModules[name]) {
-                console.log("initialising", name);
+                yolan.log("initialising", name);
                 var module = {};
                 var exports = {};
                 module["exports"] = exports;
@@ -68,25 +75,15 @@ if (!(typeof navigator === "undefined")) {
             modules[name] = f;
             return undefined;
         };
-        console.log("def", "require");
+        yolan.log("def", "require");
         window["require"] = require;
     } else {}
 } else {}
 
 yolan["engine"] = engine;
 
-if (typeof console === "undefined") {
-    console = {};
-    console["log"] = function() {
-        return undefined;
-    };
-    if (!(typeof print === "undefined")) {
-        console["log"] = print;
-    } else {}
-} else {}
-
 if (!yolan["engine"]) {
-    console.log("Error detecting engine:");
+    yolan.log("Error detecting engine:");
 } else {}
 
 if (engine === "node") {

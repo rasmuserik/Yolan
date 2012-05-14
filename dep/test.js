@@ -2,30 +2,30 @@ var test = exports;
 
 var proto = {
     fail: function(message) {
-        console.log("Test failure:", this["name"], message);
+        yolan.log("Test failure:", this["name"], message);
     },
     assert: function(a, message) {
         if (!a) {
-            console.log("assert", a, "fails in:", message);
+            yolan.log("assert", a, "fails in:", message);
         } else {}
     },
     assertEqual: function(a, b) {
-        console.log("AssertEqual", a, b, "(", this["name"], ")");
+        yolan.log("AssertEqual", a, b, "(", this["name"], ")");
         try {
             if (!(JSON.stringify(a) === JSON.stringify(b))) {
-                console.log("Error not equal", a, b, "in", this["name"]);
+                yolan.log("Error not equal", a, b, "in", this["name"]);
             } else {}
         } catch (e) {
-            console.log("Error could not compare", a, b, "in", test["name"], "error:", e);
+            yolan.log("Error could not compare", a, b, "in", test["name"], "error:", e);
         }
     },
     done: function() {
-        console.log("Test done", this["name"]);
+        yolan.log("Test done", this["name"]);
     }
 };
 
 test["case"] = function(name) {
-    console.log("Starting testcase:", name);
+    yolan.log("Starting testcase:", name);
     var result = Object.create(proto);
     result["name"] = name;
     return result;

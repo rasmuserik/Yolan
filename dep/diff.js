@@ -31,7 +31,7 @@ diff["edit"] = function(arr0, arr1) {
 };
 
 diff["run"] = function() {
-    console.log(diff.edit([ "a", "b", "c", "d", "e", "f" ], [ "a", "b", "h", "d", "e", "f" ]));
+    yolan.log(diff.edit([ "a", "b", "c", "d", "e", "f" ], [ "a", "b", "h", "d", "e", "f" ]));
 };
 
 diff["levenshtein"] = function(arr0, arr1) {
@@ -95,10 +95,10 @@ diff["levenshtein"] = function(arr0, arr1) {
 };
 
 diff["run2"] = function() {
-    console.log("\n\n");
-    console.log(diff.levenshtein([], [ "1" ]), "\n");
-    console.log(diff.levenshtein([ "1" ], [ "1" ]), "\n");
-    console.log(diff.levenshtein([ "1" ], [ "2" ]), "\n");
-    console.log(diff.levenshtein([ "1" ], []), "\n");
-    console.log("\n", diff.levenshtein([ "a", "b", "c", "c", "d", "e", "d", "f", "g", "h" ], [ "a", "b", "c", "d", "e", "e", "e", "h", "f", "g" ]));
+    yolan.log("\n\n");
+    yolan.log(diff.levenshtein([], [ "1" ]), "\n");
+    yolan.log(diff.levenshtein([ "1" ], [ "1" ]), "\n");
+    yolan.log(diff.levenshtein([ "1" ], [ "2" ]), "\n");
+    yolan.log(diff.levenshtein([ "1" ], []), "\n");
+    yolan.log("\n", diff.levenshtein([ "a", "b", "c", "c", "d", "e", "d", "f", "g", "h" ], [ "a", "b", "c", "d", "e", "e", "e", "h", "f", "g" ]));
 };

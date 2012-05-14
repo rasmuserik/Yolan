@@ -2,6 +2,8 @@ var webcanvas = module.require("./webcanvas");
 
 var v2d = module.require("./v2d");
 
+var yolan = module.require("./yolan");
+
 var started = false;
 
 var enemies = [];
@@ -78,7 +80,7 @@ var blobMain = function() {
             v: v2d.create(Math.random() * size * -.9, 0)
         });
     } else {}
-    console.log(enemies["length"]);
+    yolan.log(enemies["length"]);
     enemies = animate.call(null, enemies, "#f00");
     if (newBullet) {
         bullets.push({
@@ -138,7 +140,7 @@ exports["run"] = function() {
             canvas["onmousedown"] = function(e) {
                 newBullet = v2d.create(e["clientX"], e["clientY"]);
                 E = e;
-                console.log(e);
+                yolan.log(e);
             };
             if (!started) {
                 blobMain.call();

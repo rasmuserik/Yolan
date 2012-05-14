@@ -1,5 +1,7 @@
 var xml = module.require("./xml");
 
+var yolan = module.require("./yolan");
+
 exports["init"] = function(obj) {
     var update = obj["update"] || function(ctx, w, h, canvas) {
         return undefined;
@@ -13,7 +15,7 @@ exports["init"] = function(obj) {
     body["innerHTML"] = xml.fromYl([ "canvas", [ [ "id", "canvas" ] ], "This", "webapp", "requires", "a", "browser", "that", "has", "canvas", "support.", "You", "need", "to", "upgrade", "your", "browser", "to", "see", "this", "site." ]);
     var canvas = document.getElementById("canvas");
     var style = canvas["style"];
-    console.log(canvas, style);
+    yolan.log(canvas, style);
     style["position"] = "fixed";
     style["top"] = "0px";
     style["left"] = "0px";
@@ -22,7 +24,7 @@ exports["init"] = function(obj) {
     canvas["height"] = height;
     canvas["width"] = width;
     body["onkeydown"] = function(ev) {
-        return console.log(ev);
+        return yolan.log(ev);
     };
     canvas.focus();
     var ctx = canvas.getContext("2d");

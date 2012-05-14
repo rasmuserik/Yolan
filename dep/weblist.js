@@ -231,7 +231,7 @@ exports["run"] = function(filename) {
     } else {}
     yolan.readTextFile(filename, function(err, data) {
         if (err) {
-            console.log("Error:", err);
+            yolan.log("Error:", err);
             return undefined;
         } else {}
         document["body"]["style"]["margin"] = "0px";

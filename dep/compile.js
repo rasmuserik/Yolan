@@ -1,5 +1,7 @@
 var fs = module.require("fs");
 
+var yolan = module.require("./yolan");
+
 var syntax = module.require("./syntax");
 
 var macros = module.require("./macros");
@@ -40,7 +42,7 @@ exports["yl2js"] = function(src) {
 
 var compile = function(src, dest) {
     return fs.readFile(src, "utf8", function(err, data) {
-        console.log(src, "->", dest);
+        yolan.log(src, "->", dest);
         if (err) {
             return err;
         } else {}
@@ -56,8 +58,8 @@ var compile = function(src, dest) {
         try {
             var ast = jsp.parse(js);
         } catch (e) {
-            console.log(dest);
-            console.log(e);
+            yolan.log(dest);
+            yolan.log(e);
         }
         js = pro.gen_code(ast, {
             beautify: true

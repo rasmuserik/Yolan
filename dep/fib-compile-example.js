@@ -3,10 +3,10 @@ var fib = function(n) {
     if (1 < n) {
         result = fib.call(null, n - 1) + fib.call(null, n - 2);
     } else {}
-    console.log(result);
+    yolan.log(result);
     return result;
 };
 
 exports["run"] = function() {
-    console.log(fib.call(null, 10));
+    yolan.log(fib.call(null, 10));
 };

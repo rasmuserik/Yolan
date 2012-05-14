@@ -102,27 +102,27 @@ match["pattern"] = function(pattern, obj, ctx) {
 };
 
 match["run"] = function() {
-    console.log(match.pattern([ "...", "foo", "...b" ], [ "foo", "bar", "baz" ]));
-    console.log(match.pattern([ "...a", "bar", "...b" ], [ "foo", "bar", "baz" ]));
-    console.log(match.pattern([ "...a", "baz", "...b" ], [ "foo", "bar", "baz" ]));
-    console.log(match.pattern([ "...a", "bar", "...a" ], [ "foo", "bar", "baz" ]));
-    console.log(match.pattern([ "...a", "bar", "...a" ], [ "foo", "bar", "foo" ]));
-    console.log(match.pattern([ "...a", "quuz", "...b" ], [ "foo", "bar", "baz" ]));
-    console.log(match.pattern([ "?a", "?b" ], [ "foo", "bar" ]));
-    console.log(match.pattern([ "?a", "?a" ], [ "foo", "bar" ]));
-    console.log(match.pattern([ "?a", "?a" ], [ "foo", "foo" ]));
-    console.log(match.template("?a", {
+    yolan.log(match.pattern([ "...", "foo", "...b" ], [ "foo", "bar", "baz" ]));
+    yolan.log(match.pattern([ "...a", "bar", "...b" ], [ "foo", "bar", "baz" ]));
+    yolan.log(match.pattern([ "...a", "baz", "...b" ], [ "foo", "bar", "baz" ]));
+    yolan.log(match.pattern([ "...a", "bar", "...a" ], [ "foo", "bar", "baz" ]));
+    yolan.log(match.pattern([ "...a", "bar", "...a" ], [ "foo", "bar", "foo" ]));
+    yolan.log(match.pattern([ "...a", "quuz", "...b" ], [ "foo", "bar", "baz" ]));
+    yolan.log(match.pattern([ "?a", "?b" ], [ "foo", "bar" ]));
+    yolan.log(match.pattern([ "?a", "?a" ], [ "foo", "bar" ]));
+    yolan.log(match.pattern([ "?a", "?a" ], [ "foo", "foo" ]));
+    yolan.log(match.template("?a", {
         a: "foobar"
     }));
-    console.log(match.template([ "?a", [ "?a" ] ], {
+    yolan.log(match.template([ "?a", [ "?a" ] ], {
         a: "foobar"
     }));
-    console.log(JSON.stringify(match.template([ "...a", [ "def", "?b", "?c" ], [ "while", [ "?b", "<", "?d" ], "...e", [ "inc", "?b" ] ], "...f" ], {
+    yolan.log(JSON.stringify(match.template([ "...a", [ "def", "?b", "?c" ], [ "while", [ "?b", "<", "?d" ], "...e", [ "inc", "?b" ] ], "...f" ], {
         a: [],
         b: "i",
         c: 0,
         d: 10,
-        e: [ [ "console", "log", "'", "hello", "i" ] ],
+        e: [ [ "yolan", "log", "'", "hello", "i" ] ],
         f: []
     })));
 };

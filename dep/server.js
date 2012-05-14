@@ -16,14 +16,14 @@ var scriptList = [ "yolan" ].concat(fs.readdirSync("src").filter(function(name) 
 
 var head = "<!DOCTYPE html><html>" + xml.fromYl(module.require("./htmlheader"));
 
-var body = "<body><script>function define(_,_,f){f()};</script>" + scriptList.map(function(name) {
+var body = "<body>" + "<!--[if lte IE 8]><script>location.href='http://www.google.com/chromeframe?redirect=true'</script><![endif]-->" + "<script>function define(_,_,f){f()};</script>" + scriptList.map(function(name) {
     return '<script src="' + name + '.js"></script>';
-}).join("") + '<script>require("./main").run(location.hash.slice(1).split(" "));</script></body></html>';
+}).join("") + '<script>require("./main").run(location.hash.slice(1).split(" "));</script>' + "</body></html>";
 
 exports["run"] = function() {
     http.createServer(function(request, result) {
         var url = request["url"];
-        console.log(request["url"]);
+        yolan.log(request["url"]);
         if (url.slice(-3) === ".js") {
             result.writeHead(200, {
                 "Content-Type": "text/javascript"
@@ -38,7 +38,7 @@ exports["run"] = function() {
             });
             return true;
         } else {}
-        console.log(url.slice(0, 5));
+        yolan.log(url.slice(0, 5));
         if (url.slice(0, 14) === "/readTextFile/") {
             yolan.readTextFile(url.slice(14), function(err, data) {
                 if (err) {
@@ -115,5 +115,5 @@ exports["run"] = function() {
         result.end(head + body);
         return true;
     }).listen(1234);
-    return console.log([ "starting", "server", "on", "localhost", "port", "1234" ]);
+    return yolan.log([ "starting", "server", "on", "localhost", "port", "1234" ]);
 };
