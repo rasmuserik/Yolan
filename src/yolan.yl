@@ -133,10 +133,13 @@
 
 [if-else [engine == 'node]
   [yolan set 'nextTick [process 'nextTick]]
-  [yolan set 'nextTick [fn [f] [setTimeout call null f 0]]]]
+  [if-else [[window jsType] == 'undefined]
+    [yolan set 'nextTick [fn [f] [setTimeout call null f 0]]]
+    [yolan set 'nextTick [fn [f] [window setTimeout f 0]]]]]
 
 [Section: Utilities
   [yolan set
     'arrayHasMember
     [fn [array member]
       [if-else [[array indexOf member] == -1] [return false] [return true]]]]]
+
