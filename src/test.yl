@@ -3,8 +3,7 @@
 [Section: testing library
   [def proto
     [#
-      ['fail
-        [fn [message] [yolan log 'Test\ failure: [this 'name] message]]]
+      ['fail [fn [message] [yolan log 'Test\ failure: [this 'name] message]]]
       ['assert
         [fn [a message]
           [if [a fails] [yolan log 'assert a 'fails\ in: message]]]]

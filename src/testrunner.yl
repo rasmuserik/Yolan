@@ -1,4 +1,5 @@
 [exports set 'testFoo [fn [] [return true]]]
+
 [exports set
   'run
   [fn []
@@ -15,5 +16,5 @@
             [def method [obj get methodName]]
             [if [[[methodName slice 0 4] == 'test] fails] return]
             [if [[method jsType] == 'function]
-              [yolan log scriptName methodName ]
-              [method call obj ]]]]]]]]
+              [yolan log scriptName methodName]
+              [method call obj]]]]]]]]

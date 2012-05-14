@@ -22,8 +22,8 @@
 
 [def body
   ['<body> +
-    '<!--\[if\ lte\ IE\ 8\]><script>location.href='http://www.google.com/chromeframe?redirect=true'</script><!\[endif\]-->
-    '<script>function\ define(_,_,f){f()};</script> 
+    '<!--\[if\ lte\ IE\ 8\]><script>location.href=\'http://www.google.com/chromeframe?redirect=true\'</script><!\[endif\]-->
+    '<script>function\ define(_,_,f){f()};</script>
     [[scriptList map
         [fn [name] [return ['<script\ src=" + name '.js"></script>]]]]
       join ""]

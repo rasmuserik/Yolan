@@ -6,8 +6,7 @@
     [yolan log result]
     [return result]]]
 
-[exports set 'run [fn []
-[yolan log [fib call null 10]]]]
+[exports set 'run [fn [] [yolan log [fib call null 10]]]]
 
 [; yvm
   [function _0
@@ -47,7 +46,7 @@
     [args []]
     [consts [10]]
     [getGlobal null]
-    [getGlobal yolan ]
+    [getGlobal yolan]
     [getLocal fib]
     [createFunction _0 3]
     [setLocal fib]

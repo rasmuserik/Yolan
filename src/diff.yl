@@ -82,10 +82,8 @@
     [yolan log [diff levenshtein '[1] '[1]] '\n]
     [yolan log [diff levenshtein '[1] '[2]] '\n]
     [yolan log [diff levenshtein '[1] '[]] '\n]
-    [; yolan log ' \n
-      [diff levenshtein [' ac split ""] [' abc split ""]]]
-    [; yolan log ' \n
-      [diff levenshtein [' adc split ""] [' abc split ""]]]
+    [; yolan log ' \n [diff levenshtein [' ac split ""] [' abc split ""]]]
+    [; yolan log ' \n [diff levenshtein [' adc split ""] [' abc split ""]]]
     [yolan log
       '\n
       [diff levenshtein '[a b c c d e d f g h] '[a b c d e e e h f g]]]]]

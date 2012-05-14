@@ -1,13 +1,12 @@
-
 [set yolan [#]]
 
 [if-else [[exports jsType] == 'undefined]
   [set exports yolan]
   [set yolan exports]]
 
-[if-else [[[console jsType] == 'undefined] or [console 'log fails]]
-  [yolan set 'log [fn [] ]]
-  [yolan set 'log [fn [] [console 'log apply console arguments]]]]
+[if-else [[[console jsType] == 'undefined] or [[console 'log] fails]]
+  [yolan set 'log [fn []]]
+  [yolan set 'log [fn [] [[console 'log] apply console arguments]]]]
 
 [if [[[module jsType] == 'undefined] fails] [module set 'exports yolan]]
 
@@ -142,4 +141,3 @@
     'arrayHasMember
     [fn [array member]
       [if-else [[array indexOf member] == -1] [return false] [return true]]]]]
-
