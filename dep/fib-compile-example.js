@@ -1,5 +1,3 @@
-console.log(123);
-
 var fib = function(n) {
     var result = 1;
     if (1 < n) {
@@ -9,4 +7,6 @@ var fib = function(n) {
     return result;
 };
 
-console.log(fib.call(null, 10));
+exports["run"] = function() {
+    console.log(fib.call(null, 10));
+};

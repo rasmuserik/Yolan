@@ -15,5 +15,5 @@
             [def method [obj get methodName]]
             [if [[[methodName slice 0 4] == 'test] fails] return]
             [if [[method jsType] == 'function]
-              [console log scriptName methodName ]
+              [yolan log scriptName methodName ]
               [method call obj ]]]]]]]]

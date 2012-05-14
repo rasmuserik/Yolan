@@ -6,7 +6,7 @@
     [def ctx [canvas getContext '2d]]
     [def x 0]
     [def y 20]
-    [console log canvas ctx]
+    [yolan log canvas ctx]
     [ctx set 'font '20px\ Sans\ Serif]
     [return
       [body set

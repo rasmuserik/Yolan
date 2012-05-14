@@ -1,4 +1,5 @@
 [def xml [module require './xml]]
+[def yolan [module require './yolan]]
 
 [exports set
   'init
@@ -17,7 +18,7 @@
           upgrade your browser to see this site.]]]
     [def canvas [document getElementById 'canvas]]
     [def style [canvas 'style]]
-    [console log canvas style]
+    [yolan log canvas style]
     [style set 'position 'fixed]
     [style set 'top '0px]
     [style set 'left '0px]
@@ -25,7 +26,7 @@
     [style set 'width [width + 'px]]
     [canvas set 'height height]
     [canvas set 'width width]
-    [body set 'onkeydown [fn [ev] [return [console log ev]]]]
+    [body set 'onkeydown [fn [ev] [return [yolan log ev]]]]
     [canvas focus]
     [def ctx [canvas getContext '2d]]
     [return [update call null ctx width height canvas]]]]

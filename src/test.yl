@@ -4,28 +4,28 @@
   [def proto
     [#
       ['fail
-        [fn [message] [console log 'Test\ failure: [this 'name] message]]]
+        [fn [message] [yolan log 'Test\ failure: [this 'name] message]]]
       ['assert
         [fn [a message]
-          [if [a fails] [console log 'assert a 'fails\ in: message]]]]
+          [if [a fails] [yolan log 'assert a 'fails\ in: message]]]]
       ['assertEqual
         [fn [a b]
-          [console log 'AssertEqual a b '( [this 'name] ')]
+          [yolan log 'AssertEqual a b '( [this 'name] ')]
           [try-catch e
             [if [[[JSON stringify a] == [JSON stringify b]] fails]
-              [console log 'Error\ not\ equal a b 'in [this 'name]]]
-            [console log
+              [yolan log 'Error\ not\ equal a b 'in [this 'name]]]
+            [yolan log
               'Error\ could\ not\ compare
               a b
               'in
               [test 'name]
               'error:
               e]]]]
-      ['done [fn [] [console log 'Test\ done [this 'name]]]]]]
+      ['done [fn [] [yolan log 'Test\ done [this 'name]]]]]]
   [test set
     'case
     [fn [name]
-      [console log 'Starting\ testcase: name]
+      [yolan log 'Starting\ testcase: name]
       [def result [Object create proto]]
       [result set 'name name]
       [return result]]]]

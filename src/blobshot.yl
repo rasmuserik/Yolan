@@ -2,6 +2,8 @@
 
 [def v2d [module require './v2d]]
 
+[def yolan [module require './yolan]]
+
 [def started false]
 
 [def enemies [@]]
@@ -83,7 +85,7 @@
         [# ['size [size * [[Math random] + .5]]]
           ['pos [v2d create [w + [size * 2]] [[Math random] * [h - size]]]]
           ['v [v2d create [[Math random] * size -0.9] 0]]]]]
-    [console log [enemies 'length]]
+    [yolan log [enemies 'length]]
     [set enemies [animate call null enemies '#f00]]
     [if newBullet
       [bullets push
@@ -150,5 +152,5 @@
               [fn [e]
                 [set newBullet [v2d create [e 'clientX] [e 'clientY]]]
                 [set E e]
-                [console log e]]]
+                [yolan log e]]]
             [if [started fails] [blobMain call]]]]]]]]

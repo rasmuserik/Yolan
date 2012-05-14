@@ -1,5 +1,7 @@
 [def fs [module require 'fs]]
 
+[def yolan [module require './yolan]]
+
 [def syntax [module require './syntax]]
 
 [def macros [module require './macros]]
@@ -47,12 +49,12 @@
       [fs readFile src
         'utf8
         [fn [err data]
-          [console log src '-> dest]
+          [yolan log src '-> dest]
           [if err [return err]]
           [; compile exports to js]
           [def ast
             [macros transform [syntax parse [syntax tokenize data]]]]
-          [; console log [syntax prettyprint ast]]
+          [; yolan log [syntax prettyprint ast]]
           [def js [jsBackend toJS ast]]
           [def sourceCode
             [[[[[macros reverse ast] slice 1] map [syntax 'prettyprint]]
@@ -69,7 +71,7 @@
           [def pro [uglify 'uglify]]
           [try-catch e
             [def ast [jsp parse js]]
-            [do [console log dest] [console log e]]]
+            [do [yolan log dest] [yolan log e]]]
           [set js [pro gen_code ast [# ['beautify true]]]]
           [fs writeFile
             [dest + '.js]

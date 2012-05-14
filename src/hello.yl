@@ -1,8 +1,9 @@
+[def yolan [module require './yolan]]
 [exports set
   'run
   [fn [args]
-    [console log 'hello]
+    [yolan log 'hello]
     [return
       [[module require './yolan] readTextFile
         'src/hello.yl
-        [fn [err result] [return [console log result]]]]]]]
+        [fn [err result] [return [yolan log result]]]]]]]

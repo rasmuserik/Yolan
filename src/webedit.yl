@@ -4,7 +4,7 @@
   'run
   [fn [fname]
     [def body [document 'body]]
-    [console log fname]
+    [yolan log fname]
     [body set
       'innerHTML
       [[module require './xml] fromYl
@@ -22,7 +22,7 @@
         [fn [err data]
           [if err [set data [err toString]]]
           [[document getElementById 'editarea] set 'value data]
-          [return [console log 'readfile fname data err]]]]]
+          [return [yolan log 'readfile fname data err]]]]]
     [return
       [Section: Save button
         [[document getElementById 'savebutton] set

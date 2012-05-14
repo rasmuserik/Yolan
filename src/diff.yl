@@ -23,7 +23,7 @@
 
 [diff set
   'run
-  [fn [] [console log [diff edit '[a b c d e f] '[a b h d e f]]]]]
+  [fn [] [yolan log [diff edit '[a b c d e f] '[a b h d e f]]]]]
 
 [diff set
   'levenshtein
@@ -77,16 +77,16 @@
 [diff set
   'run2
   [fn []
-    [console log '\n\n]
-    [console log [diff levenshtein '[] '[1]] '\n]
-    [console log [diff levenshtein '[1] '[1]] '\n]
-    [console log [diff levenshtein '[1] '[2]] '\n]
-    [console log [diff levenshtein '[1] '[]] '\n]
-    [; console log ' \n
+    [yolan log '\n\n]
+    [yolan log [diff levenshtein '[] '[1]] '\n]
+    [yolan log [diff levenshtein '[1] '[1]] '\n]
+    [yolan log [diff levenshtein '[1] '[2]] '\n]
+    [yolan log [diff levenshtein '[1] '[]] '\n]
+    [; yolan log ' \n
       [diff levenshtein [' ac split ""] [' abc split ""]]]
-    [; console log ' \n
+    [; yolan log ' \n
       [diff levenshtein [' adc split ""] [' abc split ""]]]
-    [console log
+    [yolan log
       '\n
       [diff levenshtein '[a b c c d e d f g h] '[a b c d e e e h f g]]]]]
 

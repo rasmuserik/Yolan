@@ -21,11 +21,14 @@
   ['<!DOCTYPE\ html><html> + [xml fromYl [module require './htmlheader]]]]
 
 [def body
-  ['<body><script>function\ define(_,_,f){f()};</script> +
+  ['<body> +
+    '<!--\[if\ lte\ IE\ 8\]><script>location.href='http://www.google.com/chromeframe?redirect=true'</script><!\[endif\]-->
+    '<script>function\ define(_,_,f){f()};</script> 
     [[scriptList map
         [fn [name] [return ['<script\ src=" + name '.js"></script>]]]]
       join ""]
-    '<script>require("./main").run(location.hash.slice(1).split("\ "));</script></body></html>]]
+    '<script>require("./main").run(location.hash.slice(1).split("\ "));</script>
+    '</body></html>]]
 
 [exports set
   'run
@@ -33,7 +36,7 @@
     [[http createServer
         [fn [request result]
           [def url [request 'url]]
-          [console log [request 'url]]
+          [yolan log [request 'url]]
           [if [[url slice -3] == '.js]
             [result writeHead 200 [# ['Content-Type 'text/javascript]]]
             [def name ['. + [url slice 0 -3]]]
@@ -49,7 +52,7 @@
                       [[module require './compile] yl2js data]
                       '});]]]]]
             [return true]]
-          [console log [url slice 0 5]]
+          [yolan log [url slice 0 5]]
           [if [[url slice 0 14] == '/readTextFile/]
             [yolan readTextFile
               [url slice 14]
@@ -113,4 +116,4 @@
           [result end [head + body]]
           [return true]]]
       listen 1234]
-    [return [console log '[starting server on localhost port 1234]]]]]
+    [return [yolan log '[starting server on localhost port 1234]]]]]

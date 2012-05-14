@@ -263,7 +263,7 @@
       [return undefined]]
     [yolan readTextFile filename
       [fn [err data]
-        [if err [console log 'Error: err] [return undefined]]
+        [if err [yolan log 'Error: err] [return undefined]]
         [[[document 'body] 'style] set 'margin '0px]
         [[[document 'body] 'style] set 'background '#f8f8f8]
         [def list [syntax parse [syntax tokenize data]]]

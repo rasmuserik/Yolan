@@ -1,8 +1,13 @@
+
 [set yolan [#]]
 
 [if-else [[exports jsType] == 'undefined]
   [set exports yolan]
   [set yolan exports]]
+
+[if-else [[[console jsType] == 'undefined] or [console 'log fails]]
+  [yolan set 'log [fn [] ]]
+  [yolan set 'log [fn [] [console 'log apply console arguments]]]]
 
 [if [[[module jsType] == 'undefined] fails] [module set 'exports yolan]]
 
@@ -21,7 +26,7 @@
     [set require
       [fn [name]
         [if [[modules get name] fails]
-          [console log 'loading\ module name]
+          [yolan log 'loading\ module name]
           [def prevModule module]
           [def prevExports exports]
           [set module [#]]
@@ -35,8 +40,7 @@
             [set module prevModule]
             [set exports prevExports]]]
         [return [modules get name]]]]
-    [set console [#]]
-    [console set
+    [yolan set
       'log
       [fn []
         [return
@@ -55,7 +59,7 @@
     [def require
       [fn [name]
         [if [[loadedModules get name] fails]
-          [console log 'initialising name]
+          [yolan log 'initialising name]
           [def module [#]]
           [def exports [#]]
           [module set 'exports exports]
@@ -66,7 +70,7 @@
     [window set
       'define
       [fn [name dep f] [modules set name f] [return undefined]]]
-    [console log 'def 'require]
+    [yolan log 'def 'require]
     [window set 'require require]]]
 
 [; yolan defs]
@@ -75,12 +79,7 @@
 
 [; Shims]
 
-[if [[console jsType] == 'undefined]
-  [set console [#]]
-  [console set 'log [fn [] [return undefined]]]
-  [if [[[print jsType] == 'undefined] fails] [console set 'log print]]]
-
-[if [[yolan 'engine] fails] [console log 'Error\ detecting\ engine:]]
+[if [[yolan 'engine] fails] [yolan log 'Error\ detecting\ engine:]]
 
 [Section: Cross-platform file-io
   [if [engine == 'node]
