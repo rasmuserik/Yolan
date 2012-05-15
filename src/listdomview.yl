@@ -44,7 +44,7 @@
     [return [result join ""]]]]
 
 [exports set
-  'setupStyle
+  'init
   [fn []
     [def style
       [# ['cursor '[[border .3em solid red] [border-radius .9em]]]

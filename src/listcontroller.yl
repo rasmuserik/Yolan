@@ -8,7 +8,7 @@
 
 [def cursor [module require './listcursor]]
 
-[def view [module require './listdomview]]
+[def view [module require './listcanvasview]]
 
 [def model [module require './listmodel]]
 
@@ -36,10 +36,10 @@
         [if err [yolan log 'Error: err] [return undefined]]
         [[[document 'body] 'style] set 'margin '0px]
         [[[document 'body] 'style] set 'background '#f8f8f8]
-        [view setupStyle]
         [model setUpdateFn [view 'update]]
         [def list [syntax parse [syntax tokenize data]]]
         [def obj [model create list]]
+        [view init obj]
         [obj update]
         [cursor moveTo [[obj 'children] get 0] 0]
         [keyController start]

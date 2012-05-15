@@ -1,0 +1,18 @@
+[def domview [module require './listdomview]]
+[def webcanvas [module require './webcanvas]]
+
+[def root undefined]
+[def drawFn [fn [ctx w h canvas] 
+    [ctx fillRect 10 10 100 100]
+]]
+
+[exports set 'init [fn [rootNode]
+    [set root rootNode]
+    [exports update rootNode]
+    [webcanvas init [# ['update drawFn]]]
+    [domview init]]]
+
+[exports set 'update [fn [node]
+    [console log node]
+    [domview update node]]]
+
