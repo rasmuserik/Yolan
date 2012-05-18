@@ -1,18 +1,78 @@
+[def yolan [module require './yolan]]
 [def domview [module require './listdomview]]
+
 [def webcanvas [module require './webcanvas]]
 
-[def root undefined]
-[def drawFn [fn [ctx w h canvas] 
-    [ctx fillRect 10 10 100 100]
-]]
+[Section: Configuration
+  [def wordPad 2]
+  [def listPad 4]
+  [def fontHeight 14]
+  [def fontName [fontHeight + 'px\ sans-serif]]]
 
-[exports set 'init [fn [rootNode]
+[def root undefined]
+
+[def canvasRef undefined]
+
+[def ctxRef undefined]
+
+[def drawFn
+  [fn [ctx w h canvas]
+    [set canvasRef canvas]
+    [set ctxRef ctx]
+    [ctx set 'fillStyle '#fff]
+    [ctx fillRect 0 100 1000 60]
+    [ctx set 'fillStyle '#000]
+    [exports calcPos root 0 0 [canvas 'width]]
+    [drawNode call null root]
+    [ctx set 'font fontName]
+    [ctx fillText 'Hello\ world 110 110]]]
+
+[def drawNode [fn [node]
+    [if-else [node 'children]
+        [node 'children map drawNode]
+        [ctxRef fillText [node 'value] [node 'x] 130]]]]
+
+[exports set
+  'init
+  [fn [rootNode]
     [set root rootNode]
-    [exports update rootNode]
     [webcanvas init [# ['update drawFn]]]
+    [exports update rootNode]
     [domview init]]]
 
-[exports set 'update [fn [node]
-    [console log node]
+[exports set
+  'update
+  [fn [node]
+    [exports calcWidth node]
     [domview update node]]]
 
+[exports set 'calcPos [fn [node x y w] 
+    [node set 'x x] [node set 'y y]
+    [if [node 'children]
+        [if [node 'width fails] [exports calcWidth node]]
+        [def i 0]
+        [while [i < [node 'children 'length]]
+            [set x [x + [listPad / 2]]]
+            [exports calcPos [node 'children get i] x y]
+            [set x [x + [[node 'children get i] 'width]]]
+            [inc i]]
+    ]
+]]
+
+[exports set
+  'calcWidth
+  [fn [node]
+    [if [node 'width] [return [node 'width]]]
+    [if-else [node 'value]
+      [return
+        [node set
+          'width
+          [wordPad + [[ctxRef measureText [node 'value]] 'width]]]]
+      [do [def i 0]
+        [def width 0]
+        [while [i < [[node 'children] 'length]]
+          [if [[[[node 'children] get i] 'width] fails]
+            [exports calcWidth [[node 'children] get i]]]
+          [set width [width + listPad [[[node 'children] get i] 'width]]]
+          [inc i]]
+        [return [node set 'width width]]]]]]
