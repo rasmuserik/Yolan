@@ -1,4 +1,5 @@
 [def yolan [module require './yolan]]
+
 [def domview [module require './listdomview]]
 
 [def webcanvas [module require './webcanvas]]
@@ -27,10 +28,11 @@
     [ctx set 'font fontName]
     [ctx fillText 'Hello\ world 110 110]]]
 
-[def drawNode [fn [node]
+[def drawNode
+  [fn [node]
     [if-else [node 'children]
-        [node 'children map drawNode]
-        [ctxRef fillText [node 'value] [node 'x] 130]]]]
+      [[node 'children] map drawNode]
+      [ctxRef fillText [node 'value] [node 'x] 130]]]]
 
 [exports set
   'init
@@ -42,22 +44,21 @@
 
 [exports set
   'update
-  [fn [node]
-    [exports calcWidth node]
-    [domview update node]]]
+  [fn [node] [exports calcWidth node] [domview update node]]]
 
-[exports set 'calcPos [fn [node x y w] 
-    [node set 'x x] [node set 'y y]
+[exports set
+  'calcPos
+  [fn [node x y w]
+    [node set 'x x]
+    [node set 'y y]
     [if [node 'children]
-        [if [node 'width fails] [exports calcWidth node]]
-        [def i 0]
-        [while [i < [node 'children 'length]]
-            [set x [x + [listPad / 2]]]
-            [exports calcPos [node 'children get i] x y]
-            [set x [x + [[node 'children get i] 'width]]]
-            [inc i]]
-    ]
-]]
+      [if [[node 'width] fails] [exports calcWidth node]]
+      [def i 0]
+      [while [i < [[node 'children] 'length]]
+        [set x [x + [listPad / 2]]]
+        [exports calcPos [[node 'children] get i] x y]
+        [set x [x + [[[node 'children] get i] 'width]]]
+        [inc i]]]]]
 
 [exports set
   'calcWidth
